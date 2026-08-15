@@ -192,14 +192,15 @@
                     <div position-id="2e9f1bc9-32d9-1788-4c9a-6b3a5ce4b919" class="div-block-568">
                       <input type="submit" data-node-type="commerce-add-to-cart-button" data-loading-text="{{ 'tn60b63398' | t }}" aria-busy="false" aria-haspopup="dialog" class="w-commerce-commerceaddtocartbutton add-to-cart-button" value="{{ 'tn26bdceda' | t }}">
                     </div>
-                    <a position-id="2e9f1bc9-32d9-1788-4c9a-6b3a5ce4b91c" data-node-type="commerce-buy-now-button" aria-busy="false" aria-haspopup="false" data-default-text="Buy now" data-subscription-text="Subscribe now" style="display:none" class="w-commerce-commercebuynowbutton" href="/checkout">{{ 't71bb9a1c' | t }}</a>
-                    {%- endform -%}
-                    {%- comment -%} ── ASK A QUESTION BUTTON ── {%- endcomment -%}
+                    {%- render "product-variants-data" product: product -%}
+                  {%- endform -%}
+                  {%- comment -%} ── ASK A QUESTION BUTTON ── {%- endcomment -%}
+                  <div style="display: flex; justify-content: center; width: 100%;">
                     <a href="/pages/contact-us?product={{ product.title | url_encode }}&handle={{ product.handle }}" class="jj-ask-question-btn">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r="0.5" fill="currentColor"/></svg>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle; margin-right:4px;"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r="0.5" fill="currentColor"/></svg>
                       Ask a Question About This Product
                     </a>
-                  {%- render "product-variants-data" product: product -%}
+                  </div>
                   <div style="display:none" class="w-commerce-commerceaddtocartoutofstock out-of-stock-state" tabindex="0">
                     <div class="text-block-476">{{ 'tn74baf853' | t }}</div>
                   </div>
@@ -280,7 +281,7 @@
       <div id="jj-lightbox" role="dialog" aria-modal="true" aria-label="Image lightbox">
         <button class="jj-lb-close" id="jj-lb-close" aria-label="Close lightbox">&times;</button>
         <button class="jj-lb-arrow" id="jj-lb-prev" aria-label="Previous image">&#8592;</button>
-        <div class="jj-lb-img-wrap">
+        <div class="jj-lb-img-wrap" id="jj-lb-img-wrap">
           <img id="jj-lb-img" src="" alt="Product image">
         </div>
         <button class="jj-lb-arrow" id="jj-lb-next" aria-label="Next image">&#8594;</button>
@@ -318,6 +319,7 @@
     scroll-snap-type: y mandatory !important;
     scrollbar-width: none !important;
     -ms-overflow-style: none !important;
+    width: 100% !important;
   }
   .thumbnail-section::-webkit-scrollbar { display: none !important; }
 
@@ -372,6 +374,7 @@
     scrollbar-width: none !important;
     -ms-overflow-style: none !important;
     padding-bottom: 2rem !important;
+    width: 100% !important;
   }
   .product-container::-webkit-scrollbar { display: none !important; }
 
@@ -386,29 +389,27 @@
 
   /* ── ASK A QUESTION BUTTON ───────────────────────────────────── */
   .jj-ask-question-btn {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    width: 100%;
-    margin-top: 12px;
-    padding: 14px 24px;
+    gap: 6px;
+    margin-top: 16px;
+    padding: 6px 0;
     background: transparent;
-    border: 1px solid rgba(255,255,255,0.15);
-    color: rgba(255,255,255,0.55);
+    border: none;
+    color: rgba(255,255,255,0.45);
     font-family: 'Inter', sans-serif;
     font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    text-decoration: none;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: none;
+    text-decoration: underline;
     cursor: pointer;
-    transition: border-color 0.2s ease, color 0.2s ease;
-    box-sizing: border-box;
+    transition: color 0.2s ease;
+    width: auto;
   }
 
   .jj-ask-question-btn:hover {
-    border-color: rgba(255,255,255,0.45);
     color: rgba(255,255,255,0.9);
   }
 
@@ -744,9 +745,9 @@
       }
     });
 
-    // Close on backdrop click
+    // Close on backdrop or empty wrap click
     if (lb) lb.addEventListener('click', function(e) {
-      if (e.target === lb) closeLightbox();
+      if (e.target === lb || e.target.id === 'jj-lb-img-wrap') closeLightbox();
     });
     if (lbClose) lbClose.addEventListener('click', closeLightbox);
 
@@ -783,30 +784,31 @@
       }, {passive: true});
     }
 
-    // Single-image: hover zoom following mouse
+    // Single-image: hover zoom following mouse (4x)
     var lbTranslateX = 0, lbTranslateY = 0;
-    if (lbImg) {
+    var wrap = document.getElementById('jj-lb-img-wrap');
+    if (lbImg && wrap) {
       lbImg.addEventListener('click', function(e) {
         e.stopPropagation();
         if (!lbZoomed) {
           lbZoomed = true;
-          lbScale = 2.5;
+          lbScale = 4.0;
           lbImg.classList.add('zoomed');
-          lbImg.style.cursor = 'move';
+          lbImg.style.cursor = 'zoom-out';
           lbImg.style.transition = 'transform 0.2s ease';
         } else {
           resetZoom();
         }
       });
 
-      // Mouse follow when zoomed
-      lbImg.addEventListener('mousemove', function(e) {
+      // Mouse follow tracked on static wrapper to prevent jitter feedback loops
+      wrap.addEventListener('mousemove', function(e) {
         if (!lbZoomed) return;
-        var rect = lbImg.getBoundingClientRect();
+        var rect = wrap.getBoundingClientRect();
         var cx = (e.clientX - rect.left) / rect.width - 0.5;
         var cy = (e.clientY - rect.top) / rect.height - 0.5;
-        lbTranslateX = -cx * rect.width * (lbScale - 1) * 0.5;
-        lbTranslateY = -cy * rect.height * (lbScale - 1) * 0.5;
+        lbTranslateX = -cx * rect.width * (lbScale - 1) * 0.4;
+        lbTranslateY = -cy * rect.height * (lbScale - 1) * 0.4;
         lbImg.style.transform = 'scale(' + lbScale + ') translate(' + lbTranslateX + 'px,' + lbTranslateY + 'px)';
         lbImg.style.transition = 'none';
       });

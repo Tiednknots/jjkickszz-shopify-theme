@@ -61,7 +61,7 @@
     align-items: center;
     width: 100%;
     box-sizing: border-box;
-    padding: 0 4rem;
+    padding: 0 var(--pad-h);
     height: 44px;
     font-family: 'Inter', sans-serif;
     position: relative;
@@ -177,7 +177,7 @@
 
   .jj-brand-panel.open {
     max-height: 220px;
-    padding: 12px 4rem;
+    padding: 12px var(--pad-h);
     border-bottom-color: #2e2e2e;
   }
 
@@ -310,7 +310,7 @@
   /* ── MOBILE OVERRIDES ────────────────────────────────────────── */
   @media (max-width: 767px) {
     .jj-subtle-filter-bar {
-      padding: 0 2rem;
+      padding: 0 var(--pad-h);
       gap: 0;
     }
 
@@ -378,7 +378,7 @@
     }
 
     /* Brand panel full-width on mobile, 3-col chips */
-    .jj-brand-panel.open { padding: 10px 2rem; }
+    .jj-brand-panel.open { padding: 10px var(--pad-h); }
     .jj-vendor-scroll-row { gap: 5px; }
     .jj-vendor-chip { font-size: 10px; padding: 5px 8px; }
 

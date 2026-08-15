@@ -36,20 +36,6 @@
   --gradient-dark: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 100%);
 }
 
-/* ── GLOBAL TYPOGRAPHY CONTROL ──────────────────────────────── */
-body, p, li, td, span, div {
-  color: var(--text-primary);
-}
-h1, h2, h3, h4, h5, h6 {
-  color: var(--text-heading);
-}
-a {
-  color: var(--link-color);
-  transition: color 0.2s ease;
-}
-a:hover {
-  color: var(--link-hover);
-}
 
 
 @media (max-width: 767px) {
@@ -60,25 +46,10 @@ a:hover {
 *, *::before, *::after { box-sizing: border-box; }
 .w-commerce-commerceaddtocarterrorstate { display: none !important; }
 
-/* Force all major wrappers to allow height to flow naturally */
-html,
-body,
-.body-3,
+/* Force main layout wrappers to allow height to flow naturally for scroll behavior */
 .barba-wrapper,
-.page-content,
-.section-hold,
-.section-5,
-.section-5.mobile,
-.section-5.mobile.shop,
-.div-block-8,
-.brand-view,
-.collection-list-wrapper,
-.div-block-629,
-.product-template-container {
+.page-content {
   height: auto !important;
-  min-height: 0 !important;
-  max-height: none !important;
-  overflow: visible !important;
 }
 
 html, body {
