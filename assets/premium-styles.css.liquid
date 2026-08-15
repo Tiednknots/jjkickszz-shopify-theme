@@ -1170,4 +1170,28 @@ body.template-index, .body.template-index {
   background-color: #0B0B0B !important;
 }
 
+/* ── REMOVE DOUBLE BORDERS ON MARQUEE ─────────────────────────── */
+.white-section.menu {
+  border-top: none !important;
+  border-bottom: 1px solid #2e2e2e !important;
+  box-shadow: none !important;
+}
+
+/* ── HIDE ACCESSIBILITY WIDGET ICON ───────────────────────────── */
+#userwayAccessibilityIcon,
+.userway-trigger,
+[id*="userway"],
+[class*="userway"],
+#accessibe-widget,
+#accessibility-icon,
+.accessibility-icon,
+#uwy,
+.uwy-icon-wrapper,
+iframe[src*="userway"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 

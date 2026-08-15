@@ -12,8 +12,8 @@
     justify-content: center; /* Forces the marquee to the center */
     align-items: center;
     position: relative;
-    border-top: 1px solid #2e2e2e;
-    border-bottom: 1px solid #2e2e2e;
+    border-top: none;
+    border-bottom: none;
   }
   /* --- 2. THE CENTERED VISIBLE AREA (Restricted Width) --- */
   .jj-centered-mask {
@@ -357,7 +357,7 @@
     grid-template-columns: 1fr 1fr !important;
     gap: 4rem !important;
     align-items: start !important;
-    padding: 140px 4rem 2rem !important; /* clears fixed header and scroller */
+    padding: 2rem 4rem !important; /* Reverted to tight spacing, no giant gap */
     box-sizing: border-box !important;
     max-width: 100% !important;
   }
@@ -368,7 +368,9 @@
     flex-direction: column !important;
     gap: 12px !important;
     overflow-y: auto !important;
-    max-height: calc(100vh - 160px) !important;
+    position: sticky !important;
+    top: 160px !important; /* Clears sticky marquee on scroll */
+    max-height: calc(100vh - 180px) !important;
     scroll-snap-type: y mandatory !important;
     scrollbar-width: none !important;
     -ms-overflow-style: none !important;
@@ -421,8 +423,8 @@
   /* RIGHT: Sticky product info */
   .product-container {
     position: sticky !important;
-    top: 120px !important;
-    max-height: calc(100vh - 140px) !important;
+    top: 160px !important; /* Clears sticky marquee on scroll */
+    max-height: calc(100vh - 180px) !important;
     overflow-y: auto !important;
     scrollbar-width: none !important;
     -ms-overflow-style: none !important;
@@ -578,6 +580,13 @@
       overflow: visible !important;
     }
 
+    /* Padded wrapper for the gallery card */
+    .more-image-container {
+      padding: 1.25rem 1.25rem 0 !important;
+      box-sizing: border-box !important;
+    }
+
+    /* Horizontal scroll track with gaps */
     .more-image-wrapper {
       display: flex !important;
       flex-direction: row !important;
@@ -586,36 +595,41 @@
       scroll-snap-type: x mandatory !important;
       scrollbar-width: none !important;
       -ms-overflow-style: none !important;
-      gap: 0 !important;
+      gap: 12px !important;
       padding: 0 !important;
       width: 100% !important;
+      box-sizing: border-box !important;
     }
     .more-image-wrapper::-webkit-scrollbar { display: none !important; }
 
+    /* Custom slide sizing utilizing calc to match container padding */
     #main-image {
-      min-width: 100vw !important;
-      max-width: 100vw !important;
-      width: 100vw !important;
-      height: 100vw !important;
-      aspect-ratio: 1 / 1 !important;
-      object-fit: cover !important;
+      min-width: calc(100vw - 2.5rem) !important;
+      max-width: calc(100vw - 2.5rem) !important;
+      width: calc(100vw - 2.5rem) !important;
+      height: 70vw !important;
+      aspect-ratio: 4 / 3 !important;
+      object-fit: contain !important;
+      background: #ffffff !important;
+      border-radius: 12px !important;
       scroll-snap-align: center !important;
       margin: 0 !important;
       flex-shrink: 0 !important;
+      border: 1px solid rgba(255,255,255,0.06) !important;
     }
 
     /* Stack thumbs inline with main for the mobile swipe row */
     .collection-list-3 {
       display: flex !important;
       flex-direction: row !important;
-      gap: 0 !important;
+      gap: 12px !important;
     }
 
     .collection-item-3 {
-      min-width: 100vw !important;
-      max-width: 100vw !important;
-      width: 100vw !important;
-      height: 100vw !important;
+      min-width: calc(100vw - 2.5rem) !important;
+      max-width: calc(100vw - 2.5rem) !important;
+      width: calc(100vw - 2.5rem) !important;
+      height: 70vw !important;
       flex-shrink: 0 !important;
       scroll-snap-align: center !important;
     }
@@ -623,20 +637,24 @@
     #thumb-image, .thumb-image {
       width: 100% !important;
       height: 100% !important;
-      aspect-ratio: 1 / 1 !important;
-      object-fit: cover !important;
+      aspect-ratio: 4 / 3 !important;
+      object-fit: contain !important;
+      background: #ffffff !important;
+      border-radius: 12px !important;
+      border: 1px solid rgba(255,255,255,0.06) !important;
     }
 
     .product-container {
       position: static !important;
       max-height: none !important;
       overflow: visible !important;
-      padding: 1.5rem 2rem !important;
+      padding: 1.25rem 1.25rem 2rem !important; /* tight matching padding */
     }
 
     /* Dot indicators */
     .jj-swipe-dots {
       display: flex !important;
+      padding: 12px 0 4px !important;
     }
 
     /* Lightbox arrows hide on mobile (swipe instead) */
@@ -1290,7 +1308,80 @@
       }
     }
 
+    function setupAddToCart() {
+      var form = document.querySelector('form[action^="/cart/add"]');
+      if (form) {
+        if (!form.getAttribute('data-node-type')) {
+          form.setAttribute('data-node-type', 'commerce-add-to-cart-form');
+        }
+        
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          var submitBtn = form.querySelector('[type="submit"]');
+          var originalText = submitBtn ? (submitBtn.value || submitBtn.textContent) : 'Add to Cart';
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.value = 'Adding...';
+          }
+
+          var idInput = form.querySelector('[name="id"]');
+          var variantId = idInput ? idInput.value : '';
+          var quantity = form.querySelector('[name="quantity"]') ? form.querySelector('[name="quantity"]').value : 1;
+
+          if (!variantId) {
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.value = originalText;
+            }
+            alert('Please select a variant option.');
+            return;
+          }
+
+          var payload = {
+            id: parseInt(variantId, 10),
+            quantity: parseInt(quantity, 10)
+          };
+
+          fetch(window.Shopify.routes.root + 'cart/add.js', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          })
+          .then(function(response) {
+            return response.json();
+          })
+          .then(function(data) {
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.value = originalText;
+            }
+            if (data.status && data.status === 422) {
+              alert(data.description || 'Could not add to cart.');
+            } else {
+              if (typeof window.Udesly !== 'undefined') {
+                window.Udesly.dispatch('product-added', true);
+              } else {
+                window.location.href = '/cart';
+              }
+            }
+          })
+          .catch(function(err) {
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.value = originalText;
+            }
+            console.error('Add to cart failed:', err);
+          });
+        }, true);
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
+      setupAddToCart();
       initDots();
       initCursor();
       initCartObserver();
