@@ -1241,24 +1241,24 @@ iframe[src*="userway"] {
   transform: translateY(0) scale(1) !important;
 }
 
-/* ── SHOP BY BRAND MOBILE UNIFORM SCROLL FIX ───────────────────── */
-@media (max-width: 767px) {
-  .brand-view .collection-list-wrapper,
-  .brand-view .collection-list-2 {
-    overflow: visible !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    height: auto !important;
-    max-height: none !important;
-  }
-  .brand-view .collection-item-2 {
-    height: auto !important;
-  }
-  .brand-view .link-block-2.mobile {
-    height: 48vw !important; /* Uniform aspect height, ~30% smaller, no stuck scroll */
-    min-height: auto !important;
-    max-height: none !important;
-  }
+/* ── SHOP BY BRAND SCROLLER GLOBAL HEIGHT LIMIT ────────────────── */
+.brand-view .collection-list-wrapper,
+.brand-view .collection-list-2.contents-of-scroll {
+  height: 45vh !important;
+  max-height: 45vh !important;
+  overflow: visible !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+}
+
+.brand-view .collection-item-2 {
+  height: 100% !important;
+}
+
+.brand-view .link-block-2.mobile {
+  height: 100% !important;
+  max-height: 45vh !important;
+  min-height: auto !important;
 }
 
 /* ── SIMILAR PRODUCTS MOBILE HEIGHT & RATIOS ─────────────────── */
