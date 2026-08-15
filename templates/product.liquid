@@ -357,7 +357,7 @@
     grid-template-columns: 1fr 1fr !important;
     gap: 4rem !important;
     align-items: start !important;
-    padding: 2rem 4rem !important; /* Reverted to tight spacing, no giant gap */
+    padding: 0 4rem !important; /* Removed vertical padding from parent to extend vertical border */
     box-sizing: border-box !important;
     max-width: 100% !important;
   }
@@ -375,6 +375,8 @@
     scrollbar-width: none !important;
     -ms-overflow-style: none !important;
     width: 100% !important;
+    padding-top: 2rem !important;   /* Moved from parent grid */
+    padding-bottom: 2rem !important;/* Moved from parent grid */
   }
   .thumbnail-section::-webkit-scrollbar { display: none !important; }
 
@@ -428,8 +430,11 @@
     overflow-y: auto !important;
     scrollbar-width: none !important;
     -ms-overflow-style: none !important;
-    padding-bottom: 2rem !important;
     width: 100% !important;
+    padding-top: 2rem !important;   /* Moved from parent grid */
+    padding-bottom: 2.5rem !important;/* Moved from parent grid */
+    padding-left: 2rem !important;   /* Separates details from vertical line */
+    border-left: 1px solid #252525 !important; /* Runs full height of grid container */
   }
   .product-container::-webkit-scrollbar { display: none !important; }
 
@@ -607,8 +612,8 @@
       min-width: calc(100vw - 2.5rem) !important;
       max-width: calc(100vw - 2.5rem) !important;
       width: calc(100vw - 2.5rem) !important;
-      height: 70vw !important;
-      aspect-ratio: 4 / 3 !important;
+      height: calc(100vw - 2.5rem) !important; /* Restored full height square card */
+      aspect-ratio: 1 / 1 !important;
       object-fit: contain !important;
       background: #ffffff !important;
       border-radius: 12px !important;
@@ -629,7 +634,7 @@
       min-width: calc(100vw - 2.5rem) !important;
       max-width: calc(100vw - 2.5rem) !important;
       width: calc(100vw - 2.5rem) !important;
-      height: 70vw !important;
+      height: calc(100vw - 2.5rem) !important; /* Restored full height square card */
       flex-shrink: 0 !important;
       scroll-snap-align: center !important;
     }
@@ -637,7 +642,7 @@
     #thumb-image, .thumb-image {
       width: 100% !important;
       height: 100% !important;
-      aspect-ratio: 4 / 3 !important;
+      aspect-ratio: 1 / 1 !important;
       object-fit: contain !important;
       background: #ffffff !important;
       border-radius: 12px !important;
