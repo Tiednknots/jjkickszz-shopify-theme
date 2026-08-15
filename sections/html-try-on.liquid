@@ -1,0 +1,23 @@
+
+        <section class="section-5 iframe">
+          <div class="code-embed-4 w-embed w-iframe w-script">{{ section.settings.iframe_html_code_from_loveable }}</div>
+        </section>
+      
+
+<script>var currentSection = document.currentScript.closest('.shopify-section');currentSection.setAttribute("class","section-hold aks");</script>
+        
+{% schema %}
+{
+  "name": "html try-on",
+  "tag": "div",
+  "class": "section-hold aks",
+  "settings": [
+    {
+      "type": "html",
+      "id": "iframe_html_code_from_loveable",
+      "label": "iframe html (code from loveable)",
+      "default": "\n            <div style=\"position:relative;width:100%;height:85vh;min-height:600px;border-radius:8px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.1);\">\n              <iframe id=\"the-vault-frame\" src=\"https://jjvault.netlify.app\" style=\"width:100%;height:100%;border:none;\" title=\"Virtual Styling\" allow=\"camera; microphone; clipboard-write\">\n              </iframe>\n            </div>\n            <!--  Cart toast banner  -->\n            <div id=\"vault-cart-toast\" style=\"display:none;position:fixed;top:20px;right:20px;background:#111;color:#fff;padding:16px 24px;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.3);z-index:99999;font-family:sans-serif;font-size:14px;\">\n              ✓ Item added to cart!\n              <a href=\"/cart\" style=\"color:#f0c040;margin-left:12px;text-decoration:underline;\">View Cart</a>\n            </div>\n            <script>\nwindow.addEventListener('message', function(event) {\n  if (!event.data || event.data.action !== 'ADD_TO_CART') return;\n  var variantId = event.data.variantId;\n  console.log('[The Vault] Adding variant:', variantId);\n  fetch('/cart/add.js', {\n    method: 'POST',\n    headers: { 'Content-Type': 'application/json' },\n    body: JSON.stringify({ items: [{ id: variantId, quantity: 1 }] })\n  })\n  .then(function(res) { return res.json(); })\n  .then(function() {\n    // Show our own toast (always works)\n    var toast = document.getElementById('vault-cart-toast');\n    if (toast) {\n      toast.style.display = 'block';\n      toast.style.opacity = '1';\n      setTimeout(function() {\n        toast.style.opacity = '0';\n        setTimeout(function() { toast.style.display = 'none'; }, 300);\n      }, 4000);\n    }\n    // Fetch latest cart count, then update theme UI\n    return fetch('/cart.js');\n  })\n  .then(function(res) { return res.json(); })\n  .then(function(cart) {\n    var count = cart.item_count || 0;\n    console.log('[The Vault] Cart count now:', count);\n    // --- Update every possible cart count badge ---\n    var countSelectors = [\n      '.cart-count', '.cart__count', '.cart-item-count',\n      '[data-cart-count]', '[data-cartcount]',\n      '.cart-count-bubble', '#CartCount',\n      '.header__cart-count', '.site-header__cart-count',\n      '#cart-icon-bubble .cart-count-bubble',\n      '.cart__badge'\n    ];\n    countSelectors.forEach(function(sel) {\n      document.querySelectorAll(sel).forEach(function(el) {\n        el.textContent = count;\n        el.style.display = count > 0 ? '' : 'none';\n      });\n    });\n    // --- Dispatch events themes listen for ---\n    var events = ['cart:refresh', 'cart:updated', 'cart:change', 'header:cart-update'];\n    events.forEach(function(name) {\n      document.dispatchEvent(new CustomEvent(name, { bubbles: true, detail: { cart: cart } }));\n      document.documentElement.dispatchEvent(new CustomEvent(name, { bubbles: true }));\n    });\n    // --- Try to open cart drawer (works for Dawn/standard themes) ---\n    var cartDrawer = document.querySelector('cart-drawer');\n    if (cartDrawer && typeof cartDrawer.open === 'function') {\n      cartDrawer.open();\n    }\n    // --- Reload the cart-icon-bubble section (Dawn) ---\n    fetch(window.location.pathname + '?sections=cart-icon-bubble')\n      .then(function(r) { return r.json(); })\n      .then(function(sections) {\n        var html = sections['cart-icon-bubble'];\n        if (html) {\n          var el = document.getElementById('cart-icon-bubble');\n          if (el) {\n            var parsed = new DOMParser().parseFromString(html, 'text/html');\n            var newEl = parsed.getElementById('cart-icon-bubble');\n            if (newEl) el.replaceWith(newEl);\n          }\n        }\n      })\n      .catch(function() {});\n  })\n  .catch(function(err) {\n    console.error('[The Vault] Error:', err);\n    alert('Could not add item to cart. Please try again.');\n  });\n});\n</script>\n          "
+    }
+  ]
+}
+{% endschema %}

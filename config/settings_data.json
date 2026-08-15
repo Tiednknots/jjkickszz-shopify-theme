@@ -1,0 +1,38 @@
+{
+  "current": {
+    "sections": {
+      "main_section": {
+        "type": "main-section",
+        "settings": {}
+      },
+      "home_marquee": {
+        "type": "home-marquee",
+        "settings": {}
+      },
+      "home_new_drops": {
+        "type": "home-new-drops",
+        "settings": {}
+      },
+      "general_section": {
+        "type": "general-section",
+        "settings": {}
+      },
+      "home_shop_by_brand": {
+        "type": "home-shop-by-brand",
+        "settings": {}
+      },
+      "home_custom_blocks": {
+        "type": "home-custom-blocks",
+        "settings": {}
+      }
+    },
+    "content_for_index": [
+      "main_section",
+      "home_marquee",
+      "home_new_drops",
+      "general_section",
+      "home_shop_by_brand",
+      "home_custom_blocks"
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{% capture listItems %}
+                         {% assign subCollection = item.metafields.udesly['products'] | map: "handle" %}
+                        {% for loopItem in subCollection | limit: 1 %}
+{% assign item = all_products[loopItem] %}         
+                        <div role="listitem" class="collection-item-5 w-dyn-item">
+                          <div class="div-block-1165"><img loading="lazy" src="{{ item.featured_image | img_url: '600x' }}" alt="{{ item.featured_image.alt }}" class="image-15" data-commerce-type="variation-image" srcset="{{ item.featured_image | img_url: '1920x' }} 1920w,{{ item.featured_image | img_url: '1600x' }} 1600w,{{ item.featured_image | img_url: '1366x' }} 1366w,{{ item.featured_image | img_url: '1024x' }} 1024w,{{ item.featured_image | img_url: '768x' }} 768w,{{ item.featured_image | img_url: '640x' }} 640w"></div>
+                        </div>
+                        {% endfor %}
+                        {% endcapture %}
+{% assign items_length = listItems | strip | size %}
+    <div class="collection-list-wrapper-4 w-dyn-list" udy-collection="product">
+                      {%- unless items_length == 0 -%}<div role="list" class="collection-list-5 w-dyn-items">
+                        {{ listItems }}
+                      </div>{%- endunless -%}
+                    </div>

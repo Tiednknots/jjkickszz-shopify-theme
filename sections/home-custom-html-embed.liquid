@@ -1,0 +1,62 @@
+<style>
+  #html-embed-{{ section.id }} {
+    margin-bottom: 3rem;
+  }
+  
+  #html-embed-{{ section.id }}.apply-custom-margins {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  @media (max-width: 767px) {
+    #html-embed-{{ section.id }}.apply-custom-margins {
+      margin-left: 15px;
+      margin-right: 15px;
+    }
+  }
+</style>
+
+<div class="home-section {% if section.settings.apply_margins %}apply-custom-margins{% endif %}" id="html-embed-{{ section.id }}">
+  {%- if section.settings.html_code != blank -%}
+    {{ section.settings.html_code }}
+  {%- else -%}
+    <!-- Placeholder -->
+    <div style="background-color:#111; padding: 2rem; border-radius: 8px; text-align: center; border: 1px dashed rgba(255,255,255,0.1); color: rgba(255,255,255,0.4);">
+      <div style="font-weight: 700; margin-bottom: 5px;">HTML Embed Section</div>
+      <div style="font-size: 12px;">Paste your custom HTML / Script code in the section settings.</div>
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Custom HTML Embed",
+  "tag": "section",
+  "class": "custom-html-embed-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "apply_margins",
+      "label": "Apply Side Margins (20px Desktop / 15px Mobile)",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Label (For reference in editor)",
+      "default": "Custom Script / Embed widget"
+    },
+    {
+      "type": "textarea",
+      "id": "html_code",
+      "label": "Custom HTML / CSS / JS code"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom HTML Embed",
+      "category": "Advanced"
+    }
+  ]
+}
+{% endschema %}

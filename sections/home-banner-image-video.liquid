@@ -1,0 +1,350 @@
+{%- assign fallback_img = section.settings.background_image -%}
+{%- if fallback_img == nil -%}
+  {%- assign fallback_img_url = 'First-Frame-JJ.png' | asset_url -%}
+{%- else -%}
+  {%- assign fallback_img_url = fallback_img | img_url: '1920x' -%}
+{%- endif -%}
+
+<style>
+  #banner-{{ section.id }} {
+    position: relative;
+    width: auto;
+    overflow: hidden;
+    background-color: #0a0a0a;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    margin-bottom: 3rem;
+  }
+  
+  #banner-{{ section.id }}.apply-custom-margins {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  .banner-media-wrapper-{{ section.id }} {
+    position: relative;
+    width: 100%;
+    height: {{ section.settings.desktop_height }}px;
+  }
+
+  .banner-media-wrapper-{{ section.id }} img,
+  .banner-media-wrapper-{{ section.id }} video,
+  .banner-media-wrapper-{{ section.id }} .jj-hero-video-wrapper {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .banner-overlay-{{ section.id }} {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: {{ section.settings.overlay_color | default: 'rgba(0,0,0,0.3)' }};
+    z-index: 1;
+  }
+
+  .banner-content-{{ section.id }} {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    text-align: center;
+    width: 90%;
+    max-width: 800px;
+    pointer-events: auto;
+  }
+
+  .banner-title-{{ section.id }} {
+    font-family: 'Aerosoldierbasic Personal Use Only', 'Barlow Condensed', sans-serif;
+    font-size: {{ section.settings.title_size }}px;
+    color: {{ section.settings.text_color }};
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  }
+
+  .banner-subheading-{{ section.id }} {
+    font-family: 'Inter', sans-serif;
+    font-size: {{ section.settings.subheading_size }}px;
+    color: {{ section.settings.text_color }};
+    opacity: 0.9;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.1em;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  }
+
+  .banner-btn-{{ section.id }} {
+    display: inline-block;
+    padding: 12px 28px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-radius: 0px;
+    border: 1px solid transparent;
+  }
+
+  .banner-btn-{{ section.id }}:hover {
+    transform: scale(1.05);
+  }
+
+  @media (max-width: 767px) {
+    #banner-{{ section.id }}.apply-custom-margins {
+      margin-left: 15px;
+      margin-right: 15px;
+    }
+    .banner-media-wrapper-{{ section.id }} {
+      height: {{ section.settings.mobile_height }}px;
+    }
+    .banner-title-{{ section.id }} {
+      font-size: {{ section.settings.title_size_mobile }}px;
+    }
+    .banner-subheading-{{ section.id }} {
+      font-size: {{ section.settings.subheading_size_mobile }}px;
+    }
+  }
+</style>
+
+{%- capture banner_markup -%}
+  <div class="banner-media-wrapper-{{ section.id }}">
+    <div class="banner-overlay-{{ section.id }}"></div>
+    
+    {%- if section.settings.video_file != blank -%}
+      <div class="jj-hero-video-wrapper">
+        <img src="{{ fallback_img_url }}" class="jj-hero-video-fallback" alt="Fallback" loading="lazy">
+        {{ section.settings.video_file | video_tag: autoplay: true, loop: true, muted: true, controls: false, playsinline: true, class: 'jj-hero-video' }}
+      </div>
+    {%- elsif section.settings.video_url != blank -%}
+      <div class="jj-hero-video-wrapper">
+        <img src="{{ fallback_img_url }}" class="jj-hero-video-fallback" alt="Fallback" loading="lazy">
+        <video autoplay loop muted playsinline class="jj-hero-video" crossorigin="anonymous">
+          <source src="{{ section.settings.video_url }}" type="video/mp4">
+        </video>
+      </div>
+    {%- else -%}
+      {%- if section.settings.background_image != blank -%}
+        <img src="{{ section.settings.background_image | img_url: '1920x' }}" alt="{{ section.settings.title | escape }}" loading="lazy">
+      {%- else -%}
+        <img src="{{ 'background-image-jjkicks.jpg' | asset_url }}" alt="Default Banner Image" loading="lazy">
+      {%- endif -%}
+    {%- endif -%}
+
+    {%- if section.settings.title != blank or section.settings.subheading != blank or section.settings.button_text != blank -%}
+      <div class="banner-content-{{ section.id }}">
+        {%- if section.settings.title != blank -%}
+          <h2 class="banner-title-{{ section.id }}">{{ section.settings.title }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subheading != blank -%}
+          <div class="banner-subheading-{{ section.id }}">{{ section.settings.subheading }}</div>
+        {%- endif -%}
+        {%- if section.settings.button_text != blank and section.settings.clickable_banner == false -%}
+          <a href="{{ section.settings.link_url | default: '#' }}" class="banner-btn-{{ section.id }}" style="background-color: {{ section.settings.button_color }}; color: {{ section.settings.button_text_color }};">{{ section.settings.button_text }}</a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+{%- endcapture -%}
+
+<div class="banner-image-video-container {% if section.settings.apply_margins %}apply-custom-margins{% endif %}" id="banner-{{ section.id }}">
+  {%- if section.settings.clickable_banner and section.settings.link_url != blank -%}
+    <a href="{{ section.settings.link_url }}" style="display:block;text-decoration:none;color:inherit;">
+      {{ banner_markup }}
+    </a>
+  {%- else -%}
+    {{ banner_markup }}
+  {%- endif -%}
+</div>
+
+<script>
+  (function() {
+    var sectionEl = document.getElementById('banner-{{ section.id }}');
+    if (!sectionEl) return;
+    
+    var videos = sectionEl.querySelectorAll('.jj-hero-video');
+    var fallbackImg = sectionEl.querySelector('.jj-hero-video-fallback');
+    
+    videos.forEach(function(video) {
+      function handlePlaying() {
+        video.classList.add('playing');
+      }
+      video.addEventListener('playing', handlePlaying);
+      video.addEventListener('play', handlePlaying);
+      
+      video.crossOrigin = "anonymous";
+      video.addEventListener('loadeddata', function() {
+        try {
+          var canvas = document.createElement('canvas');
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          var dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+          if (fallbackImg) {
+            fallbackImg.src = dataUrl;
+            fallbackImg.srcset = '';
+          }
+        } catch(e) {
+          console.log("[BannerVideo] Frame capture fallback skipped:", e);
+        }
+      });
+      
+      if (!video.paused) {
+        handlePlaying();
+      }
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Custom Image/Video Banner",
+  "tag": "section",
+  "class": "custom-image-video-banner-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "apply_margins",
+      "label": "Apply Side Margins (20px Desktop / 15px Mobile)",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image"
+    },
+    {
+      "type": "video",
+      "id": "video_file",
+      "label": "Shopify Hosted Video (Autoplay)"
+    },
+    {
+      "type": "text",
+      "id": "video_url",
+      "label": "Or Video Direct MP4 Link"
+    },
+    {
+      "type": "checkbox",
+      "id": "clickable_banner",
+      "label": "Make entire banner clickable",
+      "default": false
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Banner Link URL"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading Title",
+      "default": "New Arrivals"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 20,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading Title Size (Desktop)",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "title_size_mobile",
+      "min": 16,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Heading Title Size (Mobile)",
+      "default": 32
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "LIMITED RELEASE COLLECTION"
+    },
+    {
+      "type": "range",
+      "id": "subheading_size",
+      "min": 10,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Subheading Size (Desktop)",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "subheading_size_mobile",
+      "min": 8,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Subheading Size (Mobile)",
+      "default": 11
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Overlay Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay Mask Color",
+      "default": "rgba(0,0,0,0.3)"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Shop Collection"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button Color",
+      "default": "#c60000"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "desktop_height",
+      "min": 200,
+      "max": 900,
+      "step": 10,
+      "unit": "px",
+      "label": "Desktop Height",
+      "default": 450
+    },
+    {
+      "type": "range",
+      "id": "mobile_height",
+      "min": 150,
+      "max": 600,
+      "step": 10,
+      "unit": "px",
+      "label": "Mobile Height",
+      "default": 250
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Image/Video Banner",
+      "category": "Image"
+    }
+  ]
+}
+{% endschema %}

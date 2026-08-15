@@ -1,0 +1,75 @@
+{%- assign g1_hex = section.settings.gradient_color_1 | default: '#000000' -%}
+{%- assign g1_op = section.settings.gradient_opacity_1 | divided_by: 100.0 -%}
+{%- assign g2_hex = section.settings.gradient_color_2 | default: '#0a0a0a' -%}
+{%- assign g2_op = section.settings.gradient_opacity_2 | divided_by: 100.0 -%}
+
+<style>
+  #brand-section-{{ section.id }} .link-overlay.overlay {
+    background-image: linear-gradient(180deg, 
+      {{ g1_hex | color_modify: 'alpha', g1_op }}, 
+      {{ g2_hex | color_modify: 'alpha', g2_op }}
+    ) !important;
+  }
+</style>
+
+<div class="brand-view" id="brand-section-{{ section.id }}">
+  <h1 class="heading">{{ section.settings.heading }}</h1>
+  {%- render "categories" -%}
+</div>
+
+{% schema %}
+{
+  "name": "Shop By Brand",
+  "tag": "section",
+  "class": "hero-brand-listing",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "SHOP BY BRAND"
+    },
+    {
+      "type": "header",
+      "content": "Gradient Overlay Styles"
+    },
+    {
+      "type": "color",
+      "id": "gradient_color_1",
+      "label": "Gradient Color (Top)",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "gradient_opacity_1",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Gradient Opacity (Top)",
+      "default": 40
+    },
+    {
+      "type": "color",
+      "id": "gradient_color_2",
+      "label": "Gradient Color (Bottom)",
+      "default": "#0a0a0a"
+    },
+    {
+      "type": "range",
+      "id": "gradient_opacity_2",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Gradient Opacity (Bottom)",
+      "default": 90
+    }
+  ],
+  "presets": [
+    {
+      "name": "Shop By Brand"
+    }
+  ]
+}
+{% endschema %}

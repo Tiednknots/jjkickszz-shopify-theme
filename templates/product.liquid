@@ -1,0 +1,882 @@
+{%- assign headerSnippetPath = "header-index" -%}{%- assign wfPage = "692ec189f4f62ea5a929da5b" -%}{%- assign bodyClasses = "body-5" -%}
+  {%- render 'global-navbar' -%}
+  <div class="white-section menu">
+    <section class="section-3">
+      <div option:html="Scrolling-text (use chatgpt to generate html scrolling text or change the text inside)" class="code-embed-3 w-embed">
+        <style>
+  /* --- 1. OUTER WRAPPER (Full Width) --- */
+  .jj-marquee-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center; /* Forces the marquee to the center */
+    align-items: center;
+    position: relative;
+    border-top: 1px solid #2e2e2e;
+    border-bottom: 1px solid #2e2e2e;
+  }
+  /* --- 2. THE CENTERED VISIBLE AREA (Restricted Width) --- */
+  .jj-centered-mask {
+    /* VISIBILITY CONTROLS */
+    width: 60%; /* Only show text in the middle 60% of the parent */
+    max-width: 800px; /* Optional cap so it doesn't get too wide on giant screens */
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    /* FADE MASK: Soft edges on the constrained area */
+    mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+  }
+  /* --- 3. THE SCROLLING TRACK --- */
+  .jj-marquee-track {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    flex-shrink: 0;
+    /* EDITED: Slower Speed (25s) */
+    animation: promo-scroll 25s linear infinite;
+  }
+  /* --- CONTENT GROUPS --- */
+  .jj-content-group {
+    display: flex;
+    align-items: center;
+    /* This padding pushes the next duplicate away */
+    padding-right: 6rem; 
+  }
+  /* --- TEXT STYLING --- */
+  .jj-text-item {
+    font-size: inherit; 
+    color: inherit; 
+    font-weight: inherit;
+    white-space: nowrap;
+    margin-right: 4rem; /* Gap between statements */
+  }
+  .jj-text-item:last-child { margin-right: 0; }
+  /* --- ANIMATION --- */
+  @keyframes promo-scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); } 
+  }
+  /* --- MOBILE --- */
+  @media (max-width: 767px) {
+    /* EDITED: Slower Mobile Speed (20s) */
+    .jj-marquee-track { animation-duration: 20s; } 
+    /* Make it wider on phones so it's readable */
+    .jj-centered-mask { width: 90%; }
+    .jj-content-group { padding-right: 3rem; }
+    .jj-text-item { margin-right: 2rem; }
+  }
+</style>
+        <div class="jj-marquee-wrapper">
+          <div class="jj-centered-mask">
+            <div class="jj-marquee-track">
+              <div class="jj-content-group">
+                <span class="jj-text-item">100% Authentic Heat 🔥 Guaranteed</span>
+                <span class="jj-text-item">All Sales Are Final</span>
+                <span class="jj-text-item">Free Shipping on orders over $400</span>
+              </div>
+              <div class="jj-content-group">
+                <span class="jj-text-item">100% Authentic Heat 🔥 Guaranteed</span>
+                <span class="jj-text-item">All Sales Are Final</span>
+                <span class="jj-text-item">Free Shipping on orders over $400</span>
+              </div>
+              <div class="jj-content-group">
+                <span class="jj-text-item">100% Authentic Heat 🔥 Guaranteed</span>
+                <span class="jj-text-item">All Sales Are Final</span>
+                <span class="jj-text-item">Free Shipping on orders over $400</span>
+              </div>
+              <div class="jj-content-group">
+                <span class="jj-text-item">100% Authentic Heat 🔥 Guaranteed</span>
+                <span class="jj-text-item">All Sales Are Final</span>
+                <span class="jj-text-item">Free Shipping on orders over $400</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <div data-barba="wrapper" class="barba-wrapper">
+    <div data-barba-namespace="product" data-barba="container" class="page-content">
+      <div class="product-template-container">
+        <div class="div-block-631"></div>
+        <div class="div-block-629">
+          <div class="thumbnail-section">
+            <div class="more-image-container">
+              <div class="more-image-wrapper"><img loading="lazy" src="{{ product.featured_image | img_url: '1024x' }}" alt="{{ product.featured_image.alt }}" id="main-image" class="main-image" data-commerce-type="variation-image" srcset="{{ product.featured_image | img_url: '1920x' }} 1920w,{{ product.featured_image | img_url: '1600x' }} 1600w,{{ product.featured_image | img_url: '1366x' }} 1366w,{{ product.featured_image | img_url: '1024x' }} 1024w,{{ product.featured_image | img_url: '768x' }} 768w,{{ product.featured_image | img_url: '640x' }} 640w">
+                {% if product.variants.size > 1 and product.selected_or_first_available_variant.metafields.udesly['more-images'].size > 0 %}{%- assign setItems = product.selected_or_first_available_variant.metafields.udesly['more-images'] -%}<div class="collection-list-wrapper-2 w-dyn-list" data-commerce-type="more-images">
+                  {%- unless setItems.size == 0 -%}<div role="list" class="collection-list-3 w-dyn-items">
+                    {%- for setItem in setItems offset: 1 -%}<div role="listitem" class="collection-item-3 w-dyn-item"><img loading="lazy" src="{{ setItem.more-images }}" alt="" id="thumb-image" class="thumb-image"></div>{%- endfor -%}
+                  </div>{%- endunless -%}
+                  {%- if setItems.size == 0 -%}<div class="empty-state-5 w-dyn-empty"></div>{%- endif -%}
+                <template><div class="collection-list-wrapper-2 w-dyn-list" udesly-repeater="true" data-commerce-type="more-images">
+                  <div role="list" class="collection-list-3 w-dyn-items">
+                    <div role="listitem" class="collection-item-3 w-dyn-item"><img loading="lazy" src="{# setItem.more-images #}" alt="" id="thumb-image" class="thumb-image"></div>
+                  </div>
+                  <div class="empty-state-5 w-dyn-empty"></div>
+                </div></template></div>{% else %}{%- assign setItems = product.images -%}<div class="collection-list-wrapper-2 w-dyn-list" data-commerce-type="more-images">
+                  {%- unless setItems.size == 0 -%}<div role="list" class="collection-list-3 w-dyn-items">
+                    {%- for setItem in setItems offset: 1 -%}<div role="listitem" class="collection-item-3 w-dyn-item"><img loading="lazy" src="{{ setItem | product_img_url: '1024x' }}" alt="" id="thumb-image" class="thumb-image"></div>{%- endfor -%}
+                  </div>{%- endunless -%}
+                  {%- if setItems.size == 0 -%}<div class="empty-state-5 w-dyn-empty"></div>{%- endif -%}
+                </div>{%- endif -%}
+              </div>
+            </div>
+          </div>
+          <!-- Mobile swipe dot indicators -->
+          <div class="jj-swipe-dots" id="jj-swipe-dots"></div>
+          <div class="product-container">
+            <div class="product-descriptions">
+              {%- comment -%} — STATUS BADGE — {%- endcomment -%}
+              <div class="jj-product-status{% unless product.available %} jj-status-sold-out{% endunless %}">
+                <span class="jj-status-dot"></span>
+                <span class="jj-status-text">
+                  {%- if product.available -%}
+                    IN STOCK — SHIPS IN 1–3 DAYS
+                  {%- else -%}
+                    OUT OF STOCK — SOLD OUT
+                  {%- endif -%}
+                </span>
+              </div>
+              <h1 class="title-label producc">{{ product.title }}</h1>
+              <div class="div-block-612">
+                <div class="div-block-618">
+                  <div class="div-block-617">
+                    <h1 data-commerce-type="variation-price" class="title-label price">{{ product.price | money }}</h1>
+                  </div>
+                </div>
+              </div>
+              <div class="product-selection-coninr">
+                <p class="paragraph desp">{{ product.metafields.udesly['description'] }}</p>
+                <div class="rich-text-block-3 w-richtext">{{ product.description }}</div>
+                <div class="brand-label">
+                  <h1 class="field-label">{{ 't3d75b67' | t }}</h1>
+                  <a href="/collections/vendors?q={{ product.vendor }}" class="paragraph sfs">{{ product.vendor }}</a>
+                </div>
+                <div class="brand-label">
+                  <h1 class="field-label">{{ 't441b8cfb' | t }}</h1>
+                  <a href="#" class="paragraph sfs other">{{ 't486d0d47' | t }}</a>
+                </div>
+                <div class="brand-label des">
+                  <h1 class="field-label">{{ 'tn360d424' | t }}</h1>
+                  <p class="paragraph sfs">{{ product.vendor }}</p>
+                </div>
+                <div show-only-one="true">
+                  {%- form "product", product, data-node-type: "commerce-add-to-cart-form", class: "w-commerce-commerceaddtocartform default-state" -%}
+                    <div data-node-type="add-to-cart-option-list" class="option-list" position-id="2e9f1bc9-32d9-1788-4c9a-6b3a5ce4b912">
+                      {%- for option in product.options_with_values -%}
+                        <fieldset data-node-type="add-to-cart-option" class="option">
+                          <h1 data-node-type="heading" class="field-label asd">{{ option.name | upcase }}</h1>
+                          <select data-node-type="add-to-cart-option-select" class="select-field w-select" style="display: none;" name="{{ "option" | append: forloop.index }}">
+                            {%- render "product-options", option: option -%}
+                          </select>
+                          <div data-node-type="add-to-cart-option-pill-group" class="button-group w-commerce-commerceaddtocartoptionpillgroup" aria-label="{{ "option" | append: forloop.index  }}">
+                            {%- for value in option.values -%}
+                              {%- assign is_available = false -%}
+                              {%- for variant in product.variants -%}
+                                {%- if variant.options contains value -%}
+                                  {%- if variant.available -%}
+                                    {%- assign is_available = true -%}
+                                  {%- endif -%}
+                                {%- endif -%}
+                              {%- endfor -%}
+                              <div data-node-type="add-to-cart-option-pill" class="button-2 w-commerce-commerceaddtocartoptionpill{% unless is_available %} jj-pill-sold-out{% endunless %}" data-option-name="{{ value | handle }}">
+                                <div data-node-type="block" class="text-block-9">{{ value }}</div>
+                              </div>
+                            {%- endfor -%}
+                          </div>
+                        </fieldset>
+                      {%- endfor -%}
+                    </div>
+                    <div position-id="2e9f1bc9-32d9-1788-4c9a-6b3a5ce4b919" class="div-block-568">
+                      <input type="submit" data-node-type="commerce-add-to-cart-button" data-loading-text="{{ 'tn60b63398' | t }}" aria-busy="false" aria-haspopup="dialog" class="w-commerce-commerceaddtocartbutton add-to-cart-button" value="{{ 'tn26bdceda' | t }}">
+                    </div>
+                    <a position-id="2e9f1bc9-32d9-1788-4c9a-6b3a5ce4b91c" data-node-type="commerce-buy-now-button" aria-busy="false" aria-haspopup="false" data-default-text="Buy now" data-subscription-text="Subscribe now" style="display:none" class="w-commerce-commercebuynowbutton" href="/checkout">{{ 't71bb9a1c' | t }}</a>
+                    {%- endform -%}
+                    {%- comment -%} ── ASK A QUESTION BUTTON ── {%- endcomment -%}
+                    <a href="/pages/contact-us?product={{ product.title | url_encode }}&handle={{ product.handle }}" class="jj-ask-question-btn">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r="0.5" fill="currentColor"/></svg>
+                      Ask a Question About This Product
+                    </a>
+                  {%- render "product-variants-data" product: product -%}
+                  <div style="display:none" class="w-commerce-commerceaddtocartoutofstock out-of-stock-state" tabindex="0">
+                    <div class="text-block-476">{{ 'tn74baf853' | t }}</div>
+                  </div>
+                  <div aria-live="assertive" data-node-type="commerce-add-to-cart-error" style="display:none" class="w-commerce-commerceaddtocarterror error-state-2">
+                    <div data-node-type="commerce-add-to-cart-error" class="error-message" data-w-add-to-cart-quantity-error="Product is not available in this quantity." data-w-add-to-cart-general-error="Something went wrong when adding this item to the cart." data-w-add-to-cart-mixed-cart-error="You can’t purchase another product with a subscription." data-w-add-to-cart-buy-now-error="Something went wrong when trying to purchase this item." data-w-add-to-cart-checkout-disabled-error="Checkout is disabled on this site." data-w-add-to-cart-select-all-options-error="Please select an option in each set.">{{ 'tn1c765d0d' | t }}</div>
+                  </div>
+                </div>
+                <div class="div-block-1146">
+                  <div class="div-block-1147">
+                    <div class="item-container-elemetns"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" app="ikonik" class="ikonik-rpfp">
+                        <path d="M13.1607 4.40707C12.4466 3.9771 11.5534 3.9771 10.8393 4.40707L10.323 4.71796C9.07029 5.4723 7.66391 5.93519 6.20803 6.07235L5.88275 6.103C5.24066 6.16349 4.75 6.70255 4.75 7.34749V8.99137C4.75 11.77 5.87808 14.4296 7.87584 16.3608L11.1312 19.5078C11.6157 19.9762 12.3843 19.9762 12.8688 19.5078L16.1242 16.3608C18.1219 14.4296 19.25 11.77 19.25 8.99137V7.34749C19.25 6.70255 18.7593 6.16349 18.1172 6.103L17.792 6.07235C16.3361 5.93519 14.9297 5.4723 13.677 4.71796L13.1607 4.40707Z" fill="currentColor" app="ikonik" class="path-ea61x"></path>
+                      </svg>
+                      <div option:text="" class="text-block-777">Free Shipping $400+</div>
+                    </div>
+                    <div class="item-container-elemetns"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" app="ikonik" class="ikonik-zyx9p">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 9.5C5 5.63401 8.13401 2.5 12 2.5C15.866 2.5 19 5.63401 19 9.5C19 10.8722 18.6052 12.1522 17.9229 13.2325L20.6495 17.9551C20.7967 18.2101 20.7812 18.5276 20.6097 18.767C20.4382 19.0063 20.1425 19.1231 19.8537 19.0657L17.2376 18.5455L16.3801 21.0713C16.2854 21.35 16.0364 21.5477 15.7434 21.5765C15.4504 21.6054 15.1676 21.4601 15.0204 21.2051L12.3002 16.4937C12.2007 16.4979 12.1006 16.5 12 16.5C11.8994 16.5 11.7993 16.4979 11.6998 16.4937L8.97965 21.2051C8.83258 21.4599 8.5502 21.6051 8.25745 21.5766C7.96471 21.5481 7.71564 21.3511 7.62047 21.0728L6.75854 18.5522L4.14467 19.066C3.85606 19.1228 3.56093 19.0056 3.38988 18.7663C3.21882 18.527 3.20342 18.2099 3.35048 17.9551L6.07708 13.2325C5.39483 12.1522 5 10.8722 5 9.5ZM7.08592 14.4852C7.91817 15.3056 8.95488 15.9192 10.1127 16.2426L8.50579 19.0259L7.96599 17.4473C7.84463 17.0924 7.47972 16.8817 7.11167 16.9541L5.4747 17.2759L7.08592 14.4852ZM13.8873 16.2426L15.4918 19.0217L16.0287 17.4406C16.1497 17.0842 16.516 16.8727 16.8851 16.9461L18.5229 17.2717L16.9141 14.4852C16.0818 15.3056 15.0451 15.9192 13.8873 16.2426ZM12 6.25C10.2051 6.25 8.75 7.70507 8.75 9.5C8.75 11.2949 10.2051 12.75 12 12.75C13.7949 12.75 15.25 11.2949 15.25 9.5C15.25 7.70507 13.7949 6.25 12 6.25Z" fill="currentColor" app="ikonik" class="path-6fks5"></path>
+                        <path d="M10.25 9.5C10.25 8.5335 11.0335 7.75 12 7.75C12.9665 7.75 13.75 8.5335 13.75 9.5C13.75 10.4665 12.9665 11.25 12 11.25C11.0335 11.25 10.25 10.4665 10.25 9.5Z" fill="currentColor" app="ikonik" class="path-v5uk8"></path>
+                      </svg>
+                      <div class="text-block-777">{{ 't671fed31' | t }}</div>
+                    </div>
+                    <div class="item-container-elemetns"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" app="ikonik" class="ikonik-3bzg1">
+                        <defs app="ikonik">
+                          <clipPath app="ikonik">
+                            <rect width="24" height="24" fill="currentColor" app="ikonik" class="rect-h9e1b"></rect>
+                          </clipPath>
+                        </defs>
+                        <g clip-path="url(#clip0_405_120)" app="ikonik">
+                          <path d="M20.121 18.429C20.121 18.7125 19.9298 18.9165 19.6545 18.9165C19.371 18.9165 19.188 18.6998 19.188 18.429C19.188 18.1583 19.371 17.9415 19.6545 17.9415C19.9298 17.9415 20.121 18.1583 20.121 18.429ZM7.17077 17.9415C6.87452 17.9415 6.70427 18.1583 6.70427 18.429C6.70427 18.6998 6.87527 18.9165 7.17077 18.9165C7.44152 18.9165 7.62452 18.7125 7.62452 18.429C7.62002 18.1583 7.44152 17.9415 7.17077 17.9415ZM12.0668 17.9295C11.8418 17.9295 11.7038 18.075 11.6708 18.2918H12.4665C12.429 18.054 12.2835 17.9295 12.0668 17.9295ZM16.5585 17.9415C16.275 17.9415 16.1048 18.1583 16.1048 18.429C16.1048 18.6998 16.2758 18.9165 16.5585 18.9165C16.842 18.9165 17.025 18.7125 17.025 18.429C17.025 18.1583 16.8413 17.9415 16.5585 17.9415ZM20.9708 19.029C20.9708 19.0418 20.9835 19.05 20.9835 19.0748C20.9835 19.0875 20.9708 19.0958 20.9708 19.1205C20.958 19.1333 20.958 19.1415 20.9498 19.1535C20.937 19.1663 20.9288 19.1745 20.904 19.1745C20.8913 19.1873 20.883 19.1873 20.8583 19.1873C20.8455 19.1873 20.8373 19.1873 20.8125 19.1745C20.7998 19.1745 20.7915 19.1618 20.7795 19.1535C20.7668 19.1408 20.7585 19.1325 20.7585 19.1205C20.7458 19.0995 20.7458 19.0875 20.7458 19.0748C20.7458 19.0538 20.7458 19.0418 20.7585 19.029C20.7585 19.008 20.7713 18.996 20.7795 18.9833C20.7923 18.9705 20.8005 18.9705 20.8125 18.9623C20.8335 18.9495 20.8455 18.9495 20.8583 18.9495C20.8793 18.9495 20.8913 18.9495 20.904 18.9623C20.925 18.9743 20.937 18.9743 20.9498 18.9833C20.9625 18.9923 20.958 19.008 20.9708 19.029ZM20.8793 19.0875C20.9003 19.0875 20.9003 19.0748 20.9123 19.0748C20.925 19.062 20.925 19.0538 20.925 19.0418C20.925 19.0298 20.925 19.0208 20.9123 19.0088C20.9003 19.0088 20.8913 18.996 20.8665 18.996H20.7998V19.1415H20.8328V19.083H20.8455L20.8913 19.1415H20.9243L20.8793 19.0875ZM24 4.7085V19.3755C24 20.4795 23.1045 21.3758 21.9998 21.3758H1.99952C0.895517 21.3758 -0.000732422 20.4803 -0.000732422 19.3755V4.7085C-0.000732422 3.6045 0.894767 2.70825 1.99952 2.70825H21.9998C23.1038 2.70825 24 3.60375 24 4.7085V4.7085ZM2.66702 10.5248C2.66702 13.7123 5.25452 16.2953 8.43752 16.2953C9.57077 16.2953 10.683 15.9533 11.625 15.333C8.58752 12.8625 8.60852 8.19975 11.625 5.7285C10.683 5.10375 9.57077 4.76625 8.43752 4.76625C5.25452 4.7625 2.66702 7.34925 2.66702 10.5248V10.5248ZM12 15.0585C14.9378 12.7665 14.925 8.30025 12 5.99625C9.07502 8.30025 9.06227 12.771 12 15.0585ZM6.07052 18.2378C6.07052 17.8755 5.83277 17.6378 5.45777 17.625C5.26577 17.625 5.06177 17.6835 4.92452 17.8958C4.82477 17.7248 4.65377 17.625 4.41602 17.625C4.25777 17.625 4.09952 17.6835 3.97427 17.85V17.667H3.63302V19.1963H3.97427C3.97427 18.4088 3.87002 17.9378 4.34927 17.9378C4.77452 17.9378 4.69127 18.363 4.69127 19.1963H5.02052C5.02052 18.4335 4.91627 17.9378 5.39552 17.9378C5.82077 17.9378 5.73677 18.3548 5.73677 19.1963H6.07877V18.2378H6.07052ZM7.94177 17.667H7.61252V17.85C7.50002 17.7128 7.34177 17.625 7.12502 17.625C6.69602 17.625 6.36677 17.967 6.36677 18.429C6.36677 18.8955 6.69602 19.233 7.12502 19.233C7.34177 19.233 7.50002 19.1535 7.61252 19.008V19.2H7.94177V17.667ZM9.62927 18.7335C9.62927 18.1088 8.67527 18.3915 8.67527 18.0998C8.67527 17.862 9.17102 17.9003 9.44627 18.054L9.58352 17.7833C9.19202 17.529 8.32502 17.5335 8.32502 18.1253C8.32502 18.7208 9.27902 18.471 9.27902 18.75C9.27902 19.0125 8.71652 18.9915 8.41652 18.783L8.27102 19.0455C8.73752 19.362 9.62927 19.2953 9.62927 18.7328V18.7335ZM11.1045 19.1205L11.013 18.837C10.8548 18.924 10.5045 19.02 10.5045 18.666V17.9745H11.0505V17.6663H10.5045V17.1998H10.1625V17.6663H9.84602V17.9708H10.1625V18.6668C10.1625 19.4003 10.8833 19.2668 11.1045 19.1205V19.1205ZM11.658 18.5625H12.804C12.804 17.8875 12.4958 17.6205 12.0788 17.6205C11.637 17.6205 11.3205 17.9498 11.3205 18.4245C11.3205 19.2788 12.2625 19.4205 12.729 19.0163L12.5708 18.7665C12.246 19.0335 11.754 19.008 11.658 18.5625V18.5625ZM14.121 17.667C13.9298 17.5838 13.638 17.592 13.488 17.85V17.667H13.146V19.1963H13.488V18.3338C13.488 17.85 13.884 17.913 14.0213 17.9835L14.121 17.667ZM14.5628 18.429C14.5628 17.9535 15.0465 17.7998 15.4253 18.0788L15.5835 17.808C15.0998 17.4293 14.2208 17.637 14.2208 18.4328C14.2208 19.2578 15.1538 19.4243 15.5835 19.0575L15.4253 18.7868C15.042 19.0575 14.5628 18.8955 14.5628 18.4283V18.429ZM17.3415 17.667H16.9995V17.85C16.6538 17.3918 15.7538 17.6505 15.7538 18.429C15.7538 19.2293 16.6868 19.458 16.9995 19.008V19.2H17.3415V17.667ZM18.7455 17.667C18.6458 17.6168 18.2873 17.5463 18.1125 17.85V17.667H17.7833V19.1963H18.1125V18.3338C18.1125 17.8755 18.4875 17.9048 18.6458 17.9835L18.7455 17.667ZM20.4248 17.046H20.0955V17.85C19.7535 17.3963 18.8498 17.6378 18.8498 18.429C18.8498 19.2375 19.7873 19.4535 20.0955 19.008V19.2H20.4248V17.046ZM20.742 13.917V14.109H20.775V13.917H20.8538V13.884H20.6618V13.917H20.742ZM21.0165 19.0748C21.0165 19.0538 21.0165 19.029 21.0045 19.008C20.9918 18.9953 20.9835 18.975 20.9715 18.9623C20.9595 18.9495 20.9385 18.9413 20.9258 18.9293C20.9048 18.9293 20.88 18.9165 20.859 18.9165C20.8463 18.9165 20.826 18.9293 20.8005 18.9293C20.7795 18.942 20.7675 18.9503 20.7548 18.9623C20.7338 18.9743 20.7218 18.9953 20.7218 19.008C20.709 19.029 20.709 19.0538 20.709 19.0748C20.709 19.0875 20.709 19.1078 20.7218 19.1333C20.7218 19.146 20.7345 19.1663 20.7548 19.179C20.7668 19.1918 20.7758 19.2 20.8005 19.212C20.8215 19.224 20.8463 19.224 20.859 19.224C20.88 19.224 20.9048 19.224 20.9258 19.212C20.9385 19.1993 20.9588 19.191 20.9715 19.179C20.9843 19.167 20.9925 19.146 21.0045 19.1333C21.0165 19.1085 21.0165 19.0875 21.0165 19.0748ZM21.15 13.8795H21.0915L21.0248 14.025L20.958 13.8795H20.8995V14.1045H20.9325V13.9335L20.9993 14.079H21.045L21.1035 13.9335V14.1045H21.1493L21.15 13.8795ZM21.333 10.5248C21.333 7.34925 18.7455 4.7625 15.5625 4.7625C14.4293 4.7625 13.317 5.10375 12.375 5.72475C15.3795 8.196 15.4253 12.8708 12.375 15.3293C13.317 15.954 14.4375 16.2915 15.5625 16.2915C18.7455 16.296 21.333 13.7123 21.333 10.5248V10.5248Z" fill="currentColor" app="ikonik" class="path-t89ku"></path>
+                        </g>
+                      </svg>
+                      <div class="text-block-777">{{ 'tn69ab1c31' | t }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="desciption-contaer">
+                <div data-current="Tab 1" data-easing="ease" data-duration-in="300" data-duration-out="100" class="tabs w-tabs">
+                  <div class="tabs-menu w-tab-menu">
+                    <a data-w-tab="Tab 1" class="tab-link-tab-1 w-inline-block w-tab-link w--current">
+                      <div>{{ 'tn360d424' | t }}</div>
+                    </a>
+                    <a data-w-tab="Tab 2" class="tab-link-tab-2 w-inline-block w-tab-link">
+                      <div class="text-block-481">{{ 't3d75b67' | t }}</div>
+                    </a>
+                  </div>
+                  <div class="w-tab-content">
+                    <div data-w-tab="Tab 1" class="tab-pane-tab-1 w-tab-pane w--tab-active">
+                      <p class="paragraph jf">{{ 't42b90d7f' | t }}</p>
+                      <p class="paragraph">{{ 'tn5286fc08' | t }}</p>
+                    </div>
+                    <div data-w-tab="Tab 2" class="tab-pane-tab-2 w-tab-pane">
+                      <div class="w-dyn-list">
+                        {%- unless items_length == 0 -%}<div role="list" class="w-dyn-items">
+                          <div role="listitem" class="w-dyn-item">
+                            <p class="paragraph">{{ 'tn5286fc08' | t }}</p><img loading="lazy" src="https://d3e54v103j8qbb.cloudfront.net/plugins/Basic/assets/placeholder.60f9b1840c.svg" alt="" class="image-11">
+                            <a href="#" class="link-5">{{ 'tnb66e630' | t }}</a>
+                          </div>
+                        </div>{%- endunless -%}
+                        {%- if items_length == 0 -%}<div class="w-dyn-empty">
+                          <div>{{ 't3d503d2b' | t }}</div>
+                        </div>{%- endif -%}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="new-similar-items">
+        <h1 class="title-label product">{{ 'tn40a803c7' | t }}</h1>
+        {%- if settings.home_collection != blank -%}{%- render "markup_for_home_collection" -%}{%- else -%}{%- render "products_where_category_idin_currentcategory_sorted_by_created_on" -%}{%- endif -%}
+      </div>
+      {%- section 'footer' -%}
+
+      <!-- ── LIGHTBOX OVERLAY ────────────────────────────────────── -->
+      <div id="jj-lightbox" role="dialog" aria-modal="true" aria-label="Image lightbox">
+        <button class="jj-lb-close" id="jj-lb-close" aria-label="Close lightbox">&times;</button>
+        <button class="jj-lb-arrow" id="jj-lb-prev" aria-label="Previous image">&#8592;</button>
+        <div class="jj-lb-img-wrap">
+          <img id="jj-lb-img" src="" alt="Product image">
+        </div>
+        <button class="jj-lb-arrow" id="jj-lb-next" aria-label="Next image">&#8594;</button>
+        <div class="jj-lb-counter" id="jj-lb-counter"></div>
+      </div>
+    </div>
+  </div>
+  <script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=692e9588093fdf59aecf42c9" type="text/javascript" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+  <script src="{{ 'webflow.js' | asset_url }}" type="text/javascript"></script>
+  <script src="https://unpkg.com/@barba/core"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@finsweet/cms-library@1/cms-library.js"></script>
+  <style>
+  /* Force hide the native Webflow error state */
+  .w-commerce-commerceaddtocarterrorstate { display: none !important; }
+
+  /* ── PRODUCT PAGE LAYOUT — DESKTOP STICKY ───────────────────── */
+  .div-block-629 {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 4rem !important;
+    align-items: start !important;
+    padding: 2rem 4rem !important;
+    box-sizing: border-box !important;
+    max-width: 100% !important;
+  }
+
+  /* LEFT: Scrollable image column */
+  .thumbnail-section {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    overflow-y: auto !important;
+    max-height: calc(100vh - 160px) !important;
+    scroll-snap-type: y mandatory !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
+  .thumbnail-section::-webkit-scrollbar { display: none !important; }
+
+  /* Main + each thumb as a stacked image in the scroll column */
+  .more-image-wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    width: 100% !important;
+  }
+
+  #main-image {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1 !important;
+    object-fit: cover !important;
+    scroll-snap-align: start !important;
+    cursor: zoom-in !important;
+    display: block !important;
+  }
+
+  .collection-list-3 {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .collection-item-3 {
+    width: 100% !important;
+    flex-shrink: 0 !important;
+    scroll-snap-align: start !important;
+  }
+
+  #thumb-image, .thumb-image {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1 !important;
+    object-fit: cover !important;
+    cursor: zoom-in !important;
+    display: block !important;
+    transition: opacity 0.2s ease !important;
+  }
+
+  #thumb-image:hover, .thumb-image:hover { opacity: 0.8 !important; }
+
+  /* RIGHT: Sticky product info */
+  .product-container {
+    position: sticky !important;
+    top: 120px !important;
+    max-height: calc(100vh - 140px) !important;
+    overflow-y: auto !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    padding-bottom: 2rem !important;
+  }
+  .product-container::-webkit-scrollbar { display: none !important; }
+
+  /* Prevent long product titles from breaking layout */
+  .title-label.producc {
+    white-space: normal !important;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+    line-height: 1.2;
+  }
+
+  /* ── ASK A QUESTION BUTTON ───────────────────────────────────── */
+  .jj-ask-question-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin-top: 12px;
+    padding: 14px 24px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.55);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+    box-sizing: border-box;
+  }
+
+  .jj-ask-question-btn:hover {
+    border-color: rgba(255,255,255,0.45);
+    color: rgba(255,255,255,0.9);
+  }
+
+  /* ── LIGHTBOX ────────────────────────────────────────────────── */
+  #jj-lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0,0,0,0.97);
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  #jj-lightbox.open {
+    display: flex;
+    animation: jj-lb-fadein 0.2s ease;
+  }
+
+  @keyframes jj-lb-fadein {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .jj-lb-close {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.6);
+    font-size: 28px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 8px;
+    transition: color 0.15s ease;
+    z-index: 10;
+  }
+  .jj-lb-close:hover { color: #fff; }
+
+  .jj-lb-img-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  #jj-lb-img {
+    max-width: 90vw;
+    max-height: 85vh;
+    object-fit: contain;
+    user-select: none;
+    transition: transform 0.1s ease;
+    cursor: zoom-in;
+  }
+
+  #jj-lb-img.zoomed {
+    cursor: move;
+  }
+
+  .jj-lb-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.6);
+    font-size: 20px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    z-index: 10;
+  }
+
+  .jj-lb-arrow:hover {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+  }
+
+  #jj-lb-prev { left: 20px; }
+  #jj-lb-next { right: 20px; }
+
+  .jj-lb-counter {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.3);
+  }
+
+  /* ── MOBILE — HORIZONTAL SWIPE GALLERY ──────────────────────── */
+  @media (max-width: 991px) {
+    .div-block-629 {
+      display: flex !important;
+      flex-direction: column !important;
+      padding: 0 !important;
+      gap: 0 !important;
+    }
+
+    .thumbnail-section {
+      max-height: none !important;
+      overflow: visible !important;
+    }
+
+    .more-image-wrapper {
+      display: flex !important;
+      flex-direction: row !important;
+      overflow-x: auto !important;
+      overflow-y: hidden !important;
+      scroll-snap-type: x mandatory !important;
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+      gap: 0 !important;
+      padding: 0 !important;
+      width: 100% !important;
+    }
+    .more-image-wrapper::-webkit-scrollbar { display: none !important; }
+
+    #main-image {
+      min-width: 100vw !important;
+      max-width: 100vw !important;
+      width: 100vw !important;
+      height: 100vw !important;
+      aspect-ratio: 1 / 1 !important;
+      object-fit: cover !important;
+      scroll-snap-align: center !important;
+      margin: 0 !important;
+      flex-shrink: 0 !important;
+    }
+
+    /* Stack thumbs inline with main for the mobile swipe row */
+    .collection-list-3 {
+      display: flex !important;
+      flex-direction: row !important;
+      gap: 0 !important;
+    }
+
+    .collection-item-3 {
+      min-width: 100vw !important;
+      max-width: 100vw !important;
+      width: 100vw !important;
+      height: 100vw !important;
+      flex-shrink: 0 !important;
+      scroll-snap-align: center !important;
+    }
+
+    #thumb-image, .thumb-image {
+      width: 100% !important;
+      height: 100% !important;
+      aspect-ratio: 1 / 1 !important;
+      object-fit: cover !important;
+    }
+
+    .product-container {
+      position: static !important;
+      max-height: none !important;
+      overflow: visible !important;
+      padding: 1.5rem 2rem !important;
+    }
+
+    /* Dot indicators */
+    .jj-swipe-dots {
+      display: flex !important;
+    }
+
+    /* Lightbox arrows hide on mobile (swipe instead) */
+    .jj-lb-arrow { display: none !important; }
+  }
+
+  /* Dot indicators (hidden on desktop) */
+  .jj-swipe-dots {
+    display: none;
+    justify-content: center;
+    gap: 6px;
+    padding: 14px 0 8px;
+    width: 100%;
+  }
+
+  .jj-swipe-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    transition: background 0.2s ease, transform 0.2s ease;
+    cursor: pointer;
+  }
+
+  .jj-swipe-dot.active {
+    background: rgba(255,255,255,0.9);
+    transform: scale(1.3);
+  }
+</style>
+  <script>
+  // --- 1. SCROLLBAR ENGINE ---
+  function initCustomScroll() {
+    const containers = document.querySelectorAll('.contents-of-scroll');
+    containers.forEach(container => {
+      let track = null; let bar = null; let parent = container.parentElement;
+      for (let i = 0; i < 6; i++) {
+        if (parent) {
+          track = parent.querySelector('.track-for-scrolly');
+          if (track) { bar = track.querySelector('.bar-of-scrolly') || parent.querySelector('.bar-of-scrolly'); break; }
+          parent = parent.parentElement;
+        }
+      }
+      if (track && bar) {
+        let isDragging = false; let startX, startLeft;
+        const updateBar = () => {
+          if (isDragging) return; 
+          const scrollLeft = container.scrollLeft;
+          const maxScroll = container.scrollWidth - container.clientWidth;
+          if (maxScroll <= 0) return;
+          const scrollPercent = scrollLeft / maxScroll;
+          const maxMove = track.clientWidth - bar.clientWidth;
+          bar.style.transform = `translateX(${scrollPercent * maxMove}px)`;
+        };
+        const onMouseDown = (e) => {
+          isDragging = true; startX = e.pageX;
+          const matrix = new DOMMatrix(window.getComputedStyle(bar).getPropertyValue('transform'));
+          startLeft = matrix.m41; 
+          document.body.style.userSelect = 'none'; bar.style.cursor = 'grabbing';
+          document.addEventListener('mousemove', onMouseMove);
+          document.addEventListener('mouseup', onMouseUp);
+        };
+        const onMouseMove = (e) => {
+          if (!isDragging) return;
+          const maxMove = track.clientWidth - bar.clientWidth;
+          let newLeft = startLeft + (e.pageX - startX);
+          if (newLeft < 0) newLeft = 0; if (newLeft > maxMove) newLeft = maxMove;
+          bar.style.transform = `translateX(${newLeft}px)`;
+          container.scrollLeft = (newLeft / maxMove) * (container.scrollWidth - container.clientWidth);
+        };
+        const onMouseUp = () => {
+          isDragging = false; document.body.style.userSelect = ''; bar.style.cursor = 'pointer';
+          document.removeEventListener('mousemove', onMouseMove);
+          document.removeEventListener('mouseup', onMouseUp);
+        };
+        container.addEventListener('scroll', updateBar);
+        window.addEventListener('resize', updateBar);
+        bar.addEventListener('mousedown', onMouseDown);
+        setTimeout(updateBar, 100);
+      }
+    });
+  }
+</script>
+<script>
+  // ── PRODUCT PAGE: GALLERY ENGINE v2 (LIGHTBOX + DOTS + SWIPE) ────
+  (function() {
+    // Collect all product images into a flat ordered array
+    function getAllImages() {
+      var imgs = [];
+      var mainImg = document.getElementById('main-image');
+      if (mainImg) imgs.push(mainImg.src.replace(/_(\d+x|\d+x\d+)(\.[a-z]+)$/i, '_1920x$2'));
+      document.querySelectorAll('.thumb-image').forEach(function(img) {
+        var src = img.src.replace(/_(\d+x|\d+x\d+)(\.[a-z]+)$/i, '_1920x$2');
+        if (src && !imgs.includes(src)) imgs.push(src);
+      });
+      return imgs;
+    }
+
+    // ── LIGHTBOX ENGINE ────────────────────────────────────────────
+    var lb = document.getElementById('jj-lightbox');
+    var lbImg = document.getElementById('jj-lb-img');
+    var lbClose = document.getElementById('jj-lb-close');
+    var lbPrev = document.getElementById('jj-lb-prev');
+    var lbNext = document.getElementById('jj-lb-next');
+    var lbCounter = document.getElementById('jj-lb-counter');
+    var lbImages = [];
+    var lbIndex = 0;
+    var lbZoomed = false;
+    var lbScale = 1;
+    var lbTouchStartX = 0;
+
+    function openLightbox(clickedSrc) {
+      lbImages = getAllImages();
+      // Find the index of the clicked image
+      var norm = clickedSrc.replace(/_(\d+x|\d+x\d+)(\.[a-z]+)$/i, '_1920x$2');
+      lbIndex = lbImages.indexOf(norm);
+      if (lbIndex < 0) lbIndex = 0;
+      showLbImage();
+      lb.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      // Show/hide arrows based on image count
+      var hasMultiple = lbImages.length > 1;
+      if (lbPrev) lbPrev.style.display = hasMultiple ? '' : 'none';
+      if (lbNext) lbNext.style.display = hasMultiple ? '' : 'none';
+    }
+
+    function closeLightbox() {
+      lb.classList.remove('open');
+      document.body.style.overflow = '';
+      resetZoom();
+    }
+
+    function showLbImage() {
+      if (!lbImages.length) return;
+      lbImg.src = lbImages[lbIndex];
+      if (lbCounter) lbCounter.textContent = lbImages.length > 1 ? (lbIndex + 1) + ' / ' + lbImages.length : '';
+      resetZoom();
+    }
+
+    function resetZoom() {
+      lbZoomed = false;
+      lbScale = 1;
+      if (lbImg) {
+        lbImg.style.transform = 'scale(1) translate(0,0)';
+        lbImg.classList.remove('zoomed');
+        lbImg.style.cursor = 'zoom-in';
+      }
+    }
+
+    // Trigger lightbox from clicking any product image
+    document.addEventListener('click', function(e) {
+      var target = e.target;
+      if (!target) return;
+      if (target.id === 'main-image' || target.classList.contains('thumb-image') || target.closest('.collection-item-3')) {
+        var img = target.tagName === 'IMG' ? target : target.querySelector('img');
+        if (img) {
+          e.preventDefault();
+          openLightbox(img.src);
+        }
+      }
+    });
+
+    // Close on backdrop click
+    if (lb) lb.addEventListener('click', function(e) {
+      if (e.target === lb) closeLightbox();
+    });
+    if (lbClose) lbClose.addEventListener('click', closeLightbox);
+
+    // Arrow nav
+    if (lbPrev) lbPrev.addEventListener('click', function(e) {
+      e.stopPropagation();
+      lbIndex = (lbIndex - 1 + lbImages.length) % lbImages.length;
+      showLbImage();
+    });
+    if (lbNext) lbNext.addEventListener('click', function(e) {
+      e.stopPropagation();
+      lbIndex = (lbIndex + 1) % lbImages.length;
+      showLbImage();
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', function(e) {
+      if (!lb || !lb.classList.contains('open')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') { lbIndex = (lbIndex - 1 + lbImages.length) % lbImages.length; showLbImage(); }
+      if (e.key === 'ArrowRight') { lbIndex = (lbIndex + 1) % lbImages.length; showLbImage(); }
+    });
+
+    // Touch swipe inside lightbox
+    if (lb) {
+      lb.addEventListener('touchstart', function(e) { lbTouchStartX = e.touches[0].clientX; }, {passive: true});
+      lb.addEventListener('touchend', function(e) {
+        var dx = e.changedTouches[0].clientX - lbTouchStartX;
+        if (Math.abs(dx) > 50 && lbImages.length > 1) {
+          if (dx < 0) { lbIndex = (lbIndex + 1) % lbImages.length; }
+          else { lbIndex = (lbIndex - 1 + lbImages.length) % lbImages.length; }
+          showLbImage();
+        }
+      }, {passive: true});
+    }
+
+    // Single-image: hover zoom following mouse
+    var lbTranslateX = 0, lbTranslateY = 0;
+    if (lbImg) {
+      lbImg.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (!lbZoomed) {
+          lbZoomed = true;
+          lbScale = 2.5;
+          lbImg.classList.add('zoomed');
+          lbImg.style.cursor = 'move';
+          lbImg.style.transition = 'transform 0.2s ease';
+        } else {
+          resetZoom();
+        }
+      });
+
+      // Mouse follow when zoomed
+      lbImg.addEventListener('mousemove', function(e) {
+        if (!lbZoomed) return;
+        var rect = lbImg.getBoundingClientRect();
+        var cx = (e.clientX - rect.left) / rect.width - 0.5;
+        var cy = (e.clientY - rect.top) / rect.height - 0.5;
+        lbTranslateX = -cx * rect.width * (lbScale - 1) * 0.5;
+        lbTranslateY = -cy * rect.height * (lbScale - 1) * 0.5;
+        lbImg.style.transform = 'scale(' + lbScale + ') translate(' + lbTranslateX + 'px,' + lbTranslateY + 'px)';
+        lbImg.style.transition = 'none';
+      });
+    }
+
+    // ── MOBILE DOT INDICATORS ──────────────────────────────────────
+    function initDots() {
+      var dotsContainer = document.getElementById('jj-swipe-dots');
+      if (!dotsContainer) return;
+      var wrapper = document.querySelector('.more-image-wrapper');
+      if (!wrapper) return;
+
+      var imgs = wrapper.querySelectorAll('img');
+      if (imgs.length < 2) return;
+
+      // Build dots
+      dotsContainer.innerHTML = '';
+      imgs.forEach(function(img, i) {
+        var dot = document.createElement('div');
+        dot.className = 'jj-swipe-dot' + (i === 0 ? ' active' : '');
+        dot.addEventListener('click', function() {
+          img.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        });
+        dotsContainer.appendChild(dot);
+      });
+
+      // Update dots on scroll
+      wrapper.addEventListener('scroll', function() {
+        var scrollLeft = wrapper.scrollLeft;
+        var itemWidth = wrapper.offsetWidth;
+        var activeIndex = Math.round(scrollLeft / itemWidth);
+        dotsContainer.querySelectorAll('.jj-swipe-dot').forEach(function(d, i) {
+          d.classList.toggle('active', i === activeIndex);
+        });
+      }, {passive: true});
+    }
+
+    // ── CURSOR LOGIC ───────────────────────────────────────────────
+    function initCursor() {
+      var tricksCursor = document.querySelector('.cursor');
+      if (tricksCursor) {
+        if (window.cursorFunc) window.removeEventListener('mousemove', window.cursorFunc);
+        window.cursorFunc = function(e) {
+          tricksCursor.style.top = e.clientY + 'px';
+          tricksCursor.style.left = e.clientX + 'px';
+        };
+        window.addEventListener('mousemove', window.cursorFunc);
+      }
+    }
+
+    // ── CART ERROR OBSERVER ────────────────────────────────────────
+    function initCartObserver() {
+      var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(m) {
+          if (m.target.classList.contains('w-commerce-commerceaddtocarterrorstate') && m.target.style.display !== 'none') {
+            m.target.style.display = 'none';
+          }
+        });
+      });
+      document.querySelectorAll('.w-commerce-commerceaddtocarterrorstate').forEach(function(el) {
+        observer.observe(el, { attributes: true, attributeFilter: ['style'] });
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      initDots();
+      initCursor();
+      initCartObserver();
+    });
+  })();
+</script>
+
+{{ 'udesly-shopify.min.js' | asset_url | script_tag }}

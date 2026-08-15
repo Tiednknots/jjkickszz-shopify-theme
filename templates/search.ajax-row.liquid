@@ -1,0 +1,33 @@
+{% layout none %}
+{% paginate search.results by 250 %}
+  {%- if search.performed and search.results_count > 0 -%}
+    {%- for item in search.results -%}
+      {%- if item.object_type == 'product' -%}
+        {%- if item.handle == 'shipping-insurance' or item.title contains 'Insurance' -%}{%- continue -%}{%- endif -%}
+        <div class="search-result-item" data-vendor="{{ item.vendor | escape }}">
+          <div class="search-result-image-wrap">
+            <img class="search-result-image" loading="lazy" src="{{ item.featured_image | img_url: '400x' }}" alt="{{ item.featured_image.alt | default: item.title }}">
+          </div>
+          <div class="search-result-info">
+            <div class="search-result-meta-top">
+              <div class="search-result-vendor">{{ item.vendor }}</div>
+              <h3 class="search-result-title">{{ item.title }}</h3>
+              <div class="search-result-desc">{{ item.description | strip_html | truncate: 120 }}</div>
+              <div class="search-result-price">{{ item.price | money }}</div>
+            </div>
+            <div class="search-result-actions">
+              <a href="{{ item.url }}" class="search-btn search-btn-view">View</a>
+              <form action="/cart/add" method="post" enctype="multipart/form-data" style="flex:1; display:flex; margin:0; padding:0;">
+                <input type="hidden" name="id" value="{{ item.variants.first.id }}">
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" class="search-btn search-btn-cart" {% unless item.available %}disabled style="opacity:0.5; cursor:not-allowed;"{% endunless %}>
+                  {% if item.available %}Add to Cart{% else %}Sold Out{% endif %}</button>
+              </form>
+            </div>
+          </div>
+          {%- capture _jj_meta -%}{{ item.vendor }}|{{ item.product_type }}|{{ item.tags | join: "|" }}|{{ item.price | money_without_trailing_zeros }}|{{ item.price_min | money_without_trailing_zeros }}|{{ item.price_max | money_without_trailing_zeros }}{%- for _v in item.variants -%}|{{ _v.title }}{%- endfor -%}{%- for _opt in item.options_with_values -%}{%- for _val in _opt.values -%}|{{ _val }}{%- endfor -%}{%- endfor -%}{%- endcapture -%}<span class="jj-search-meta" aria-hidden="true" style="display:none;position:absolute;width:1px;height:1px;overflow:hidden;">{{ _jj_meta }}</span>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+{% endpaginate %}

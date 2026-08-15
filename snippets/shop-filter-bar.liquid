@@ -1,0 +1,901 @@
+<!-- ============================================================
+     THE VAULT — INLINE SHOP FILTER BAR
+     ============================================================ -->
+<style>
+  /* Global Sticky & Stacking Context overrides for JJKICKS Storefront */
+  .navbar {
+    z-index: 1001 !important;
+  }
+  .white-section.menu {
+    z-index: 998 !important;
+  }
+  .filter-contents {
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    top: calc(10vh + 60px) !important;
+    z-index: 999 !important;
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  @media (max-width: 767px) {
+    .navbar {
+      height: 70px !important;
+      min-height: 70px !important;
+      z-index: 1001 !important;
+    }
+
+    .white-section.menu {
+      margin-top: 70px !important;
+      top: 70px !important;
+      z-index: 998 !important;
+      position: -webkit-sticky !important;
+      position: sticky !important;
+    }
+
+    .filter-contents {
+      position: -webkit-sticky !important;
+      position: sticky !important;
+      top: 114px !important;
+      z-index: 999 !important;
+      background: #0b0b0b;
+    }
+  }
+
+  /* ── FILTER BAR WRAPPER ──────────────────────────────────────── */
+  .jj-filter-wrap {
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+    background: #0b0b0b;
+    border-top: 1px solid #2e2e2e;
+    border-bottom: 1px solid #2e2e2e;
+    margin: 0 0 24px 0;
+    z-index: 20;
+  }
+
+  .jj-subtle-filter-bar {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 4rem;
+    height: 44px;
+    font-family: 'Inter', sans-serif;
+    position: relative;
+    gap: 0;
+  }
+
+  /* ── LEFT (search) ───────────────────────────────────────────── */
+  .jj-filter-left {
+    display: flex;
+    align-items: center;
+    flex: 1 1 auto;
+    min-width: 0;
+    gap: 12px;
+  }
+
+  /* ── DESKTOP SEARCH ──────────────────────────────────────────── */
+  .jj-search-wrap {
+    display: flex;
+    align-items: center;
+    position: relative;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .jj-search-icon-static {
+    position: absolute;
+    left: 0;
+    color: rgba(255,255,255,0.3);
+    pointer-events: none;
+    flex-shrink: 0;
+  }
+
+  .jj-search-desktop-input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+    padding: 4px 8px 4px 20px;
+    color: #fff;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+    transition: border-color 0.2s ease;
+  }
+
+  .jj-search-desktop-input::placeholder { color: rgba(255,255,255,0.28); }
+  .jj-search-desktop-input:focus { border-bottom-color: #c60000; }
+
+  /* ── DIVIDER ─────────────────────────────────────────────────── */
+  .jj-inline-divider {
+    width: 1px;
+    height: 16px;
+    background: rgba(255,255,255,0.1);
+    flex-shrink: 0;
+    margin: 0 14px;
+  }
+
+  /* ── RIGHT (brand + controls) ────────────────────────────────── */
+  .jj-filter-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+  }
+
+  /* ── BRAND TRIGGER ───────────────────────────────────────────── */
+  .jj-brand-trigger {
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.65);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    padding: 0;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .jj-brand-trigger:hover,
+  .jj-brand-trigger.active { color: #fff; }
+
+  .jj-brand-chevron {
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .jj-brand-trigger.active .jj-brand-chevron { transform: rotate(180deg); }
+
+  /* ── BRAND SLIDE-DOWN PANEL ──────────────────────────────────── */
+  .jj-brand-panel {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.28s ease, padding 0.28s ease;
+    border-bottom: 1px solid transparent;
+    background: #0b0b0b;
+    box-sizing: border-box;
+    width: 100%;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  }
+
+  .jj-brand-panel.open {
+    max-height: 220px;
+    padding: 12px 4rem;
+    border-bottom-color: #2e2e2e;
+  }
+
+  .jj-vendor-scroll-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    overflow-y: auto;
+    max-height: 160px;
+  }
+
+  .jj-vendor-chip {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 3px;
+    color: rgba(255,255,255,0.6);
+    font-size: 10px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+  }
+
+  .jj-vendor-chip:hover {
+    background: rgba(255,255,255,0.06);
+    color: #fff;
+    border-color: rgba(255,255,255,0.25);
+  }
+
+  .jj-vendor-chip.selected {
+    background: #c60000;
+    border-color: #c60000;
+    color: #fff;
+  }
+
+  /* ── IN-STOCK TOGGLE ─────────────────────────────────────────── */
+  .jj-subtle-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.65);
+    user-select: none;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .jj-subtle-toggle input { display: none; }
+
+  .jj-toggle-custom {
+    width: 26px;
+    height: 14px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 8px;
+    position: relative;
+    transition: background 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .jj-toggle-custom::after {
+    content: '';
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 10px; height: 10px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.2s ease;
+  }
+
+  .jj-subtle-toggle input:checked + .jj-toggle-custom { background: #c60000; }
+  .jj-subtle-toggle input:checked + .jj-toggle-custom::after { transform: translateX(12px); }
+
+  /* ── SORT ────────────────────────────────────────────────────── */
+  .jj-subtle-sort {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+  }
+
+  .jj-sort-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .jj-subtle-sort select {
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.7);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    outline: none;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .jj-subtle-sort select option { background: #111; color: #fff; }
+
+  /* ── CLEAR ───────────────────────────────────────────────────── */
+  .jj-clear-btn {
+    background: none;
+    border: none;
+    color: #c60000;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* ── MOBILE OVERRIDES ────────────────────────────────────────── */
+  @media (max-width: 767px) {
+    .jj-subtle-filter-bar {
+      padding: 0 2rem;
+      gap: 0;
+    }
+
+    /* Hide desktop search on mobile */
+    .jj-search-wrap { display: none; }
+
+    /* Show mobile search icon button */
+    .jj-mobile-search-btn {
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,0.6);
+      cursor: pointer;
+      padding: 0;
+      width: 34px;
+      height: 44px;
+      flex-shrink: 0;
+    }
+
+    /* Mobile inline search (replaces Brand trigger area) */
+    .jj-mobile-search-bar {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .jj-mobile-search-bar.open {
+      display: flex !important;
+    }
+
+    /* When mobile search is open, hide brand trigger */
+    .jj-filter-right.search-open .jj-brand-trigger { display: none; }
+    .jj-filter-right.search-open .jj-right-divider { display: none; }
+
+    .jj-mobile-search-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      font-size: 11px;
+      font-family: 'Inter', sans-serif;
+      padding: 4px 6px;
+      outline: none;
+      letter-spacing: 0.04em;
+      min-width: 0;
+    }
+
+    .jj-mobile-search-input:focus { border-bottom-color: #c60000; }
+    .jj-mobile-search-input::placeholder { color: rgba(255,255,255,0.3); }
+
+    .jj-mobile-search-close {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.4);
+      font-size: 16px;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    /* Brand panel full-width on mobile, 3-col chips */
+    .jj-brand-panel.open { padding: 10px 2rem; }
+    .jj-vendor-scroll-row { gap: 5px; }
+    .jj-vendor-chip { font-size: 10px; padding: 5px 8px; }
+
+    /* Hide text labels to save space on mobile */
+    .jj-sort-label { display: none; }
+    .jj-toggle-text { display: none; }
+    .jj-inline-divider { margin: 0 8px; }
+    .jj-filter-right { gap: 8px; }
+  }
+
+  /* Hide mobile elements on desktop */
+  .jj-mobile-search-btn { display: none; }
+  .jj-mobile-search-bar { display: none; }
+</style>
+
+<div class="jj-filter-wrap">
+  <!-- Main Bar Row -->
+  <div class="jj-subtle-filter-bar">
+
+    <!-- LEFT: Search (desktop full-width / mobile icon) -->
+    <div class="jj-filter-left">
+
+      <!-- Desktop: expanding search -->
+      <div class="jj-search-wrap">
+        <svg class="jj-search-icon-static" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <form action="/search" method="get" style="display:flex;width:100%;">
+          <input type="hidden" name="type" value="product">
+          <input type="hidden" name="options[prefix]" value="last">
+          <input type="text" name="q" id="jj-live-search-input" class="jj-search-desktop-input" placeholder="Search the full catalog..." autocomplete="off">
+        </form>
+      </div>
+
+      <!-- Mobile: search icon toggle -->
+      <button type="button" class="jj-mobile-search-btn" id="jj-mobile-search-open" aria-label="Open search">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </button>
+
+      <!-- Mobile: inline search field (replaces brand area when open) -->
+      <div class="jj-mobile-search-bar" id="jj-mobile-search-bar">
+        <input type="text" id="jj-mobile-search-input" class="jj-mobile-search-input" placeholder="Search..." autocomplete="off">
+        <button type="button" class="jj-mobile-search-close" id="jj-mobile-search-close">&times;</button>
+      </div>
+
+    </div>
+
+    <div class="jj-inline-divider"></div>
+
+    <!-- RIGHT: Brand trigger + In Stock + Sort + Clear -->
+    <div class="jj-filter-right" id="jj-filter-right">
+
+      <!-- Brand slide-down trigger -->
+      <button type="button" class="jj-brand-trigger" id="jj-brand-trigger">
+        <span id="jj-brand-label">Brand</span>
+        <svg class="jj-brand-chevron" width="8" height="5" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 1L5 5L9 1"/>
+        </svg>
+      </button>
+
+      <div class="jj-inline-divider jj-right-divider"></div>
+
+      <!-- In Stock -->
+      <label class="jj-subtle-toggle">
+        <input type="checkbox" id="jj-instock-checkbox">
+        <span class="jj-toggle-custom"></span>
+        <span class="jj-toggle-text">In Stock</span>
+      </label>
+
+      <div class="jj-inline-divider"></div>
+
+      <!-- Sort -->
+      <div class="jj-subtle-sort">
+        <span class="jj-sort-label">Sort:</span>
+        <select id="jj-sort-select">
+          <option value="default">Featured</option>
+          <option value="price-asc">Low → High</option>
+          <option value="price-desc">High → Low</option>
+          <option value="title-asc">A → Z</option>
+          <option value="newest">Newest</option>
+        </select>
+      </div>
+
+      <!-- Clear -->
+      <button type="button" id="jj-clear-filters-btn" class="jj-clear-btn" style="display:none;">✕ Clear</button>
+
+    </div>
+  </div>
+
+  <!-- Inline Brand Slide-Down Panel (full width, pushes content) -->
+  <div class="jj-brand-panel" id="jj-brand-panel">
+    <div class="jj-vendor-scroll-row" id="jj-vendor-scroll-row">
+      {%- for _ven in shop.vendors -%}
+        {%- if _ven != blank -%}
+          <button type="button" class="jj-vendor-chip" data-vendor="{{ _ven | escape }}">{{ _ven }}</button>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    function initFilter() {
+      var desktopInput  = document.getElementById('jj-live-search-input');
+      var mobileOpenBtn = document.getElementById('jj-mobile-search-open');
+      var mobileBar     = document.getElementById('jj-mobile-search-bar');
+      var mobileInput   = document.getElementById('jj-mobile-search-input');
+      var mobileClose   = document.getElementById('jj-mobile-search-close');
+      var filterRight   = document.getElementById('jj-filter-right');
+
+      var brandTrigger  = document.getElementById('jj-brand-trigger');
+      var brandPanel    = document.getElementById('jj-brand-panel');
+      var brandLabel    = document.getElementById('jj-brand-label');
+      var vendorChips   = document.querySelectorAll('.jj-vendor-chip');
+
+      var sortSelect    = document.getElementById('jj-sort-select');
+      var instockCB     = document.getElementById('jj-instock-checkbox');
+      var clearBtn      = document.getElementById('jj-clear-filters-btn');
+
+      var state = { query: '', sort: 'default', inStockOnly: false, selectedVendor: '' };
+
+      // Cache product grid and pagination element
+      var grid = document.querySelector('.collection-list-2');
+      var pagination = document.querySelector('.jj-pagination-container') || document.querySelector('.w-pagination-wrapper');
+      var originalGridHTML = grid ? grid.innerHTML : '';
+      var searchTimeout = null;
+
+      var allProductsHTML = null;
+      var hasLoadedSearchCache = false;
+      var searchCacheLoading = false;
+
+      function loadSearchCache(callback) {
+        if (hasLoadedSearchCache) {
+          if (callback) callback();
+          return;
+        }
+        if (searchCacheLoading) {
+          var interval = setInterval(function() {
+            if (hasLoadedSearchCache) {
+              clearInterval(interval);
+              if (callback) callback();
+            }
+          }, 50);
+          return;
+        }
+        searchCacheLoading = true;
+
+        var url = '/search?view=ajax&type=product&options[prefix]=last&options[unavailable_products]=show&q=*';
+        fetch(url)
+          .then(function(res) { return res.text(); })
+          .then(function(html) {
+            var temp = document.createElement('div');
+            temp.innerHTML = html.trim();
+            var items = temp.querySelectorAll('.collection-item-2');
+            var parsed = [];
+            items.forEach(function(item) {
+              parsed.push({
+                element: item,
+                text: (item.textContent || '').toLowerCase(),
+                meta: (item.querySelector('.jj-search-meta')?.textContent || '').toLowerCase()
+              });
+            });
+            allProductsHTML = parsed;
+            hasLoadedSearchCache = true;
+            searchCacheLoading = false;
+            if (callback) callback();
+          })
+          .catch(function(err) {
+            console.error('Error preloading search results:', err);
+            searchCacheLoading = false;
+          });
+      }
+
+      // Unified client-side filtering function applying Search Query, Brand, In-Stock and Sorting
+      function applyFilters() {
+        if (!grid) return;
+
+        loadSearchCache(function() {
+          var filtered = allProductsHTML;
+
+          // 1. Filter by Brand/Vendor
+          if (state.selectedVendor) {
+            var selectedVendorLower = state.selectedVendor.toLowerCase();
+            filtered = filtered.filter(function(prod) {
+              var prodVendor = prod.element.getAttribute('data-vendor') || '';
+              if (!prodVendor) {
+                var vendorMatch = prod.meta.split('|')[0] || '';
+                prodVendor = vendorMatch;
+              }
+              return prodVendor.toLowerCase() === selectedVendorLower;
+            });
+          }
+
+          // 2. Filter by Search Query
+          if (state.query) {
+            var q = state.query.toLowerCase().trim();
+            var queryWords = q.split(/\s+/).filter(function(w) { return w.length > 0; });
+            filtered = filtered.filter(function(prod) {
+              return queryWords.every(function(word) {
+                var normalizedWord = word;
+                if (word === 'small') normalizedWord = 's';
+                else if (word === 'medium') normalizedWord = 'm';
+                else if (word === 'large') normalizedWord = 'l';
+                else if (word === 'x-large' || word === 'xlarge') normalizedWord = 'xl';
+                else if (word === 'xx-large' || word === 'xxlarge') normalizedWord = 'xxl';
+                else if (word === 'xxx-large' || word === 'xxxlarge') normalizedWord = '3xl';
+
+                if (prod.text.indexOf(word) !== -1 || prod.meta.indexOf(word) !== -1) {
+                  return true;
+                }
+                if (prod.meta.indexOf('|' + normalizedWord + '|') !== -1 || 
+                    prod.meta.endsWith('|' + normalizedWord)) {
+                  return true;
+                }
+                var cleanMeta = prod.meta.replace(/[\s\-_]/g, '');
+                var cleanWord = normalizedWord.replace(/[\s\-_]/g, '');
+                if (cleanMeta.indexOf(cleanWord) !== -1) {
+                  return true;
+                }
+                return false;
+              });
+            });
+          }
+
+          // 3. Filter by In Stock Only
+          if (state.inStockOnly) {
+            filtered = filtered.filter(function(prod) {
+              var isSoldOut = prod.element.querySelector('.jj-sold-out-badge') || 
+                              prod.element.querySelector('.sold-out-label') || 
+                              prod.element.querySelector('.jj-sold-out-card') ||
+                              (prod.element.textContent || '').indexOf('Sold Out') !== -1;
+              return !isSoldOut;
+            });
+          }
+
+          // 4. Sorting
+          if (state.sort && state.sort !== 'default') {
+            filtered = filtered.slice(); // Copy array
+            filtered.sort(function(a, b) {
+              var getPrice = function(el) {
+                var priceText = el.querySelector('[data-commerce-type="variation-price"]')?.textContent || 
+                                el.querySelector('.text-block-779')?.textContent || '0';
+                return parseFloat(priceText.replace(/[^0-9.]/g, '')) || 0;
+              };
+              var getTitle = function(el) {
+                return (el.querySelector('.title.dfg')?.textContent || 
+                        el.querySelector('.text-block-4.title')?.textContent || '').toLowerCase().trim();
+              };
+
+              if (state.sort === 'price-asc') {
+                return getPrice(a.element) - getPrice(b.element);
+              } else if (state.sort === 'price-desc') {
+                return getPrice(b.element) - getPrice(a.element);
+              } else if (state.sort === 'title-asc') {
+                return getTitle(a.element).localeCompare(getTitle(b.element));
+              }
+              return 0;
+            });
+          }
+
+          // Render results in the grid
+          if (pagination) pagination.style.display = 'none';
+
+          if (filtered.length > 0) {
+            grid.innerHTML = '';
+            filtered.forEach(function(item) {
+              grid.appendChild(item.element.cloneNode(true));
+            });
+          } else {
+            grid.innerHTML = '<div style="width:100%; text-align:center; padding: 40px; color:rgba(255,255,255,0.4); font-family:Inter,sans-serif; font-size:12px; letter-spacing:0.1em; text-transform:uppercase; grid-column: 1/-1;">No products found matching your filters.</div>';
+          }
+
+          // Update Clear button state
+          if (clearBtn) {
+            var hasActive = state.selectedVendor || state.inStockOnly || state.sort !== 'default' || state.query;
+            clearBtn.style.display = hasActive ? 'inline-block' : 'none';
+          }
+        });
+      }
+
+      function handleSearchInput(e) {
+        var query = e.target.value.trim();
+        state.query = query;
+
+        if (searchTimeout) clearTimeout(searchTimeout);
+
+        if (query.length === 0) {
+          if (grid) grid.innerHTML = originalGridHTML;
+          if (pagination) pagination.style.display = '';
+          applyFilters(); // Re-apply other active filters (brand, in stock, sort)
+          return;
+        }
+
+        searchTimeout = setTimeout(function() {
+          applyFilters();
+        }, 50);
+      }
+
+      // Prevent page reload on form submit for live search inputs
+      var desktopForm = desktopInput ? desktopInput.closest('form') : null;
+      if (desktopForm) {
+        desktopForm.addEventListener('submit', function(e) { e.preventDefault(); });
+      }
+      var mobileForm = mobileInput ? mobileInput.closest('form') : null;
+      if (mobileForm) {
+        mobileForm.addEventListener('submit', function(e) { e.preventDefault(); });
+      }
+
+      // Preload search catalog cache
+      setTimeout(function() {
+        loadSearchCache();
+      }, 500);
+
+      // ── Mobile inline search toggle ────────────────────────────
+      function openMobileSearch(e) {
+        if (e) { e.preventDefault(); e.stopPropagation(); }
+        mobileBar.classList.add('open');
+        mobileOpenBtn.style.display = 'none';
+        if (filterRight) filterRight.classList.add('search-open');
+        if (mobileInput) setTimeout(function() { mobileInput.focus(); }, 50);
+      }
+
+      function closeMobileSearch(e) {
+        if (e) { e.preventDefault(); e.stopPropagation(); }
+        mobileBar.classList.remove('open');
+        if (mobileOpenBtn) mobileOpenBtn.style.display = '';
+        if (filterRight) filterRight.classList.remove('search-open');
+        state.query = '';
+        if (mobileInput) mobileInput.value = '';
+        applyFilters();
+      }
+
+      if (mobileOpenBtn && mobileBar) {
+        mobileOpenBtn.addEventListener('click', openMobileSearch);
+        mobileOpenBtn.addEventListener('touchstart', openMobileSearch, {passive: false});
+      }
+
+      if (mobileClose && mobileBar) {
+        mobileClose.addEventListener('click', closeMobileSearch);
+        mobileClose.addEventListener('touchstart', closeMobileSearch, {passive: false});
+      }
+
+      if (mobileInput) {
+        mobileInput.addEventListener('input', handleSearchInput);
+      }
+
+      if (desktopInput) {
+        desktopInput.addEventListener('input', handleSearchInput);
+      }
+
+      // ── Brand slide-down toggle ────────────────────────────────
+      if (brandTrigger && brandPanel) {
+        brandTrigger.addEventListener('click', function() {
+          var isOpen = brandPanel.classList.contains('open');
+          if (isOpen) {
+            brandPanel.classList.remove('open');
+            brandTrigger.classList.remove('active');
+          } else {
+            brandPanel.classList.add('open');
+            brandTrigger.classList.add('active');
+          }
+        });
+      }
+
+      // ── Vendor chips ───────────────────────────────────────────
+      vendorChips.forEach(function(chip) {
+        chip.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var v = this.getAttribute('data-vendor');
+          
+          vendorChips.forEach(function(c) { c.classList.remove('selected'); });
+
+          if (state.selectedVendor === v) {
+            state.selectedVendor = '';
+            if (brandLabel) brandLabel.textContent = 'Brand';
+          } else {
+            state.selectedVendor = v;
+            this.classList.add('selected');
+            if (brandLabel) brandLabel.textContent = v;
+          }
+
+          // Update URL without page reload
+          var params = new URLSearchParams(window.location.search);
+          if (state.selectedVendor) {
+            params.set('filter.p.vendor', state.selectedVendor);
+          } else {
+            params.delete('filter.p.vendor');
+          }
+          var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + (params.toString() ? "?" + params.toString() : "");
+          window.history.pushState({ path: newUrl }, '', newUrl);
+
+          // Apply filters client-side instantly!
+          applyFilters();
+
+          // Automatically minimise the brand panel back into the filter!
+          if (brandPanel) brandPanel.classList.remove('open');
+          if (brandTrigger) brandTrigger.classList.remove('active');
+        });
+      });
+
+      // ── Sort Select ────────────────────────────────────────────
+      if (sortSelect) {
+        sortSelect.addEventListener('change', function() {
+          state.sort = this.value;
+          
+          var params = new URLSearchParams(window.location.search);
+          if (state.sort !== 'default') {
+            params.set('sort_by', state.sort);
+          } else {
+            params.delete('sort_by');
+          }
+          var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + (params.toString() ? "?" + params.toString() : "");
+          window.history.pushState({ path: newUrl }, '', newUrl);
+
+          applyFilters();
+        });
+      }
+
+      // ── In Stock Checkbox ──────────────────────────────────────
+      if (instockCB) {
+        instockCB.addEventListener('change', function() {
+          state.inStockOnly = this.checked;
+
+          var params = new URLSearchParams(window.location.search);
+          if (state.inStockOnly) {
+            params.set('filter.v.availability', '1');
+          } else {
+            params.delete('filter.v.availability');
+          }
+          var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + (params.toString() ? "?" + params.toString() : "");
+          window.history.pushState({ path: newUrl }, '', newUrl);
+
+          applyFilters();
+        });
+      }
+
+      // ── Clear Button ───────────────────────────────────────────
+      if (clearBtn) {
+        clearBtn.addEventListener('click', function() {
+          state.query = '';
+          state.selectedVendor = '';
+          state.inStockOnly = false;
+          state.sort = 'default';
+
+          if (desktopInput) desktopInput.value = '';
+          if (mobileInput) mobileInput.value = '';
+          if (instockCB) instockCB.checked = false;
+          if (sortSelect) sortSelect.value = 'default';
+          if (brandLabel) brandLabel.textContent = 'Brand';
+
+          vendorChips.forEach(function(c) { c.classList.remove('selected'); });
+
+          var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+          window.history.pushState({ path: newUrl }, '', newUrl);
+
+          if (grid) grid.innerHTML = originalGridHTML;
+          if (pagination) pagination.style.display = '';
+          clearBtn.style.display = 'none';
+
+          if (brandPanel) brandPanel.classList.remove('open');
+          if (brandTrigger) brandTrigger.classList.remove('active');
+        });
+      }
+
+      // ── Init from URL params on load (filtered client-side, panel closed) ───────────────────
+      try {
+        var params = new URLSearchParams(window.location.search);
+        
+        // Vendor/Brand
+        var uv = params.get('filter.p.vendor') || params.get('vendor');
+        if (uv) {
+          state.selectedVendor = decodeURIComponent(uv).trim();
+          vendorChips.forEach(function(c) {
+            if ((c.getAttribute('data-vendor') || '').toLowerCase() === state.selectedVendor.toLowerCase()) {
+              c.classList.add('selected');
+            }
+          });
+          if (brandLabel) brandLabel.textContent = state.selectedVendor;
+          // Note: Panel remains CLOSED (minimized) on load for clean UX!
+        }
+
+        // In Stock
+        var ui = params.get('filter.v.availability');
+        if (ui === '1') {
+          state.inStockOnly = true;
+          if (instockCB) instockCB.checked = true;
+        }
+
+        // Sort
+        var us = params.get('sort_by');
+        if (us) {
+          state.sort = us;
+          if (sortSelect) sortSelect.value = us;
+        }
+
+        // Search Query
+        var uq = params.get('q');
+        if (uq) {
+          state.query = uq;
+          if (desktopInput) desktopInput.value = uq;
+          if (mobileInput) mobileInput.value = uq;
+        }
+
+        // Run client-side filter engine to reflect preloaded URL state
+        if (state.selectedVendor || state.inStockOnly || state.sort !== 'default' || state.query) {
+          applyFilters();
+        }
+      } catch(e) {}
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initFilter);
+    } else {
+      initFilter();
+    }
+  })();
+</script>

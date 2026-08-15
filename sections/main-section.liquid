@@ -1,0 +1,150 @@
+{%- assign fallback_img = section.settings.background_image -%}
+{%- if fallback_img == nil -%}
+  {%- assign fallback_img_url = 'First-Frame-JJ.png' | asset_url -%}
+{%- else -%}
+  {%- assign fallback_img_url = fallback_img | img_url: '1920x' -%}
+{%- endif -%}
+
+          <div class="section-background-contents">
+            <div class="div-block-4"><img src="{{ '00112.jpg' | asset_url }}" fetchpriority="high" sizes="(max-width: 2912px) 100vw, 2912px" srcset="{{ '00112.jpg' | asset_img_url: '500x' }} 500w, {{ '00112.jpg' | asset_img_url: '800x' }} 800w, {{ '00112.jpg' | asset_img_url: '1080x' }} 1080w, {{ '00112.jpg' | asset_img_url: '1600x' }} 1600w, {{ '00112.jpg' | asset_img_url: '2000x' }} 2000w, {{ '00112.jpg' | asset_img_url: '2600x' }} 2600w, {{ '00112.jpg' | asset_url }} 2912w" alt="" class="image-3"></div>
+            <div class="background-overlay"></div>
+            {%- if section.settings.video_file != blank -%}
+              <div class="jj-hero-video-wrapper">
+                <img src="{{ fallback_img_url }}" class="jj-hero-video-fallback" alt="Hero Fallback" loading="eager" fetchpriority="high">
+                {{ section.settings.video_file | video_tag: autoplay: true, loop: true, muted: true, controls: false, playsinline: true, class: 'jj-hero-video' }}
+              </div>
+            {%- elsif section.settings.video_url != blank -%}
+              <div class="jj-hero-video-wrapper">
+                <img src="{{ fallback_img_url }}" class="jj-hero-video-fallback" alt="Hero Fallback" loading="eager" fetchpriority="high">
+                <video autoplay loop muted playsinline class="jj-hero-video" crossorigin="anonymous">
+                  <source src="{{ section.settings.video_url }}" type="video/mp4">
+                </video>
+              </div>
+            {%- else -%}
+              {%- if section.settings.background_image == nil -%}<img class="image-2" src="{{ 'background-image-jjkicks.jpg' | asset_url }}" alt="" sizes="(max-width: 2912px) 100vw, 2912px" fetchpriority="high" srcset="{{ 'background-image-jjkicks.jpg' | asset_img_url: '500x' }} 500w, {{ 'background-image-jjkicks.jpg' | asset_img_url: '800x' }} 800w, {{ 'background-image-jjkicks.jpg' | asset_img_url: '1080x' }} 1080w, {{ 'background-image-jjkicks.jpg' | asset_img_url: '1600x' }} 1600w, {{ 'background-image-jjkicks.jpg' | asset_img_url: '2000x' }} 2000w, {{ 'background-image-jjkicks.jpg' | asset_img_url: '2600x' }} 2600w, {{ 'background-image-jjkicks.jpg' | asset_url }} 2912w">{%- else -%}<img class="image-2" src="{{ section.settings.background_image.src | img_url: '1024x' }}" alt="{{ section.settings.background_image.alt | escape }}" fetchpriority="high" srcset="{{ section.settings.background_image | img_url: '1920x' }} 1920w,{{ section.settings.background_image | img_url: '1600x' }} 1600w,{{ section.settings.background_image | img_url: '1366x' }} 1366w,{{ section.settings.background_image | img_url: '1024x' }} 1024w,{{ section.settings.background_image | img_url: '768x' }} 768w,{{ section.settings.background_image | img_url: '640x' }} 640w">{%- endif -%}
+            {%- endif -%}
+            <div class="div-block-14">
+              <div class="text-block-6">{{ section.settings.main_text }}</div>
+              {%- if section.settings.hide_paragraph -%}<p class="hero-paragraph">{{ section.settings.main_paragraph | newline_to_br }}</p>{%- endif -%}
+              <a href="/pages/{{ section.settings.button_link }}" class="button w-button" style="background-color: {{ section.settings.button_color }};">{{ section.settings.button_link_text }}</a>
+            </div>
+          </div>
+        
+
+<script>
+  (function() {
+    var currentSection = document.currentScript.closest('.shopify-section');
+    currentSection.setAttribute("class","hero-section");
+    
+    var videos = currentSection.querySelectorAll('.jj-hero-video');
+    var fallbackImg = currentSection.querySelector('.jj-hero-video-fallback');
+    
+    videos.forEach(function(video) {
+      function handlePlaying() {
+        video.classList.add('playing');
+      }
+      video.addEventListener('playing', handlePlaying);
+      video.addEventListener('play', handlePlaying);
+      
+      // Auto-extract the first frame dynamically to handle future video edits
+      video.crossOrigin = "anonymous";
+      video.addEventListener('loadeddata', function() {
+        try {
+          var canvas = document.createElement('canvas');
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          var dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+          if (fallbackImg) {
+            fallbackImg.src = dataUrl;
+            fallbackImg.srcset = ''; // Clear responsive overrides
+          }
+        } catch(e) {
+          console.log("[HeroVideo] Dynamic canvas frame capture failed, keeping default placeholder:", e);
+        }
+      });
+      
+      if (!video.paused) {
+        handlePlaying();
+      }
+    });
+  })();
+</script>
+        
+{% schema %}
+{
+  "name": "main section",
+  "tag": "section",
+  "class": "hero-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "main_text",
+      "label": "Main Text",
+      "default": "JJKICKSZZ"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "button text",
+      "default": "New Drops"
+    },
+    {
+      "type": "textarea",
+      "id": "main_paragraph",
+      "label": "Main Paragraph",
+      "default": "Your direct line to high-heat releases and rare archive grails. We handle the sourcing and the rigorous scanning so you don't have to—guaranteeing 100% authentic fits, every single time. "
+    },
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Background Image"
+    },
+    {
+      "type": "video",
+      "id": "video_file",
+      "label": "Background Video File (Shopify)"
+    },
+    {
+      "type": "text",
+      "id": "video_url",
+      "label": "Background Video Direct Link (MP4)"
+    },
+    {
+      "type": "page",
+      "id": "button_link",
+      "label": "Button Link "
+    },
+    {
+      "type": "text",
+      "id": "button_link_text",
+      "label": "Button Link  Text",
+      "default": "{{ section.settings.button_text }}"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button Color",
+      "default": "#000000"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_paragraph",
+      "label": "Hide Paragraph",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Main Hero Section"
+    }
+  ]
+}
+{% endschema %}

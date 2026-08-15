@@ -1,0 +1,239 @@
+{%- assign featured_product = all_products[section.settings.product] -%}
+
+<style>
+  #feat-prod-{{ section.id }} {
+    margin-bottom: 4rem;
+  }
+  
+  .feat-prod-wrapper-{{ section.id }} {
+    margin-left: 20px;
+    margin-right: 20px;
+    background-color: #111;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 2.5rem;
+    display: flex;
+    gap: 3rem;
+    align-items: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  }
+
+  .feat-prod-image-col-{{ section.id }} {
+    flex: 1;
+    max-width: 50%;
+    position: relative;
+    border-radius: 6px;
+    overflow: hidden;
+    aspect-ratio: 1/1;
+  }
+
+  .feat-prod-image-col-{{ section.id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .feat-prod-info-col-{{ section.id }} {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .feat-tag-{{ section.id }} {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--secret-red);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin: 0 0 8px 0;
+  }
+
+  .feat-vendor-{{ section.id }} {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 0 0 6px 0;
+  }
+
+  .feat-title-{{ section.id }} {
+    font-family: 'Inter', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: #fff;
+    text-transform: uppercase;
+    margin: 0 0 12px 0;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .feat-price-{{ section.id }} {
+    font-family: 'Inter', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: #fff;
+    margin: 0 0 20px 0;
+  }
+
+  .feat-sizes-label-{{ section.id }} {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.3);
+    text-transform: uppercase;
+    margin: 0 0 8px 0;
+    letter-spacing: 0.05em;
+  }
+
+  .feat-sizes-wrap-{{ section.id }} {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 24px 0;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .feat-size-pill-{{ section.id }} {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.02);
+    color: #fff;
+    padding: 6px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    text-transform: uppercase;
+  }
+
+  .feat-btn-{{ section.id }} {
+    display: inline-block;
+    background-color: var(--secret-red);
+    color: #fff;
+    padding: 14px 32px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    text-decoration: none;
+    text-align: center;
+    border-radius: 0;
+    transition: all 0.3s ease;
+    width: fit-content;
+    margin: 0;
+  }
+
+  .feat-btn-{{ section.id }}:hover {
+    transform: scale(1.04);
+    box-shadow: 0 0 15px rgba(198,0,0,0.3);
+  }
+
+  @media (max-width: 767px) {
+    .feat-prod-wrapper-{{ section.id }} {
+      flex-direction: column;
+      padding: 1.5rem;
+      gap: 1.5rem;
+      margin-left: 15px;
+      margin-right: 15px;
+    }
+    
+    .feat-prod-image-col-{{ section.id }} {
+      max-width: 100%;
+      width: 100%;
+    }
+
+    .feat-title-{{ section.id }} {
+      font-size: 1.8rem;
+    }
+
+    .feat-btn-{{ section.id }} {
+      width: 100%;
+    }
+  }
+</style>
+
+<div class="home-section" id="feat-prod-{{ section.id }}">
+  <div class="feat-prod-wrapper-{{ section.id }}">
+    {%- if featured_product != blank -%}
+      <div class="feat-prod-image-col-{{ section.id }}">
+        <a href="{{ featured_product.url }}">
+          <img src="{{ featured_product.featured_image | img_url: '1024x' }}" alt="{{ featured_product.title | escape }}" loading="lazy">
+        </a>
+      </div>
+
+      <div class="feat-prod-info-col-{{ section.id }}">
+        <div class="feat-tag-{{ section.id }}">{{ section.settings.subheading | default: 'Featured Release' }}</div>
+        <div class="feat-vendor-{{ section.id }}">{{ featured_product.vendor }}</div>
+        <h2 class="feat-title-{{ section.id }}">{{ featured_product.title }}</h2>
+        <div class="feat-price-{{ section.id }}">{{ featured_product.price | money }}</div>
+
+        {%- assign has_sizes = false -%}
+        {%- for option in featured_product.options_with_values -%}
+          {%- assign opt_name_down = option.name | downcase -%}
+          {%- if opt_name_down contains 'size' -%}
+            {%- assign has_sizes = true -%}
+            <div class="feat-sizes-label-{{ section.id }}">Available Sizes:</div>
+            <div class="feat-sizes-wrap-{{ section.id }}">
+              {%- for value in option.values -%}
+                <div class="feat-size-pill-{{ section.id }} sizes-variants">{{ value }}</div>
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+
+        {%- if has_sizes == false -%}
+          <!-- Space divider -->
+          <div style="height: 1.5rem;"></div>
+        {%- endif -%}
+
+        <a href="{{ featured_product.url }}" class="feat-btn-{{ section.id }}">{{ section.settings.button_text | default: 'View Product Details' }}</a>
+      </div>
+    {%- else -%}
+      <!-- Placeholder state -->
+      <div style="flex:1; text-align:center; padding: 3rem 0; color: rgba(255,255,255,0.4);">
+        <div class="feat-tag-{{ section.id }}">Featured Product</div>
+        <div class="feat-title-{{ section.id }}" style="font-size: 2rem;">No Product Selected</div>
+        <p>Please select a product in the section settings to display it here.</p>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Featured Product Accent",
+  "tag": "section",
+  "class": "featured-product-accent-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading Label",
+      "default": "HOT RELEASE"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Select Product"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "Shop Release"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Product Accent",
+      "category": "Product"
+    }
+  ]
+}
+{% endschema %}

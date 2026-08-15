@@ -1,0 +1,109 @@
+{% schema %}
+{
+  "name": "Marquee",
+  "tag": "section",
+  "class": "white-section menu hero",
+  "settings": [
+    {
+      "type": "text",
+      "id": "text_1",
+      "label": "Text Item 1",
+      "default": "100% Authentic Heat 🔥 Guaranteed"
+    },
+    {
+      "type": "text",
+      "id": "text_2",
+      "label": "Text Item 2",
+      "default": "All Sales Are Final"
+    },
+    {
+      "type": "text",
+      "id": "text_3",
+      "label": "Text Item 3",
+      "default": "Free Shipping on orders over $400"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_borders",
+      "label": "Show Top and Bottom Borders",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border Color",
+      "default": "#2e2e2e"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Marquee"
+    }
+  ]
+}
+{% endschema %}
+
+<section class="section-3" style="background-color: {{ section.settings.bg_color }}; color: {{ section.settings.text_color }}; {% if section.settings.show_borders %}border-top: 1px solid {{ section.settings.border_color }}; border-bottom: 1px solid {{ section.settings.border_color }};{% endif %} height: 44px; min-height: 44px; display: flex; align-items: center; overflow: hidden;">
+  <div class="code-embed-3 w-embed" style="width: 100%; height: 100%; display: flex; align-items: center;">
+    <style>
+      .jj-marquee-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        position: relative;
+      }
+      .jj-marquee-track-inner {
+        display: flex;
+        align-items: center;
+        width: max-content;
+        flex-shrink: 0;
+        animation: jj-marquee-anim 25s linear infinite !important;
+        will-change: transform;
+      }
+      .jj-content-group-item {
+        display: flex;
+        align-items: center;
+        padding-right: 4rem;
+        flex-shrink: 0;
+      }
+      .jj-text-badge {
+        font-size: 11px;
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        white-space: nowrap;
+        margin-right: 3rem;
+      }
+      @keyframes jj-marquee-anim {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+      }
+    </style>
+    <div class="jj-marquee-container">
+      <div class="jj-marquee-track-inner">
+        {% for i in (1..6) %}
+        <div class="jj-content-group-item">
+          <span class="jj-text-badge">{{ section.settings.text_1 }}</span>
+          <span class="jj-text-badge">{{ section.settings.text_2 }}</span>
+          <span class="jj-text-badge">{{ section.settings.text_3 }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,80 @@
+
+          <div class="authentic-gaurentee-section">
+            <div class="left-side-image-contents"><img src="{{ 'chatgpt-image-dec-10-2025-02_18_34-pm.png' | asset_url }}" loading="lazy" sizes="(max-width: 1536px) 100vw, 1536px" srcset="{{ 'chatgpt-image-dec-10-2025-02_18_34-pm.png' | asset_img_url: '500x' }} 500w, {{ 'chatgpt-image-dec-10-2025-02_18_34-pm.png' | asset_img_url: '800x' }} 800w, {{ 'chatgpt-image-dec-10-2025-02_18_34-pm.png' | asset_img_url: '1080x' }} 1080w, {{ 'chatgpt-image-dec-10-2025-02_18_34-pm.png' | asset_url }} 1536w" alt="" class="verified-image">
+              <div data-poster-url="{{ 'streetwear_hoodie_video_generation2_poster.0000000.jpg' | asset_url }}" data-video-urls="videos/Streetwear_Hoodie_Video_Generation2_mp4.mp4,videos/Streetwear_Hoodie_Video_Generation2_webm.webm" data-autoplay="true" data-loop="true" data-wf-ignore="true" class="background-video w-background-video w-background-video-atom"><video id="1b231a29-4c08-5084-7ccf-0a4df0c387cb-video" autoplay="" loop="" style="background-image:url(&quot;videos/Streetwear_Hoodie_Video_Generation2_poster.0000000.jpg&quot;)" muted="" playsinline="" data-wf-ignore="true" data-object-fit="cover">
+                  <source src="{{ 'streetwear_hoodie_video_generation2_mp4.mp4' | asset_url }}" data-wf-ignore="true">
+                  <source src="{{ 'streetwear_hoodie_video_generation2_webm.webm' | asset_url }}" data-wf-ignore="true">
+                </video></div>
+            </div>
+            <div class="right-side-authentic-content"><img src="{{ 'freesample-vectorizer-io-gemini_generated_image_8vr3an8vr3an8vr3_x-design.png' | asset_url }}" loading="lazy" sizes="(max-width: 4494px) 100vw, 4494px" srcset="{{ 'freesample-vectorizer-io-gemini_generated_image_8vr3an8vr3an8vr3_x-design.png' | asset_img_url: '500x' }} 500w, {{ 'freesample-vectorizer-io-gemini_generated_image_8vr3an8vr3an8vr3_x-design.png' | asset_img_url: '800x' }} 800w, {{ 'freesample-vectorizer-io-gemini_generated_image_8vr3an8vr3an8vr3_x-design.png' | asset_img_url: '1080x' }} 1080w, {{ 'freesample-vectorizer-io-gemini_generated_image_8vr3an8vr3an8vr3_x-design.png' | asset_img_url: '1600x' }} 1600w, {{ 'freesample-vectorizer-io-gemini_generated_image_8vr3an8vr3an8vr3_x-design.png' | asset_img_url: '2000x' }} 2000w, {{ 'freesample-vectorizer-io-gemini_generated_image_8vr3an8vr3an8vr3_x-design.png' | asset_img_url: '2600x' }} 2600w, {{ 'freesample-vectorizer-io-gemini_generated_image_8vr3an8vr3an8vr3_x-design.png' | asset_img_url: '3200x' }} 3200w, {{ 'freesample-vectorizer-io-gemini_generated_image_8vr3an8vr3an8vr3_x-design.png' | asset_url }} 4494w" alt="" class="authentic-image-policy">
+              <h1 class="heading-3">{{ section.settings.section_title }}</h1>
+              <h6 class="heading-2">{{ section.settings.section_sub_heading | newline_to_br }}</h6>
+              <h6 class="paragraph-2 text">{{ section.settings.authentic_full_text | newline_to_br }}</h6>
+              <a href="/pages/{{ section.settings.button_link }}" class="button w-button" style="background-color: {{ section.settings.button_color }};">{{ section.settings.button_link_text }}</a>
+            </div>
+          </div>
+        
+
+<script>var currentSection = document.currentScript.closest('.shopify-section');currentSection.setAttribute("class","section-over-view");</script>
+        
+{% schema %}
+{
+  "name": "general section",
+  "tag": "section",
+  "class": "section-over-view",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "section title",
+      "default": "VERIFIED AUTHENTICITY"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "button-text",
+      "default": "Authenticity Policy"
+    },
+    {
+      "type": "textarea",
+      "id": "section_sub_heading",
+      "label": "section sub heading",
+      "default": "100% Authentic. Every Single Time."
+    },
+    {
+      "type": "textarea",
+      "id": "authentic_full_text",
+      "label": "authentic full text",
+      "default": "We don’t play games with quality. Every piece that touches our inventory is inspected by hand—checking the stitching, the weight, and the tags. If it’s not legit, it doesn’t ship. You get exactly what you paid for, verified and secured."
+    },
+    {
+      "type": "page",
+      "id": "button_link",
+      "label": "button link"
+    },
+    {
+      "type": "text",
+      "id": "button_link_text",
+      "label": "button link Text",
+      "default": "{{ section.settings.button_text }}"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "button text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "button color",
+      "default": "#000000"
+    }
+  ],
+  "presets": [
+    {
+      "name": "General Section"
+    }
+  ]
+}
+{% endschema %}

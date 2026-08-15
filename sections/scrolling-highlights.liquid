@@ -1,0 +1,23 @@
+
+    <section class="section-3">
+      <div class="code-embed-3 w-embed">{{ section.settings.scrolling_text_use_chatgpt_to_generate_html_scrolling_text_or_change_the_text_inside }}</div>
+    </section>
+  
+
+<script>var currentSection = document.currentScript.closest('.shopify-section');currentSection.setAttribute("class","white-section menu");</script>
+        
+{% schema %}
+{
+  "name": "scrolling-highlights",
+  "tag": "div",
+  "class": "white-section menu",
+  "settings": [
+    {
+      "type": "html",
+      "id": "scrolling_text_use_chatgpt_to_generate_html_scrolling_text_or_change_the_text_inside",
+      "label": "Scrolling-text (use chatgpt to generate html scrolling text or change the text inside)",
+      "default": "\n        <style>\n  /* --- 1. OUTER WRAPPER (Full Width) --- */\n  .jj-marquee-wrapper {\n    width: 100%;\n    height: 100%;\n    display: flex;\n    justify-content: center; /* Forces the marquee to the center */\n    align-items: center;\n    position: relative;\n  }\n  /* --- 2. THE CENTERED VISIBLE AREA (Restricted Width) --- */\n  .jj-centered-mask {\n    /* VISIBILITY CONTROLS */\n    width: 60%; /* Only show text in the middle 60% of the parent */\n    max-width: 800px; /* Optional cap so it doesn't get too wide on giant screens */\n    height: 100%;\n    overflow: hidden;\n    display: flex;\n    align-items: center;\n    /* FADE MASK: Soft edges on the constrained area */\n    mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);\n    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);\n  }\n  /* --- 3. THE SCROLLING TRACK --- */\n  .jj-marquee-track {\n    display: flex;\n    align-items: center;\n    width: max-content;\n    flex-shrink: 0;\n    /* EDITED: Slower Speed (25s) */\n    animation: promo-scroll 25s linear infinite;\n  }\n  /* --- CONTENT GROUPS --- */\n  .jj-content-group {\n    display: flex;\n    align-items: center;\n    /* This padding pushes the next duplicate away */\n    padding-right: 6rem; \n  }\n  /* --- TEXT STYLING --- */\n  .jj-text-item {\n    font-size: inherit; \n    color: inherit; \n    font-weight: inherit;\n    white-space: nowrap;\n    margin-right: 4rem; /* Gap between statements */\n  }\n  .jj-text-item:last-child { margin-right: 0; }\n  /* --- ANIMATION --- */\n  @keyframes promo-scroll {\n    0% { transform: translateX(0); }\n    100% { transform: translateX(-50%); } \n  }\n  /* --- MOBILE --- */\n  @media (max-width: 767px) {\n    /* EDITED: Slower Mobile Speed (20s) */\n    .jj-marquee-track { animation-duration: 20s; } \n    /* Make it wider on phones so it's readable */\n    .jj-centered-mask { width: 90%; }\n    .jj-content-group { padding-right: 3rem; }\n    .jj-text-item { margin-right: 2rem; }\n  }\n</style>\n        <div class=\"jj-marquee-wrapper\">\n          <div class=\"jj-centered-mask\">\n            <div class=\"jj-marquee-track\">\n              <div class=\"jj-content-group\">\n                <span class=\"jj-text-item\">100% Authentic Heat 🔥 Guaranteed</span>\n                <span class=\"jj-text-item\">All Sales Are Final</span>\n                <span class=\"jj-text-item\">Free Shipping on orders over $400</span>\n              </div>\n              <div class=\"jj-content-group\">\n                <span class=\"jj-text-item\">100% Authentic Heat 🔥 Guaranteed</span>\n                <span class=\"jj-text-item\">All Sales Are Final</span>\n                <span class=\"jj-text-item\">Free Shipping on orders over $400</span>\n              </div>\n              <div class=\"jj-content-group\">\n                <span class=\"jj-text-item\">100% Authentic Heat 🔥 Guaranteed</span>\n                <span class=\"jj-text-item\">All Sales Are Final</span>\n                <span class=\"jj-text-item\">Free Shipping on orders over $400</span>\n              </div>\n              <div class=\"jj-content-group\">\n                <span class=\"jj-text-item\">100% Authentic Heat 🔥 Guaranteed</span>\n                <span class=\"jj-text-item\">All Sales Are Final</span>\n                <span class=\"jj-text-item\">Free Shipping on orders over $400</span>\n              </div>\n            </div>\n          </div>\n        </div>\n      "
+    }
+  ]
+}
+{% endschema %}

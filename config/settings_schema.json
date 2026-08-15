@@ -1,0 +1,279 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "JJ KICKSZZ UPDATE APR 30",
+    "theme_author": "Jonathan Barnes",
+    "theme_version": "1.0.6",
+    "theme_documentation_url": "https://www.jonathanbarnes.work",
+    "theme_support_email": "create@Jonathanbarnes.work"
+  },
+  {
+    "name": "Seo Settings",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "favicon",
+        "label": "Favicon Image",
+        "info": "Will be scaled down to 32x32px"
+      },
+      {
+        "type": "image_picker",
+        "id": "apple_touch_icon",
+        "label": "Apple touch icon image",
+        "info": "Will be scaled down to 120x120px"
+      },
+      {
+        "type": "text",
+        "id": "social_twitter_link",
+        "label": "Twitter Link"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_product_rich_snippets",
+        "label": "Enable Product Rich Snippets",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_article_rich_snippets",
+        "label": "Enable Article Rich Snippets",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Colors Settings",
+    "settings": [
+      {
+        "type": "color",
+        "id": "color_semi_black",
+        "label": "Color semi black",
+        "default": "#060606"
+      },
+      {
+        "type": "color",
+        "id": "color_grey_border",
+        "label": "Color grey border",
+        "default": "#2e2e2e"
+      },
+      {
+        "type": "color",
+        "id": "color_secret_red",
+        "label": "Accent / Brand Red",
+        "default": "#c60000"
+      }
+    ]
+  },
+  {
+    "name": "Typography & Text Colors",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Global Text Colors"
+      },
+      {
+        "type": "color",
+        "id": "color_body_text",
+        "label": "Body Text Color",
+        "default": "#ffffff",
+        "info": "Main readable text on all pages"
+      },
+      {
+        "type": "color",
+        "id": "color_heading_text",
+        "label": "Heading Text Color",
+        "default": "#ffffff",
+        "info": "H1, H2, H3 tags across the site"
+      },
+      {
+        "type": "color",
+        "id": "color_muted_text",
+        "label": "Muted / Secondary Text Color",
+        "default": "#999999",
+        "info": "Subtitles, captions, labels"
+      },
+      {
+        "type": "header",
+        "content": "Links"
+      },
+      {
+        "type": "color",
+        "id": "color_link",
+        "label": "Link Color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "color_link_hover",
+        "label": "Link Hover Color",
+        "default": "#cccccc"
+      },
+      {
+        "type": "header",
+        "content": "Page Background"
+      },
+      {
+        "type": "color",
+        "id": "color_page_bg",
+        "label": "Page Background Color",
+        "default": "#0a0a0a"
+      },
+      {
+        "type": "color",
+        "id": "color_surface",
+        "label": "Surface / Card Background Color",
+        "default": "#141414"
+      }
+    ]
+  },
+  {
+    "name": "Buttons",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Primary Button"
+      },
+      {
+        "type": "color",
+        "id": "color_btn_primary_bg",
+        "label": "Primary Button Background",
+        "default": "#c60000"
+      },
+      {
+        "type": "color",
+        "id": "color_btn_primary_text",
+        "label": "Primary Button Text",
+        "default": "#ffffff"
+      },
+      {
+        "type": "header",
+        "content": "Secondary Button"
+      },
+      {
+        "type": "color",
+        "id": "color_btn_secondary_bg",
+        "label": "Secondary Button Background",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "color_btn_secondary_text",
+        "label": "Secondary Button Text",
+        "default": "#000000"
+      }
+    ]
+  },
+
+  {
+    "name": "Products Collection Settings",
+    "settings": [
+      {
+        "type": "collection",
+        "id": "home_collection",
+        "label": "Home Collection"
+      },
+      {
+        "type": "range",
+        "id": "home_collection_limit",
+        "label": "Home Collection limit",
+        "min": 1,
+        "max": 50,
+        "step": 1,
+        "default": 3
+      },
+      {
+        "type": "collection",
+        "id": "collection_categories_template",
+        "label": "Collection Categories Template"
+      },
+      {
+        "type": "range",
+        "id": "collection_categories_template_limit",
+        "label": "Collection Categories Template limit",
+        "min": 1,
+        "max": 50,
+        "step": 1,
+        "default": 3
+      },
+      {
+        "type": "collection",
+        "id": "collection_2_categories_template",
+        "label": "Collection 2 Categories Template"
+      },
+      {
+        "type": "range",
+        "id": "collection_2_categories_template_limit",
+        "label": "Collection 2 Categories Template limit",
+        "min": 1,
+        "max": 50,
+        "step": 1,
+        "default": 3
+      },
+      {
+        "type": "collection",
+        "id": "collection_shop",
+        "label": "Collection shop"
+      },
+      {
+        "type": "range",
+        "id": "collection_shop_limit",
+        "label": "Collection shop limit",
+        "min": 1,
+        "max": 50,
+        "step": 1,
+        "default": 3
+      },
+      {
+        "type": "collection",
+        "id": "collection_2_shop",
+        "label": "Collection 2 shop"
+      },
+      {
+        "type": "range",
+        "id": "collection_2_shop_limit",
+        "label": "Collection 2 shop limit",
+        "min": 1,
+        "max": 50,
+        "step": 1,
+        "default": 3
+      },
+      {
+        "type": "collection",
+        "id": "collection_product_template",
+        "label": "Collection product template"
+      },
+      {
+        "type": "range",
+        "id": "collection_product_template_limit",
+        "label": "Collection product template limit",
+        "min": 1,
+        "max": 50,
+        "step": 1,
+        "default": 3
+      }
+    ]
+  },
+  {
+    "name": "Music Player Settings",
+    "settings": [
+      {
+        "type": "text",
+        "id": "music_url",
+        "label": "Music File URL (MP3 Direct Link)",
+        "default": "https://www.dropbox.com/scl/fi/3olrqa9okpjfy0kpqwtjh/new-rap-songs-2026-mix-april-trap-tape-130-new-hip-hop-2026-mixtape-dj-noi_1Hbveii4-1.mp3?rlkey=aen8n1tg7tnb7sta1rl5wr0mg&st=5pv5c3j3&raw=1"
+      },
+      {
+        "type": "text",
+        "id": "music_title",
+        "label": "Track Title Display",
+        "default": "VAULT RADIO NYC"
+      },
+      {
+        "type": "text",
+        "id": "music_artist",
+        "label": "Artist Display",
+        "default": "LIVE MIX — 2026"
+      }
+    ]
+  }
+]

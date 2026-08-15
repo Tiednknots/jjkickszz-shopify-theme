@@ -1,0 +1,235 @@
+<style>
+.cart-flash-dot {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 10px;
+  height: 10px;
+  background-color: #ff3b3b;
+  border-radius: 50%;
+  animation: cart-flash 1.5s infinite;
+  box-shadow: 0 0 8px #ff3b3b;
+  z-index: 10;
+}
+@keyframes cart-flash {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.8); }
+  100% { opacity: 1; transform: scale(1); }
+}
+#shipping-insurance-toggle:checked {
+  background-color: #fff !important;
+}
+#shipping-insurance-toggle:checked::after {
+  content: "✓";
+  color: #000;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 14px;
+}
+.custom-transition-link, 
+.custom-transition-link.w--current {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  padding: 10px 15px !important;
+  color: #fff !important;
+  text-decoration: none !important;
+}
+
+.middle {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+.brand {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  text-decoration: none !important;
+}
+.brand .image-4 {
+  height: 45px !important;
+  width: auto !important;
+  max-width: none !important;
+  object-fit: contain !important;
+}
+.brand .text-block {
+  font-size: 10px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 2px !important;
+  margin-bottom: 2px !important;
+  display: none !important;
+}
+@media (max-width: 767px) {
+  .brand .image-4 {
+    height: 35px !important;
+  }
+}
+</style>
+<div data-animation="default" class="navbar desktop w-nav" data-easing2="ease" data-easing="ease" data-collapse="all" role="banner" data-duration="400" data-doc-height="1">
+    <div class="container w-container">
+      <div class="div-block-5">
+        <div class="left-side">
+          <div class="div-block-3 mobile">
+            <div class="menu-button w-nav-button"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" app="ikonik" class="ikonik-3pqfih">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M20.75 17C20.75 17.4142 20.4142 17.75 20 17.75L4 17.75C3.58579 17.75 3.25 17.4142 3.25 17C3.25 16.5858 3.58579 16.25 4 16.25L20 16.25C20.4142 16.25 20.75 16.5858 20.75 17Z" fill="currentColor" app="ikonik" class="path-isuzuj"></path>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M20.75 12C20.75 12.4142 20.4142 12.75 20 12.75L4 12.75C3.58579 12.75 3.25 12.4142 3.25 12C3.25 11.5858 3.58579 11.25 4 11.25L20 11.25C20.4142 11.25 20.75 11.5858 20.75 12Z" fill="currentColor" app="ikonik" class="path-q3jbt"></path>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M20.75 7C20.75 7.41421 20.4142 7.75 20 7.75L4 7.75C3.58579 7.75 3.25 7.41421 3.25 7C3.25 6.58579 3.58579 6.25 4 6.25L20 6.25C20.4142 6.25 20.75 6.58579 20.75 7Z" fill="currentColor" app="ikonik" class="path-ai4my"></path>
+              </svg></div>
+            <nav role="navigation" class="nav-menu w-nav-menu">
+              <div class="div-block-1150">
+                {%- for link in linklists["header"].links -%}<a href="{{ link.url }}" class="custom-transition-link _1 w-nav-link">{{ link.title }}</a>{%- endfor -%}
+                {%- render 'menu-error', menu: "header" -%}
+              </div>
+            </nav>
+          </div>
+        </div>
+        <div class="middle">
+          <a href="{{ routes.root_url }}" aria-current="page" class="brand w-nav-brand w--current">
+            <div class="text-block">{{ 't3c9fa1ad' | t }}</div><img src="{{ 'slazzer-preview-oe4tv.png' | asset_url }}" loading="lazy" sizes="(max-width: 654px) 98vw, 641px" srcset="{{ 'slazzer-preview-oe4tv.png' | asset_img_url: '500x' }} 500w, {{ 'slazzer-preview-oe4tv.png' | asset_url }} 641w" alt="" class="image-4">
+          </a>
+        </div>
+        <div class="right-container-shop-search">
+          <a href="https://www.jjkickszz.com/search" class="div-block-1166 w-inline-block"><svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" app="ikonik" class="ikonik-x9709">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M14.3851 15.4457C11.7348 17.5684 7.85535 17.4013 5.39857 14.9445C2.76253 12.3085 2.76253 8.03464 5.39857 5.3986C8.03461 2.76256 12.3085 2.76256 14.9445 5.3986C17.4013 7.85538 17.5684 11.7348 15.4457 14.3851L20.6013 19.5407C20.8942 19.8336 20.8942 20.3085 20.6013 20.6014C20.3085 20.8943 19.8336 20.8943 19.5407 20.6014L14.3851 15.4457ZM6.45923 13.8839C4.40898 11.8336 4.40898 8.50951 6.45923 6.45926C8.50948 4.40901 11.8336 4.40901 13.8839 6.45926C15.9326 8.50801 15.9341 11.8287 13.8884 13.8794C13.8868 13.8809 13.8853 13.8823 13.8838 13.8839C13.8823 13.8854 13.8808 13.8869 13.8793 13.8884C11.8287 15.9341 8.50798 15.9326 6.45923 13.8839Z" fill="currentColor" app="ikonik" class="path-tk5wfh"></path>
+            </svg></a>
+          <div data-barba-prevent="all" data-open-product="" data-wf-cart-type="rightSidebar" data-wf-cart-query="" data-wf-page-link-href-prefix="" class="w-commerce-commercecartwrapper cart" data-node-type="commerce-cart-wrapper" udy-collection="cart">
+            <a class="w-commerce-commercecartopenlink cart-button w-inline-block" role="button" aria-haspopup="dialog" aria-label="Open cart" data-node-type="commerce-cart-open-link" href="#"><svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 512 512" app="ikonik" class="ikonik-fkjjk">
+                <path fill="currentColor" d="m151.7 112.2-23.3 42.7 16.2 8.9 172.8 13.5 28.7-23-32.2 5.3 14.3-35.9-176.5-11.5zM346 125.8l21.8 27.3-9.9 102.9 2.8 120.1 43.6 43.3-12.1-51.2 5.5-112.9-25.3-109.7-26.4-19.8zm-1.2 47.1-34.6 29.4-162.4-14.7-33.3 44.2-13.4 124.6 173.2 28.1-174.88-12.4-7.28 67.7 195.26 26.7 8.8-216.5 48.6-77.1zm6.1 18.8L313.7 256l-6.2 185.9 35.9-60.6.3-125.3 7.2-64.3zm3.6 201.1-47 79.7 92.8-30.6-45.8-49.1z" app="ikonik" class="path-aw9ii"></path>
+              </svg>
+              <div class="w-commerce-commercecartopenlinkcount cart-quantity">{{ cart.item_count }}</div>
+              <div class="cart-flash-dot" {% if cart.item_count == 0 %}style="display:none;"{% endif %}></div>
+            </a>
+            <div data-barba-prevent="all" style="display:none" class="w-commerce-commercecartcontainerwrapper w-commerce-commercecartcontainerwrapper--cartType-rightSidebar" data-node-type="commerce-cart-container-wrapper">
+              <div data-node-type="commerce-cart-container" role="dialog" class="w-commerce-commercecartcontainer cart-container">
+                <div class="div-block-1151">
+                  <div class="w-commerce-commercecartheader cart-header">
+                    <h4 class="w-commerce-commercecartheading heading-4">{{ 'tn77ee8913' | t }}</h4>
+                    <a class="w-commerce-commercecartcloselink w-inline-block" role="button" aria-label="Close cart" data-node-type="commerce-cart-close-link"><svg class="icon-2" width="16px" height="16px" viewBox="0 0 16 16">
+                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                          <g fill-rule="nonzero" fill="#333333">
+                            <polygon points="6.23223305 8 0.616116524 13.6161165 2.38388348 15.3838835 8 9.76776695 13.6161165 15.3838835 15.3838835 13.6161165 9.76776695 8 15.3838835 2.38388348 13.6161165 0.616116524 8 6.23223305 2.38388348 0.616116524 0.616116524 2.38388348 6.23223305 8"></polygon>
+                          </g>
+                        </g>
+                      </svg></a>
+                  </div>
+                </div>
+                <div class="w-commerce-commercecartformwrapper cart-form-wrapper">
+                  <form style="display:none" class="w-commerce-commercecartform default-state-2" data-node-type="commerce-cart-form">
+                    <script type="text/x-wf-template" id="wf-template-ebe25152-0db4-fc30-a0b5-e94857884e46"><div data-node-type="cart-item" class="cart-item w-commerce-commercecartitem" template-part-bind="ebe25152-0db4-fc30-a0b5-e94857884e47"><img data-node-type="cart-item-image" class="image-12 w-commerce-commercecartitemimage" template-part-bind="ebe25152-0db4-fc30-a0b5-e94857884e48" src="<%= it.image %>"><div data-node-type="cart-item-info" template-part-bind="ebe25152-0db4-fc30-a0b5-e94857884e49" class="w-commerce-commercecartiteminfo"><div data-node-type="cart-product-name" class="text-block-784 w-commerce-commercecartproductname" template-part-bind="ebe25152-0db4-fc30-a0b5-e94857884e4a"><%= it.title %></div><div class="text-block-785" template-part-bind="ebe25152-0db4-fc30-a0b5-e94857884e4b"><%= it.price %></div><ul template-part-bind="ebe25152-0db4-fc30-a0b5-e94857884e4c" class="w-commerce-commercecartoptionlist"><% Object.entries(it.properties).forEach( data =>  { %><li data-node-type="cart-option-list-item" class="option-2"><span data-node-type="cart-option-list-item-label" template-part-bind="ebe25152-0db4-fc30-a0b5-e94857884e4e"><%= data[0] %></span><span data-node-type="span">{{ 't726' | t }}</span><span data-node-type="cart-option-list-item-value" template-part-bind="ebe25152-0db4-fc30-a0b5-e94857884e51"><%= data[1] %></span></li><% }) %></ul><a data-node-type="cart-remove-link" class="remove-button" href="#" role="button" template-part-bind="ebe25152-0db4-fc30-a0b5-e94857884e52" data-product-id="<%= it.id %>"><div class="text-block-780">{{ 'tn6e501b5c' | t }}</div></a></div><input class="w-commerce-commercecartquantity" name="<%= it.id %>" type="number" min="0" min="1" value="<%= it.quantity %>" data-node-type="cart-quantity"></div></script>
+                    <div class="w-commerce-commercecartlist cart-list" data-wf-collection="database.commerceOrder.userItems" data-wf-template-id="wf-template-ebe25152-0db4-fc30-a0b5-e94857884e46"></div>
+                    <div class="w-commerce-commercecartfooter cart-footer">
+                        <!-- SHIPPING INSURANCE -->
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:15px;background:#111;margin:15px 0;border:1px solid #222;font-size:12px;letter-spacing:1px;text-transform:uppercase;">
+                          <label style="display:flex;align-items:center;cursor:pointer;gap:10px;width:100%;">
+                            <input type="checkbox" id="shipping-insurance-toggle" style="appearance:none;width:18px;height:18px;border:2px solid #fff;border-radius:50%;outline:none;transition:0.2s;position:relative;flex-shrink:0;">
+                            <span style="font-weight:700;">ADD SHIPPING INSURANCE (+$10.00)</span>
+                          </label>
+                        </div>
+                      <div aria-atomic="true" aria-live="polite" class="w-commerce-commercecartlineitem cart-line-item">
+                        <div class="text-block-782">{{ 'tn76f396dc' | t }}</div>
+                        <div class="w-commerce-commercecartordervalue text-block-781">{{ cart.items_subtotal_price | money }}</div>
+                      </div>
+                      <div>
+                        <a href="/checkout" value="Continue to Checkout" class="w-commerce-commercecartcheckoutbutton checkout-button" data-loading-text="{{ 't498bd87e' | t }}" data-node-type="cart-checkout-button">{{ 'tn7941186e' | t }}</a>
+                      </div>
+                    </div>
+                  </form>
+                  <div class="w-commerce-commercecartemptystate empty-state-2">
+                    <div aria-label="This cart is empty" aria-live="polite" class="text-block-783">{{ 'tn68345344' | t }}</div>
+                  </div>
+                  <div aria-live="assertive" style="display:none" data-node-type="commerce-cart-error" class="w-commerce-commercecarterrorstate error-state-3">
+                    <div class="w-cart-error-msg" data-w-cart-quantity-error="Product is not available in this quantity." data-w-cart-general-error="Something went wrong when adding this item to the cart." data-w-cart-checkout-error="Checkout is disabled on this site." data-w-cart-cart_order_min-error="The order minimum was not met. Add more items to your cart to continue." data-w-cart-subscription_error-error="Before you purchase, please use your email invite to verify your address so we can send order updates.">{{ 'tn1c765d0d' | t }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<script>
+(function() {
+  var INSURANCE_VARIANT_ID = '50793201402142';
+  function checkCartForInsurance(toggle) {
+    fetch('/cart.js').then(function(r){ return r.json(); }).then(function(cart) {
+      var hasInsurance = cart.items.some(function(item) { return item.variant_id.toString() === INSURANCE_VARIANT_ID; });
+      toggle.checked = hasInsurance;
+    });
+  }
+  function updateCartDot() {
+    fetch('/cart.js').then(function(r){ return r.json(); }).then(function(cart) {
+      var dot = document.querySelector('.cart-flash-dot');
+      if (dot) {
+        dot.style.display = cart.item_count > 0 ? 'block' : 'none';
+      }
+      var count = document.querySelector('.cart-quantity');
+      if (count) {
+        count.textContent = cart.item_count;
+      }
+    });
+  }
+  function initShippingInsurance() {
+    document.addEventListener('change', function(e) {
+      if (e.target && e.target.id === 'shipping-insurance-toggle') {
+        var toggle = e.target;
+        if (toggle.checked) {
+          fetch('/cart/add.js', { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify({ items: [{ id: INSURANCE_VARIANT_ID, quantity: 1 }] }) 
+          }).then(function() {
+            updateCartDot();
+            if (window.Webflow && window.Webflow.require && window.Webflow.require('cart')) window.Webflow.require('cart').update();
+          });
+        } else {
+          fetch('/cart.js').then(function(r){ return r.json(); }).then(function(cart) {
+            var item = cart.items.find(function(i) { return i.variant_id.toString() === INSURANCE_VARIANT_ID; });
+            if (item) {
+              fetch('/cart/change.js', { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify({ id: item.key, quantity: 0 }) 
+              }).then(function() {
+                updateCartDot();
+                if (window.Webflow && window.Webflow.require && window.Webflow.require('cart')) window.Webflow.require('cart').update();
+              });
+            }
+          });
+        }
+      }
+    });
+
+    // Check state on cart open
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('.w-commerce-commercecartopenlink')) {
+        setTimeout(function() {
+          var toggle = document.getElementById('shipping-insurance-toggle');
+          if (toggle) checkCartForInsurance(toggle);
+        }, 500);
+      }
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    initShippingInsurance();
+    updateCartDot();
+    // Monitor for any add-to-cart actions
+    document.addEventListener('click', function(e) {
+      if (e.target.closest('.add-to-cart-button') || e.target.closest('.w-commerce-commerceaddtocartbutton')) {
+        setTimeout(updateCartDot, 1000);
+      }
+    });
+    var cartQty = document.querySelector('.cart-quantity');
+    if (cartQty) {
+      var observer = new MutationObserver(function() {
+        updateCartDot();
+      });
+      observer.observe(cartQty, { childList: true, characterData: true, subtree: true });
+    }
+  });
+})();
+</script>

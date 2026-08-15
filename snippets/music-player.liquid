@@ -1,0 +1,502 @@
+{% comment %}
+  Universal Music Player - Refined Left-Align UI (v3.2)
+  Features: 
+  - Sequence: Reveal -> Autoplay -> Auto-minimize
+  - Placement: 3rem (Desktop) / 1em (Mobile)
+  - Layout: Disk Left / Bar Right
+  - Custom Graphic: Vault Radio Vinyl SVG
+  - Stability: Safe SessionStorage, Safe CurrentTime Restoration, Smart Autoplay Pause Respect
+{% endcomment %}
+
+<style>
+  :root {
+    --player-bg: rgba(10, 10, 10, 0.95);
+    --player-accent: #c60000;
+    --player-text: #ffffff;
+    --player-text-dim: rgba(255, 255, 255, 0.6);
+    --player-radius: 30px;
+    --disk-size: 64px;
+    --player-z: 2147483647; /* Maximum Z-Index to avoid overlap */
+  }
+
+  /* Main Container - Anchor to Left */
+  .jj-player-wrapper {
+    position: fixed;
+    bottom: 24px;
+    left: 3rem; /* Desktop default */
+    z-index: var(--player-z);
+    display: flex;
+    align-items: center;
+    gap: 0px;
+    font-family: 'Inter', sans-serif;
+    color: var(--player-text);
+  }
+
+  /* The Vinyl Disk (Toggle) */
+  .jj-player-disk {
+    width: var(--disk-size);
+    height: var(--disk-size);
+    background: #000;
+    border-radius: 50%;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    transition: transform 0.3s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+    flex-shrink: 0;
+    z-index: 5;
+    overflow: hidden;
+  }
+
+  .jj-player-disk:hover {
+    transform: scale(1.08);
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .jj-player-disk.playing svg {
+    animation: spin 8s linear infinite;
+    opacity: 1;
+  }
+
+  @keyframes pulse-ring {
+    0% { transform: scale(0.95); opacity: 0.5; }
+    50% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(0.95); opacity: 0.5; }
+  }
+
+  .jj-player-disk.playing::before {
+    content: '';
+    position: absolute;
+    top: -4px; left: -4px; right: -4px; bottom: -4px;
+    border: 2px solid var(--player-accent);
+    border-radius: 50%;
+    animation: pulse-ring 2s ease-in-out infinite;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  /* Expanded Bar - Slides to the Right */
+  .jj-player-bar {
+    height: 52px;
+    background: var(--player-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0 26px 26px 0; /* Rounded on right side */
+    display: flex;
+    align-items: center;
+    padding: 0 20px 0 30px;
+    margin-left: -26px; /* Overlap with disk */
+    transform: translateX(20px);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+    max-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    z-index: 4;
+  }
+
+  .jj-player-wrapper.expanded .jj-player-bar {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+    max-width: 400px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  }
+
+  .jj-track-meta {
+    display: flex;
+    flex-direction: column;
+    margin-right: 20px;
+    min-width: 110px;
+  }
+
+  .jj-track-title {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .jj-track-artist {
+    font-size: 9px;
+    color: var(--player-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+
+  .jj-player-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .jj-control-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s, color 0.2s;
+  }
+
+  .jj-control-btn:hover {
+    color: var(--player-accent);
+    transform: scale(1.2);
+  }
+
+  /* Responsive Adjustments */
+  @media (max-width: 767px) {
+    .jj-player-wrapper {
+      bottom: 20px;
+      left: 1em;
+    }
+    .jj-player-wrapper.expanded .jj-player-bar {
+      max-width: 260px;
+      padding-left: 40px;
+    }
+    .jj-track-meta { display: none; }
+  }
+</style>
+
+<div class="jj-player-wrapper" id="jj-player-context">
+  <div class="jj-player-disk" id="jj-disk-toggle">
+    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block;">
+      <!-- Outer vinyl ring -->
+      <circle cx="32" cy="32" r="31" fill="#111" stroke="#333" stroke-width="1"/>
+      <!-- Groove rings -->
+      <circle cx="32" cy="32" r="27" fill="none" stroke="#1e1e1e" stroke-width="1"/>
+      <circle cx="32" cy="32" r="23" fill="none" stroke="#1e1e1e" stroke-width="1"/>
+      <circle cx="32" cy="32" r="19" fill="none" stroke="#1e1e1e" stroke-width="1"/>
+      <circle cx="32" cy="32" r="15" fill="none" stroke="#222" stroke-width="1"/>
+      <!-- Center label -->
+      <circle cx="32" cy="32" r="11" fill="#c60000"/>
+      <!-- Label text ring -->
+      <circle cx="32" cy="32" r="8" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.5"/>
+      <!-- Center hole -->
+      <circle cx="32" cy="32" r="2.5" fill="#000"/>
+      <!-- Highlight -->
+      <ellipse cx="22" cy="18" rx="5" ry="3" fill="rgba(255,255,255,0.04)" transform="rotate(-30 22 18)"/>
+    </svg>
+  </div>
+
+  <div class="jj-player-bar" id="jj-universal-player">
+    <div class="jj-track-meta">
+      <div class="jj-track-title">{{ settings.music_title | default: 'VAULT RADIO NYC' }}</div>
+      <div class="jj-track-artist">{{ settings.music_artist | default: 'LIVE MIX — 2026' }}</div>
+    </div>
+
+    <div class="jj-player-controls">
+      <button class="jj-control-btn" id="jj-play-pause-btn">
+        <svg id="jj-play-icon" viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+        <svg id="jj-pause-icon" viewBox="0 0 24 24" width="24" height="24" fill="currentColor" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg>
+      </button>
+      
+      <div class="jj-player-time" style="font-size: 10px; font-family: monospace; opacity: 0.5;">
+        <span id="jj-current-time">0:00</span>
+      </div>
+
+      <div class="jj-volume-wrap" style="display: flex; align-items: center; gap: 8px; margin-left: 5px;">
+        <input type="range" id="jj-volume-slider" min="0" max="1" step="0.01" value="0.7" style="width: 50px; height: 2px; accent-color: var(--player-accent);">
+      </div>
+    </div>
+  </div>
+
+  {%- assign music_src = settings.music_url | default: 'https://www.dropbox.com/scl/fi/27cr46xqki92kkrv0oep1/New-Rap-Songs-2026-Mix-May-Trap-Tape-133-New-Hip-Hop-2026-Mixtape-DJ-Noize-DJ-Noize-128k-_compressed?rlkey=ylnxkkoxlzniy1opm7atb9xti&st=dv3a153b&dl=0' -%}
+  {%- if music_src contains 'dropbox.com' -%}
+    {%- if music_src contains 'dl=0' -%}
+      {%- assign music_src = music_src | replace: 'dl=0', 'raw=1' -%}
+    {%- elsif music_src contains 'dl=1' -%}
+      {%- assign music_src = music_src | replace: 'dl=1', 'raw=1' -%}
+    {%- else -%}
+      {%- unless music_src contains 'raw=1' -%}
+        {%- if music_src contains '?' -%}
+          {%- assign music_src = music_src | append: '&raw=1' -%}
+        {%- else -%}
+          {%- assign music_src = music_src | append: '?raw=1' -%}
+        {%- endif -%}
+      {%- endunless -%}
+    {%- endif -%}
+  {%- endif -%}
+  <audio id="jj-main-audio" preload="metadata">
+    <source src="{{ music_src }}" type="audio/mpeg">
+  </audio>
+</div>
+
+<script>
+(function() {
+  const audio = document.getElementById('jj-main-audio');
+  const wrapper = document.getElementById('jj-player-context');
+  const disk = document.getElementById('jj-disk-toggle');
+  const playPauseBtn = document.getElementById('jj-play-pause-btn');
+  const playIcon = document.getElementById('jj-play-icon');
+  const pauseIcon = document.getElementById('jj-pause-icon');
+  const currentTimeEl = document.getElementById('jj-current-time');
+  const volumeSlider = document.getElementById('jj-volume-slider');
+
+  if (!audio || !wrapper || !disk || !playPauseBtn || !playIcon || !pauseIcon || !currentTimeEl || !volumeSlider) {
+    console.warn("[MusicPlayer] Some elements were not found. Disabling player integration.");
+    return;
+  }
+
+  // Auto-convert Dropbox sharing links dynamically in case they are set in Shopify Customizer
+  let audioSrc = audio.querySelector('source') ? audio.querySelector('source').getAttribute('src') : audio.src;
+  if (audioSrc && audioSrc.includes('dropbox.com')) {
+    audioSrc = audioSrc.replace('dl=0', 'raw=1').replace('dl=1', 'raw=1');
+    if (!audioSrc.includes('raw=1')) {
+      audioSrc += (audioSrc.includes('?') ? '&' : '?') + 'raw=1';
+    }
+    const sourceEl = audio.querySelector('source');
+    if (sourceEl) {
+      sourceEl.setAttribute('src', audioSrc);
+    }
+    audio.src = audioSrc;
+  }
+
+  // Safe SessionStorage wrapper to prevent SecurityError in private browsing
+  const safeStorage = {
+    getItem(key) {
+      try {
+        return sessionStorage.getItem(key);
+      } catch (e) {
+        return null;
+      }
+    },
+    setItem(key, value) {
+      try {
+        sessionStorage.setItem(key, value);
+      } catch (e) {}
+    }
+  };
+
+  const formatTime = (s) => {
+    const mins = Math.floor(s / 60);
+    const secs = Math.floor(s % 60);
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  };
+
+  // Flag to track page unload
+  let isUnloading = false;
+  window.addEventListener('beforeunload', () => {
+    isUnloading = true;
+    safeStorage.setItem('jj_player_time', audio.currentTime);
+    safeStorage.setItem('jj_player_playing', userPlaying ? 'true' : 'false');
+  });
+  window.addEventListener('pagehide', () => {
+    isUnloading = true;
+    safeStorage.setItem('jj_player_time', audio.currentTime);
+    safeStorage.setItem('jj_player_playing', userPlaying ? 'true' : 'false');
+  });
+
+  // Read saved state first, defaults to true if not explicitly paused
+  let userPlaying = safeStorage.getItem('jj_player_playing') !== 'false';
+
+  const saveState = () => {
+    if (isUnloading) return;
+    safeStorage.setItem('jj_player_time', audio.currentTime);
+    safeStorage.setItem('jj_player_playing', userPlaying ? 'true' : 'false');
+    safeStorage.setItem('jj_player_volume', audio.volume);
+    safeStorage.setItem('jj_player_expanded', wrapper.classList.contains('expanded'));
+  };
+
+  const playOnInteract = () => {
+    if (userPlaying) {
+      audio.play().then(() => {
+        removeInteractionListeners();
+      }).catch(e => {
+        console.log("[MusicPlayer] Play blocked on interaction:", e);
+      });
+    } else {
+      removeInteractionListeners();
+    }
+
+    // Also force play all hero videos on the page in case they were blocked by mobile Low Power Mode
+    document.querySelectorAll('.jj-hero-video').forEach(video => {
+      if (video.paused) {
+        video.play().catch(err => console.log("[MusicPlayer] Video play failed:", err));
+      }
+    });
+  };
+
+  const addInteractionListeners = () => {
+    document.addEventListener('click', playOnInteract);
+    document.addEventListener('touchstart', playOnInteract, { passive: true });
+    document.addEventListener('scroll', playOnInteract, { passive: true });
+  };
+
+  const removeInteractionListeners = () => {
+    document.removeEventListener('click', playOnInteract);
+    document.removeEventListener('touchstart', playOnInteract);
+    document.removeEventListener('scroll', playOnInteract);
+  };
+
+  const attemptPlay = () => {
+    audio.play().then(() => {
+      // Audio played successfully, make sure userPlaying matches
+      userPlaying = true;
+      saveState();
+    }).catch((err) => {
+      console.log("[MusicPlayer] Autoplay failed, waiting for user interaction:", err);
+      // Wait for interaction to play
+      addInteractionListeners();
+    });
+
+    // Attempt video play immediately
+    document.querySelectorAll('.jj-hero-video').forEach(video => {
+      video.play().catch(e => {
+        // Videos also get interaction play
+        addInteractionListeners();
+      });
+    });
+  };
+
+  const restoreVolumeAndProgress = () => {
+    const savedVolume = safeStorage.getItem('jj_player_volume');
+    const savedTime = safeStorage.getItem('jj_player_time');
+
+    if (savedVolume) {
+      audio.volume = parseFloat(savedVolume);
+      volumeSlider.value = savedVolume;
+    }
+
+    if (savedTime) {
+      const time = parseFloat(savedTime);
+      if (audio.readyState >= 1) {
+        audio.currentTime = time;
+      } else {
+        const onMetadata = () => {
+          audio.currentTime = time;
+          audio.removeEventListener('loadedmetadata', onMetadata);
+        };
+        audio.addEventListener('loadedmetadata', onMetadata);
+      }
+    }
+  };
+
+  const loadState = () => {
+    restoreVolumeAndProgress();
+
+    const savedExpanded = safeStorage.getItem('jj_player_expanded');
+    const playerSeen = safeStorage.getItem('jj_player_seen');
+
+    if (!playerSeen) {
+      wrapper.classList.add('expanded');
+      safeStorage.setItem('jj_player_seen', 'true');
+      setTimeout(() => {
+        if (!isUnloading) {
+          wrapper.classList.remove('expanded');
+          saveState();
+        }
+      }, 7000);
+    } else {
+      if (savedExpanded === 'true') wrapper.classList.add('expanded');
+    }
+    
+    // Only attempt autoplay if the user didn't explicitly pause it
+    if (userPlaying) {
+      attemptPlay();
+    }
+  };
+
+  disk.onclick = () => {
+    wrapper.classList.toggle('expanded');
+    saveState();
+  };
+
+  playPauseBtn.onclick = (e) => {
+    e.stopPropagation();
+    if (audio.paused) {
+      userPlaying = true;
+      audio.play().catch(err => console.log("[MusicPlayer] Play request failed:", err));
+    } else {
+      userPlaying = false;
+      audio.pause();
+    }
+    saveState();
+  };
+
+  audio.onplay = () => {
+    playIcon.style.display = 'none';
+    pauseIcon.style.display = 'block';
+    disk.classList.add('playing');
+    
+    // Auto-minimize after 5 seconds of active playback
+    setTimeout(() => {
+      if (!audio.paused && !isUnloading) {
+        wrapper.classList.remove('expanded');
+        saveState();
+      }
+    }, 5000);
+  };
+
+  audio.onpause = () => {
+    // Only set userPlaying = false if this pause event didn't fire due to page unloading
+    if (!isUnloading) {
+      playIcon.style.display = 'block';
+      pauseIcon.style.display = 'none';
+      disk.classList.remove('playing');
+    }
+  };
+
+  let lastSavedTime = 0;
+  audio.ontimeupdate = () => {
+    currentTimeEl.innerText = formatTime(audio.currentTime);
+    if (!isUnloading) {
+      const now = Date.now();
+      // Throttle sessionStorage writes to once every 2 seconds to improve page performance
+      if (now - lastSavedTime > 2000) {
+        safeStorage.setItem('jj_player_time', audio.currentTime);
+        lastSavedTime = now;
+      }
+    }
+  };
+
+  // --- 8. ROBUSTNESS & AUTO-RECOVERY ENGINE ---
+  let errorCount = 0;
+  audio.addEventListener('error', (e) => {
+    console.error("[MusicPlayer] Audio error encountered:", audio.error);
+    if (userPlaying && errorCount < 3) {
+      errorCount++;
+      const savedTime = parseFloat(safeStorage.getItem('jj_player_time') || audio.currentTime);
+      console.log(`[MusicPlayer] Attempting auto-recovery (attempt ${errorCount}/3) from time: ${savedTime}`);
+      setTimeout(() => {
+        audio.load();
+        const onMetadata = () => {
+          audio.currentTime = savedTime;
+          audio.play().catch(err => console.log("[MusicPlayer] Recovery play failed:", err));
+          audio.removeEventListener('loadedmetadata', onMetadata);
+        };
+        audio.addEventListener('loadedmetadata', onMetadata);
+      }, 1000);
+    }
+  }, true);
+
+  audio.addEventListener('waiting', () => {
+    console.log("[MusicPlayer] Audio is buffering...");
+  });
+
+  audio.addEventListener('playing', () => {
+    errorCount = 0; // Reset error count on successful playback
+  });
+
+  volumeSlider.oninput = (e) => {
+    audio.volume = e.target.value;
+    saveState();
+  };
+
+  // Safe deferred load initialization
+  if (document.readyState === 'complete') {
+    setTimeout(loadState, 800);
+  } else {
+    window.addEventListener('load', () => setTimeout(loadState, 800));
+  }
+})();
+</script>
+

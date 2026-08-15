@@ -1,0 +1,14 @@
+{% capture listItems %}
+{% for item in collections[settings.collection_product_template].products limit: settings.collection_product_template_limit %}
+<div role="listitem" class="w-dyn-item"></div>
+{%- endfor -%}
+{% endcapture %}
+{% assign items_length = listItems | strip | size %}
+<div class="w-dyn-list" udy-collection="product">
+          {%- unless items_length == 0 -%}<div role="list" class="w-dyn-items">
+            {{ listItems }}
+          </div>{%- endunless -%}
+          {%- if items_length == 0 -%}<div class="w-dyn-empty">
+            <div>No items found.</div>
+          </div>{%- endif -%}
+        </div>

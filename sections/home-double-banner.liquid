@@ -1,0 +1,362 @@
+<style>
+  #double-banner-{{ section.id }} {
+    margin-bottom: 4rem;
+  }
+  
+  .double-banner-wrap-{{ section.id }} {
+    display: flex;
+    gap: 20px;
+    padding: 0 20px;
+  }
+
+  .banner-half-{{ section.id }} {
+    flex: 1;
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    height: {{ section.settings.desktop_height }}px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    background-color: #0c0c0c;
+  }
+
+  .banner-half-{{ section.id }} img,
+  .banner-half-{{ section.id }} video,
+  .banner-half-{{ section.id }} .jj-hero-video-wrapper {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .banner-half-overlay-{{ section.id }} {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: {{ section.settings.overlay_color | default: 'rgba(0,0,0,0.3)' }};
+    z-index: 1;
+  }
+
+  .banner-half-content-{{ section.id }} {
+    position: absolute;
+    bottom: 2rem;
+    left: 2rem;
+    right: 2rem;
+    z-index: 2;
+    pointer-events: auto;
+  }
+
+  .banner-half-tag-{{ section.id }} {
+    font-family: 'Inter', sans-serif;
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--secret-red);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin-bottom: 0.5rem;
+  }
+
+  .banner-half-title-{{ section.id }} {
+    font-family: 'Aerosoldierbasic Personal Use Only', 'Barlow Condensed', sans-serif;
+    font-size: 2.2rem;
+    color: #fff;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    line-height: 1.1;
+  }
+
+  .banner-half-subheading-{{ section.id }} {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.05em;
+  }
+
+  .banner-half-btn-{{ section.id }} {
+    display: inline-block;
+    padding: 10px 24px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-radius: 0px;
+    border: 1px solid transparent;
+  }
+
+  .banner-half-btn-{{ section.id }}:hover {
+    transform: scale(1.05);
+  }
+
+  @media (max-width: 767px) {
+    .double-banner-wrap-{{ section.id }} {
+      flex-direction: column;
+      gap: 15px;
+      padding: 0 15px;
+    }
+    
+    .banner-half-{{ section.id }} {
+      height: {{ section.settings.mobile_height }}px;
+    }
+
+    .banner-half-title-{{ section.id }} {
+      font-size: 1.8rem;
+    }
+  }
+</style>
+
+<div class="home-section" id="double-banner-{{ section.id }}">
+  <div class="double-banner-wrap-{{ section.id }}">
+    
+    <!-- LEFT BANNER -->
+    <div class="banner-half-{{ section.id }}">
+      {%- capture left_markup -%}
+        <div class="banner-half-overlay-{{ section.id }}"></div>
+        {%- if section.settings.left_video_url != blank -%}
+          <video autoplay loop muted playsinline class="jj-hero-video" crossorigin="anonymous">
+            <source src="{{ section.settings.left_video_url }}" type="video/mp4">
+          </video>
+        {%- else -%}
+          {%- if section.settings.left_image != blank -%}
+            <img src="{{ section.settings.left_image | img_url: '1024x' }}" alt="{{ section.settings.left_title | escape }}" loading="lazy">
+          {%- else -%}
+            <img src="{{ 'background-image-jjkicks.jpg' | asset_url }}" alt="Default Banner Image" loading="lazy">
+          {%- endif -%}
+        {%- endif -%}
+
+        <div class="banner-half-content-{{ section.id }}">
+          {%- if section.settings.left_tag != blank -%}
+            <div class="banner-half-tag-{{ section.id }}">{{ section.settings.left_tag }}</div>
+          {%- endif -%}
+          {%- if section.settings.left_title != blank -%}
+            <h3 class="banner-half-title-{{ section.id }}">{{ section.settings.left_title }}</h3>
+          {%- endif -%}
+          {%- if section.settings.left_subheading != blank -%}
+            <div class="banner-half-subheading-{{ section.id }}">{{ section.settings.left_subheading }}</div>
+          {%- endif -%}
+          {%- if section.settings.left_button_text != blank and section.settings.left_clickable == false -%}
+            <span class="banner-half-btn-{{ section.id }}" style="background-color: {{ section.settings.left_button_color }}; color: {{ section.settings.left_button_text_color }};">{{ section.settings.left_button_text }}</span>
+          {%- endif -%}
+        </div>
+      {%- endcapture -%}
+
+      {%- if section.settings.left_clickable and section.settings.left_link != blank -%}
+        <a href="{{ section.settings.left_link }}" style="display:block;height:100%;text-decoration:none;color:inherit;">
+          {{ left_markup }}
+        </a>
+      {%- else -%}
+        {{ left_markup }}
+      {%- endif -%}
+    </div>
+
+    <!-- RIGHT BANNER -->
+    <div class="banner-half-{{ section.id }}">
+      {%- capture right_markup -%}
+        <div class="banner-half-overlay-{{ section.id }}"></div>
+        {%- if section.settings.right_video_url != blank -%}
+          <video autoplay loop muted playsinline class="jj-hero-video" crossorigin="anonymous">
+            <source src="{{ section.settings.right_video_url }}" type="video/mp4">
+          </video>
+        {%- else -%}
+          {%- if section.settings.right_image != blank -%}
+            <img src="{{ section.settings.right_image | img_url: '1024x' }}" alt="{{ section.settings.right_title | escape }}" loading="lazy">
+          {%- else -%}
+            <img src="{{ 'jj-background-graphics.jpg' | asset_url }}" alt="Default Banner Image" loading="lazy">
+          {%- endif -%}
+        {%- endif -%}
+
+        <div class="banner-half-content-{{ section.id }}">
+          {%- if section.settings.right_tag != blank -%}
+            <div class="banner-half-tag-{{ section.id }}">{{ section.settings.right_tag }}</div>
+          {%- endif -%}
+          {%- if section.settings.right_title != blank -%}
+            <h3 class="banner-half-title-{{ section.id }}">{{ section.settings.right_title }}</h3>
+          {%- endif -%}
+          {%- if section.settings.right_subheading != blank -%}
+            <div class="banner-half-subheading-{{ section.id }}">{{ section.settings.right_subheading }}</div>
+          {%- endif -%}
+          {%- if section.settings.right_button_text != blank and section.settings.right_clickable == false -%}
+            <span class="banner-half-btn-{{ section.id }}" style="background-color: {{ section.settings.right_button_color }}; color: {{ section.settings.right_button_text_color }};">{{ section.settings.right_button_text }}</span>
+          {%- endif -%}
+        </div>
+      {%- endcapture -%}
+
+      {%- if section.settings.right_clickable and section.settings.right_link != blank -%}
+        <a href="{{ section.settings.right_link }}" style="display:block;height:100%;text-decoration:none;color:inherit;">
+          {{ right_markup }}
+        </a>
+      {%- else -%}
+        {{ right_markup }}
+      {%- endif -%}
+    </div>
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Double Split Promo Banners",
+  "tag": "section",
+  "class": "double-split-promo-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Height Styles"
+    },
+    {
+      "type": "range",
+      "id": "desktop_height",
+      "min": 200,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "label": "Desktop Height",
+      "default": 400
+    },
+    {
+      "type": "range",
+      "id": "mobile_height",
+      "min": 150,
+      "max": 600,
+      "step": 10,
+      "unit": "px",
+      "label": "Mobile Height",
+      "default": 250
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay Mask Color",
+      "default": "rgba(0,0,0,0.3)"
+    },
+    {
+      "type": "header",
+      "content": "Left Promo Banner"
+    },
+    {
+      "type": "image_picker",
+      "id": "left_image",
+      "label": "Left Image"
+    },
+    {
+      "type": "text",
+      "id": "left_video_url",
+      "label": "Left Video URL (Direct MP4 link)"
+    },
+    {
+      "type": "checkbox",
+      "id": "left_clickable",
+      "label": "Make entire Left banner clickable",
+      "default": false
+    },
+    {
+      "type": "url",
+      "id": "left_link",
+      "label": "Left Link URL"
+    },
+    {
+      "type": "text",
+      "id": "left_tag",
+      "label": "Left Tag Label",
+      "default": "APPAREL"
+    },
+    {
+      "type": "text",
+      "id": "left_title",
+      "label": "Left Title",
+      "default": "Streetwear Grails"
+    },
+    {
+      "type": "text",
+      "id": "left_subheading",
+      "label": "Left Subheading",
+      "default": "LATEST STREETWEAR DEPT"
+    },
+    {
+      "type": "text",
+      "id": "left_button_text",
+      "label": "Left Button Text",
+      "default": "Shop Apparel"
+    },
+    {
+      "type": "color",
+      "id": "left_button_color",
+      "label": "Left Button Color",
+      "default": "#c60000"
+    },
+    {
+      "type": "color",
+      "id": "left_button_text_color",
+      "label": "Left Button Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Right Promo Banner"
+    },
+    {
+      "type": "image_picker",
+      "id": "right_image",
+      "label": "Right Image"
+    },
+    {
+      "type": "text",
+      "id": "right_video_url",
+      "label": "Right Video URL (Direct MP4 link)"
+    },
+    {
+      "type": "checkbox",
+      "id": "right_clickable",
+      "label": "Make entire Right banner clickable",
+      "default": false
+    },
+    {
+      "type": "url",
+      "id": "right_link",
+      "label": "Right Link URL"
+    },
+    {
+      "type": "text",
+      "id": "right_tag",
+      "label": "Right Tag Label",
+      "default": "KICKS"
+    },
+    {
+      "type": "text",
+      "id": "right_title",
+      "label": "Right Title",
+      "default": "Sneaker Grails"
+    },
+    {
+      "type": "text",
+      "id": "right_subheading",
+      "label": "Right Subheading",
+      "default": "100% SECURED SNEAKERS"
+    },
+    {
+      "type": "text",
+      "id": "right_button_text",
+      "label": "Right Button Text",
+      "default": "Shop Sneakers"
+    },
+    {
+      "type": "color",
+      "id": "right_button_color",
+      "label": "Right Button Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "right_button_text_color",
+      "label": "Right Button Text Color",
+      "default": "#000000"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Double Split Promo Banners",
+      "category": "Image"
+    }
+  ]
+}
+{% endschema %}

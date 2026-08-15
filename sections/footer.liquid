@@ -1,0 +1,52 @@
+
+        <section class="footer-subscribe">
+          <div class="container-2">
+            <div class="footer-form-two w-form">
+              {%- form "contact",  class: "footer-form-container-two" -%}
+                <div class="footer-form-title">{{ section.settings.footer_header }}</div>
+                <div class="footer-form-block-two"><input class="footer-form-input w-input" maxlength="256" name="contact[email]" data-name="Footer Email Two" aria-label="Enter your email" placeholder="{{ 'tn1654c429' | t }}" type="email" id="Footer-Email-Two" required=""><input type="submit" data-wait="Please wait..." class="button-primary footer-form-button w-button" value="{{ 'tn72c4e940' | t }}"></div>
+              {%- assign form_success = form.posted_successfully? -%}{%- assign form_errors = form.errors -%}{%- render "form-general-script", form_success: form_success, form_errors: form_errors -%}{%- endform -%}
+              <div class="w-form-done  {% if form_success %}form-posted-successfully{% endif %}">
+                <div>{{ 't5a0ea5a1' | t }}</div>
+              </div>
+              {%- unless form_success -%}<div class="w-form-fail  {% if form.errors %}form-has-errors{% endif %}">
+                <div>{%- render "form-errors", form_errors: form_errors -%}</div>
+              </div>{%- endunless -%}
+            </div>
+            <div class="footer-wrapper-three">
+              <div class="footer-block-three">
+                {%- for link in linklists["footer"].links -%}<a href="{{ link.url }}" class="footer-link-three">{{ link.title }}</a>{%- endfor -%}{%- render 'menu-error', menu: "footer" -%}
+              </div>
+              <div class="footer-social-block-three">
+                <a href="https://www.instagram.com/jjkickszz" target="_blank" class="footer-social-link-three w-inline-block"><img src="https://uploads-ssl.webflow.com/62434fa732124a0fb112aab4/62434fa732124a61f512aaed_instagram%20big.svg" loading="lazy" alt="" class="image-16"></a>
+              </div>
+            </div>
+            <div class="footer-divider-two"></div>
+            <div class="footer-bottom">
+              <div class="footer-copyright">{{ 'tn328b24c6' | t }}</div>
+              <div class="footer-legal-block">
+                <a href="{{ pages["terms-of-use"].url }}" class="footer-legal-link">{{ 't1c70c97' | t }}</a>
+                <a href="#" class="footer-legal-link">{{ 'tn3fbde6f6' | t }}</a>
+              </div>
+            </div>
+          </div>
+        </section>
+      
+
+<script>var currentSection = document.currentScript.closest('.shopify-section');currentSection.setAttribute("option:checkbox","hide-section");currentSection.setAttribute("class","footer");</script>
+        
+{% schema %}
+{
+  "name": "footer",
+  "tag": "div",
+  "class": "footer",
+  "settings": [
+    {
+      "type": "text",
+      "id": "footer_header",
+      "label": "Footer Header",
+      "default": "Join the Kickszz Crew"
+    }
+  ]
+}
+{% endschema %}

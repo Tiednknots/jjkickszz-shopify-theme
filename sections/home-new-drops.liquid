@@ -1,0 +1,67 @@
+{% schema %}
+{
+  "name": "New Drops Grid",
+  "tag": "section",
+  "class": "hero-main-collection",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "NEW DROPS"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "View All Products"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "header",
+      "content": "Collection Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_auto_grid",
+      "label": "Use Auto 'Newest per Vendor' Grid",
+      "default": true
+    },
+    {
+      "type": "collection",
+      "id": "custom_collection",
+      "label": "Or Select Specific Collection"
+    }
+  ],
+  "presets": [
+    {
+      "name": "New Drops Grid"
+    }
+  ]
+}
+{% endschema %}
+
+<section class="home-section">
+  <h1 class="heading">{{ section.settings.heading }}</h1>
+  <div class="brand-view">
+    {%- if section.settings.use_auto_grid -%}
+      {%- render "products_sorted_by_created_on" -%}
+    {%- else -%}
+      {%- assign custom_col = collections[section.settings.custom_collection] -%}
+      {%- if custom_col != blank -%}
+        {%- render "markup_for_home_collection" with section_collection: custom_col -%}
+      {%- else -%}
+        {%- render "products_sorted_by_created_on" -%}
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+  {% if section.settings.button_text != blank %}
+  <div style="text-align:center;margin-top:2rem;">
+    <a href="{{ section.settings.button_link | default: '/pages/shop' }}" class="button w-button">{{ section.settings.button_text }}</a>
+  </div>
+  {% endif %}
+</section>
