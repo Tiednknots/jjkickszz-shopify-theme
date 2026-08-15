@@ -196,7 +196,7 @@
                   {%- endform -%}
                   {%- comment -%} ── ASK A QUESTION BUTTON ── {%- endcomment -%}
                   <div style="display: flex; justify-content: center; width: 100%;">
-                    <a href="/pages/contact-us?product={{ product.title | url_encode }}&handle={{ product.handle }}" class="jj-ask-question-btn">
+                    <a href="javascript:void(0)" id="jj-ask-btn" class="jj-ask-question-btn">
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block; vertical-align:middle; margin-right:4px;"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r="0.5" fill="currentColor"/></svg>
                       Ask a Question About This Product
                     </a>
@@ -286,6 +286,59 @@
         </div>
         <button class="jj-lb-arrow" id="jj-lb-next" aria-label="Next image">&#8594;</button>
         <div class="jj-lb-counter" id="jj-lb-counter"></div>
+        <div class="jj-lb-thumbs" id="jj-lb-thumbs"></div>
+      </div>
+
+      <!-- ── IOS-STYLE SLIDE-UP CONTACT DRAWER ────────────────────── -->
+      <div id="jj-drawer-overlay"></div>
+      <div id="jj-contact-drawer" role="dialog" aria-modal="true" aria-label="Ask a question drawer">
+        <div class="jj-drawer-handle"></div>
+        <div class="jj-drawer-header">
+          <h2 class="jj-drawer-title">Ask a Question</h2>
+          <button class="jj-drawer-close" id="jj-drawer-close" aria-label="Close drawer">&times;</button>
+        </div>
+        <div class="jj-drawer-content">
+          <!-- Product Context Row -->
+          <div class="jj-drawer-product-row">
+            <img src="{{ product.featured_image | img_url: '150x' }}" class="jj-drawer-product-img" alt="{{ product.title }}">
+            <div class="jj-drawer-product-info">
+              <h3 class="jj-drawer-product-title">{{ product.title }}</h3>
+              <p class="jj-drawer-product-price">{{ product.price | money }}</p>
+            </div>
+          </div>
+
+          {%- form "contact", id: "jj-drawer-form" -%}
+            <input type="hidden" name="contact[product_title]" value="{{ product.title }}">
+            <input type="hidden" name="contact[product_url]" value="{{ shop.url }}{{ product.url }}">
+            
+            <div class="jj-drawer-fields">
+              <div class="jj-drawer-field">
+                <input type="text" id="drawer-name" name="contact[name]" placeholder="Your Name" required autocomplete="name">
+              </div>
+              <div class="jj-drawer-field">
+                <input type="email" id="drawer-email" name="contact[email]" placeholder="Your Email" required autocomplete="email">
+              </div>
+              <div class="jj-drawer-field">
+                <input type="tel" id="drawer-phone" name="contact[phone]" placeholder="Phone Number (Optional)" autocomplete="tel">
+              </div>
+              <div class="jj-drawer-field">
+                <select id="drawer-reason" name="contact[reason]" required>
+                  <option value="Product Question" selected>Reason: Product Question</option>
+                  <option value="Sizing Advice">Reason: Sizing Advice</option>
+                  <option value="Availability">Reason: Availability / Restocks</option>
+                </select>
+              </div>
+              <div class="jj-drawer-field">
+                <textarea id="drawer-message" name="contact[body]" placeholder="Your Message" required>Hi, I have a question about the {{ product.title }}: </textarea>
+              </div>
+            </div>
+
+            <button type="submit" class="jj-drawer-submit">Send Message</button>
+            
+            <div class="jj-drawer-success" id="jj-drawer-success">✓ Message sent successfully!</div>
+            <div class="jj-drawer-error" id="jj-drawer-error">Something went wrong. Please try again.</div>
+          {%- endform -%}
+        </div>
       </div>
     </div>
   </div>
@@ -304,7 +357,7 @@
     grid-template-columns: 1fr 1fr !important;
     gap: 4rem !important;
     align-items: start !important;
-    padding: 2rem 4rem !important;
+    padding: 140px 4rem 2rem !important; /* clears fixed header and scroller */
     box-sizing: border-box !important;
     max-width: 100% !important;
   }
@@ -612,6 +665,252 @@
     background: rgba(255,255,255,0.9);
     transform: scale(1.3);
   }
+
+  /* ── LIGHTBOX CUSTOMIZATIONS ─────────────────────────────────── */
+  .jj-lb-thumbs {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 10002 !important;
+  }
+  .jj-lb-thumb-img {
+    width: 44px;
+    height: 44px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s ease, border-color 0.2s ease;
+  }
+  .jj-lb-thumb-img.active, .jj-lb-thumb-img:hover {
+    opacity: 1;
+    border-color: #fff;
+  }
+  
+  .jj-lb-close {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    width: 44px;
+    height: 44px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 50%;
+    color: #fff;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+    z-index: 10002 !important;
+  }
+  .jj-lb-close:hover {
+    background: rgba(255,255,255,0.18);
+  }
+
+  /* ── IOS-STYLE CONTACT DRAWER ────────────────────────────────── */
+  #jj-drawer-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    z-index: 10005;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  #jj-drawer-overlay.open {
+    display: block;
+    opacity: 1;
+  }
+  #jj-contact-drawer {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 100%);
+    width: 100%;
+    max-width: 500px;
+    background: #0b0b0b;
+    border-top: 1px solid #2e2e2e;
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    z-index: 10006;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-sizing: border-box;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.6);
+  }
+  #jj-contact-drawer.open {
+    transform: translate(-50%, 0);
+  }
+  .jj-drawer-handle {
+    width: 36px;
+    height: 4px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 2px;
+    margin: 12px auto 8px;
+    flex-shrink: 0;
+  }
+  .jj-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 24px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+  }
+  .jj-drawer-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .jj-drawer-close {
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.4);
+    font-size: 24px;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+  }
+  .jj-drawer-content {
+    padding: 24px;
+    overflow-y: auto;
+    flex: 1;
+    box-sizing: border-box;
+  }
+  .jj-drawer-product-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 20px;
+  }
+  .jj-drawer-product-img {
+    width: 54px;
+    height: 54px;
+    object-fit: cover;
+    border-radius: 6px;
+  }
+  .jj-drawer-product-info {
+    flex: 1;
+  }
+  .jj-drawer-product-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 3px 0;
+  }
+  .jj-drawer-product-price {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: #22c55e;
+    margin: 0;
+    font-weight: 600;
+  }
+  .jj-drawer-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .jj-drawer-field {
+    width: 100%;
+  }
+  .jj-drawer-field input,
+  .jj-drawer-field select,
+  .jj-drawer-field textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    color: #fff;
+    padding: 12px 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease;
+  }
+  .jj-drawer-field select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 18px;
+    padding-right: 36px;
+  }
+  .jj-drawer-field textarea {
+    min-height: 90px;
+    resize: none;
+    line-height: 1.5;
+  }
+  .jj-drawer-field input:focus,
+  .jj-drawer-field select:focus,
+  .jj-drawer-field textarea:focus {
+    border-color: rgba(255,255,255,0.3);
+  }
+  .jj-drawer-submit {
+    width: 100%;
+    background: #fff;
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    padding: 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 16px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: background 0.2s ease;
+  }
+  .jj-drawer-submit:hover {
+    background: #e6e6e6;
+  }
+  .jj-drawer-success {
+    display: none;
+    color: #22c55e;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 12px;
+    background: rgba(34,197,94,0.06);
+    border: 1px solid rgba(34,197,94,0.15);
+    border-radius: 8px;
+    padding: 10px;
+  }
+  .jj-drawer-error {
+    display: none;
+    color: #ef4444;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 12px;
+    background: rgba(239,68,68,0.06);
+    border: 1px solid rgba(239,68,68,0.15);
+    border-radius: 8px;
+    padding: 10px;
+  }
 </style>
   <script>
   // --- 1. SCROLLBAR ENGINE ---
@@ -707,6 +1006,12 @@
       var hasMultiple = lbImages.length > 1;
       if (lbPrev) lbPrev.style.display = hasMultiple ? '' : 'none';
       if (lbNext) lbNext.style.display = hasMultiple ? '' : 'none';
+
+      // Populate thumbnail carousel inside lightbox
+      populateLbThumbs();
+
+      // Zoom immediately on open
+      triggerImmediateZoom();
     }
 
     function closeLightbox() {
@@ -719,17 +1024,62 @@
       if (!lbImages.length) return;
       lbImg.src = lbImages[lbIndex];
       if (lbCounter) lbCounter.textContent = lbImages.length > 1 ? (lbIndex + 1) + ' / ' + lbImages.length : '';
+      
+      // Update active thumbnail state
+      document.querySelectorAll('.jj-lb-thumb-img').forEach(function(thumb, idx) {
+        thumb.classList.toggle('active', idx === lbIndex);
+      });
+
       resetZoom();
+      if (lb.classList.contains('open')) {
+        triggerImmediateZoom();
+      }
+    }
+
+    function triggerImmediateZoom() {
+      lbZoomed = true;
+      lbScale = 4.0;
+      if (lbImg) {
+        lbImg.classList.add('zoomed');
+        lbImg.style.cursor = 'zoom-out';
+        // Center zoom initially
+        lbTranslateX = 0;
+        lbTranslateY = 0;
+        lbImg.style.transform = 'scale(' + lbScale + ') translate(0,0)';
+        lbImg.style.transition = 'transform 0.25s ease';
+      }
     }
 
     function resetZoom() {
       lbZoomed = false;
-      lbScale = 1;
+      lbScale = 1.0;
       if (lbImg) {
         lbImg.style.transform = 'scale(1) translate(0,0)';
         lbImg.classList.remove('zoomed');
         lbImg.style.cursor = 'zoom-in';
       }
+    }
+
+    function populateLbThumbs() {
+      var thumbsContainer = document.getElementById('jj-lb-thumbs');
+      if (!thumbsContainer) return;
+      thumbsContainer.innerHTML = '';
+      if (lbImages.length < 2) {
+        thumbsContainer.style.display = 'none';
+        return;
+      }
+      thumbsContainer.style.display = 'flex';
+      lbImages.forEach(function(src, idx) {
+        var img = document.createElement('img');
+        img.src = src;
+        img.className = 'jj-lb-thumb-img' + (idx === lbIndex ? ' active' : '');
+        img.addEventListener('click', function(e) {
+          e.stopPropagation();
+          lbIndex = idx;
+          showLbImage();
+        });
+        thumbsContainer.appendChild(img);
+      });
     }
 
     // Trigger lightbox from clicking any product image
@@ -771,10 +1121,13 @@
       if (e.key === 'ArrowRight') { lbIndex = (lbIndex + 1) % lbImages.length; showLbImage(); }
     });
 
-    // Touch swipe inside lightbox
+    // Touch swipe inside lightbox (only when not zoomed to allow panning)
     if (lb) {
-      lb.addEventListener('touchstart', function(e) { lbTouchStartX = e.touches[0].clientX; }, {passive: true});
+      lb.addEventListener('touchstart', function(e) { 
+        if (!lbZoomed) lbTouchStartX = e.touches[0].clientX; 
+      }, {passive: true});
       lb.addEventListener('touchend', function(e) {
+        if (lbZoomed) return;
         var dx = e.changedTouches[0].clientX - lbTouchStartX;
         if (Math.abs(dx) > 50 && lbImages.length > 1) {
           if (dx < 0) { lbIndex = (lbIndex + 1) % lbImages.length; }
@@ -784,18 +1137,14 @@
       }, {passive: true});
     }
 
-    // Single-image: hover zoom following mouse (4x)
+    // Toggle zoom on image click in lightbox
     var lbTranslateX = 0, lbTranslateY = 0;
     var wrap = document.getElementById('jj-lb-img-wrap');
     if (lbImg && wrap) {
       lbImg.addEventListener('click', function(e) {
         e.stopPropagation();
         if (!lbZoomed) {
-          lbZoomed = true;
-          lbScale = 4.0;
-          lbImg.classList.add('zoomed');
-          lbImg.style.cursor = 'zoom-out';
-          lbImg.style.transition = 'transform 0.2s ease';
+          triggerImmediateZoom();
         } else {
           resetZoom();
         }
@@ -807,8 +1156,8 @@
         var rect = wrap.getBoundingClientRect();
         var cx = (e.clientX - rect.left) / rect.width - 0.5;
         var cy = (e.clientY - rect.top) / rect.height - 0.5;
-        lbTranslateX = -cx * rect.width * (lbScale - 1) * 0.4;
-        lbTranslateY = -cy * rect.height * (lbScale - 1) * 0.4;
+        lbTranslateX = -cx * rect.width * (lbScale - 1) * 0.45;
+        lbTranslateY = -cy * rect.height * (lbScale - 1) * 0.45;
         lbImg.style.transform = 'scale(' + lbScale + ') translate(' + lbTranslateX + 'px,' + lbTranslateY + 'px)';
         lbImg.style.transition = 'none';
       });
@@ -871,6 +1220,74 @@
       document.querySelectorAll('.w-commerce-commerceaddtocarterrorstate').forEach(function(el) {
         observer.observe(el, { attributes: true, attributeFilter: ['style'] });
       });
+    }
+
+    // ── IOS SLIDE-UP DRAWER INTERACTIVES ───────────────────────────
+    var askBtn = document.getElementById('jj-ask-btn');
+    var drawer = document.getElementById('jj-contact-drawer');
+    var drawerOverlay = document.getElementById('jj-drawer-overlay');
+    var drawerClose = document.getElementById('jj-drawer-close');
+    var drawerForm = document.getElementById('jj-drawer-form');
+
+    if (askBtn && drawer && drawerOverlay) {
+      askBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        drawerOverlay.classList.add('open');
+        drawer.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+
+      function closeDrawer() {
+        drawerOverlay.classList.remove('open');
+        drawer.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+
+      if (drawerClose) drawerClose.addEventListener('click', closeDrawer);
+      drawerOverlay.addEventListener('click', closeDrawer);
+
+      // Handle Form Submission via AJAX
+      if (drawerForm) {
+        drawerForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          var submitBtn = drawerForm.querySelector('.jj-drawer-submit');
+          var successMsg = document.getElementById('jj-drawer-success');
+          var errorMsg = document.getElementById('jj-drawer-error');
+
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Sending...';
+          }
+          if (successMsg) successMsg.style.display = 'none';
+          if (errorMsg) errorMsg.style.display = 'none';
+
+          var formData = new FormData(drawerForm);
+          fetch('/contact', {
+            method: 'POST',
+            body: formData
+          })
+          .then(function(res) {
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.textContent = 'Send Message';
+            }
+            if (res.ok) {
+              if (successMsg) successMsg.style.display = 'block';
+              drawerForm.reset();
+              setTimeout(closeDrawer, 2000);
+            } else {
+              if (errorMsg) errorMsg.style.display = 'block';
+            }
+          })
+          .catch(function(err) {
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.textContent = 'Send Message';
+            }
+            if (errorMsg) errorMsg.style.display = 'block';
+          });
+        });
+      }
     }
 
     document.addEventListener('DOMContentLoaded', function() {
