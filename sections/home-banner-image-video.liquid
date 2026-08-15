@@ -196,6 +196,22 @@
         handlePlaying();
       }
     });
+
+    // Scroll Blur & Fade-out effect
+    window.addEventListener('scroll', function() {
+      var rect = sectionEl.getBoundingClientRect();
+      if (rect.top < 0) {
+        var distance = Math.abs(rect.top);
+        var height = rect.height || 600;
+        var blurVal = Math.min((distance / (height * 0.7)) * 12, 12);
+        var opacityVal = Math.max(1 - (distance / (height * 0.7)) * 0.5, 0.5);
+        sectionEl.style.filter = 'blur(' + blurVal.toFixed(1) + 'px)';
+        sectionEl.style.opacity = opacityVal.toFixed(2);
+      } else {
+        sectionEl.style.filter = 'none';
+        sectionEl.style.opacity = '1';
+      }
+    }, { passive: true });
   })();
 </script>
 

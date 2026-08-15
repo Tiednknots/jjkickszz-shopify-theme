@@ -143,6 +143,42 @@
         setTimeout(restoreScrollPositions, 1500);
       });
     }
+
+    // Scroll-In Micro Animations Observer
+    document.addEventListener('DOMContentLoaded', function() {
+      // 1. Tag all valid sections
+      var sections = document.querySelectorAll('.shopify-section');
+      sections.forEach(function(sec) {
+        if (sec.querySelector('.navbar') || sec.querySelector('.white-section.menu') || sec.classList.contains('shopify-section-header')) {
+          return;
+        }
+        sec.classList.add('scroll-animate');
+      });
+
+      // 2. Set up observer
+      if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function(entries, obs) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('animated');
+              obs.unobserve(entry.target);
+            }
+          });
+        }, {
+          threshold: 0.02,
+          rootMargin: '0px 0px -20px 0px'
+        });
+
+        document.querySelectorAll('.scroll-animate').forEach(function(el) {
+          observer.observe(el);
+        });
+      } else {
+        // Fallback for old browsers
+        document.querySelectorAll('.scroll-animate').forEach(function(el) {
+          el.classList.add('animated');
+        });
+      }
+    });
   })();
 </script>
 </body></html>

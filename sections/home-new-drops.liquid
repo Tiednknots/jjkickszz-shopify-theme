@@ -22,6 +22,18 @@
       "label": "Button Link"
     },
     {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_txt_color",
+      "label": "Button Text Color",
+      "default": "#000000"
+    },
+    {
       "type": "header",
       "content": "Collection Settings"
     },
@@ -61,7 +73,7 @@
   </div>
   {% if section.settings.button_text != blank %}
   <div style="text-align:center;margin-top:2rem;">
-    <a href="{{ section.settings.button_link | default: '/pages/shop' }}" class="button w-button">{{ section.settings.button_text }}</a>
+    <a href="{{ section.settings.button_link | default: '/pages/shop' }}" class="button w-button" style="background-color: {{ section.settings.button_bg_color | default: '#ffffff' }} !important; color: {{ section.settings.button_txt_color | default: '#000000' }} !important;">{{ section.settings.button_text }}</a>
   </div>
   {% endif %}
 </section>
