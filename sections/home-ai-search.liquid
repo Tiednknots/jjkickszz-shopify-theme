@@ -2,7 +2,13 @@
 <div class="jj-ai-section-wrap" id="jj-ai-search-{{ section.id }}">
   <div class="jj-ai-card">
     <div class="jj-ai-header">
-      <div class="jj-ai-icon">🤖</div>
+      <!-- Premium dual sparkle AI icon in black -->
+      <div class="jj-ai-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="jj-ai-spark-icon">
+          <path d="M9.813 15.904L9 21L8.188 15.904L3 15L8.188 14.096L9 9L9.813 14.096L15 15L9.813 15.904Z" fill="currentColor"/>
+          <path d="M19.071 4.929L18.5 8L17.929 4.929L15 4.358L17.929 3.787L18.5 0.716L19.071 3.787L22 4.358L19.071 4.929Z" fill="currentColor"/>
+        </svg>
+      </div>
       <h2 class="jj-ai-title">{{ section.settings.title | default: 'JJKICKSZZ AI' }}</h2>
       <p class="jj-ai-subtitle">{{ section.settings.subtitle | default: 'Talk to our sneaker assistant to find your grails instantly.' }}</p>
     </div>
@@ -55,13 +61,14 @@
     }
   }
 
+  /* Premium White Card Layout */
   .jj-ai-card {
-    background: #111111;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: #ffffff; /* Primarily white card background */
+    border: 1px solid rgba(0, 0, 0, 0.06);
     border-radius: 16px;
     padding: 2.5rem;
     box-sizing: border-box;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
     transition: transform 0.3s ease;
   }
   @media (max-width: 767px) {
@@ -71,20 +78,20 @@
     }
   }
 
-  /* Header */
+  /* Header inside White Card */
   .jj-ai-header {
     margin-bottom: 2rem;
   }
   .jj-ai-icon {
-    font-size: 2.5rem;
     margin-bottom: 0.75rem;
     line-height: 1;
+    color: #000000;
   }
   .jj-ai-title {
     font-family: var(--font-display), 'Inter', sans-serif;
     font-size: 2.2rem;
     font-weight: 900;
-    color: #fff;
+    color: #000000; /* Black text */
     text-transform: uppercase;
     margin: 0 0 6px 0;
     letter-spacing: -0.01em;
@@ -92,7 +99,7 @@
   .jj-ai-subtitle {
     font-family: var(--font-body), 'Inter', sans-serif;
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.45);
+    color: rgba(0, 0, 0, 0.55); /* Dark grey text */
     margin: 0;
     font-weight: 400;
   }
@@ -101,7 +108,7 @@
     .jj-ai-subtitle { font-size: 11px; }
   }
 
-  /* Form and Input */
+  /* Form and Input inside White Card */
   .jj-ai-form {
     margin-bottom: 1.25rem;
     width: 100%;
@@ -111,21 +118,21 @@
     width: 100%;
     display: flex;
     align-items: center;
-    background: #000000;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: #f5f5f5; /* Light grey input background */
+    border: 1px solid rgba(0, 0, 0, 0.06);
     border-radius: 8px;
     transition: border-color 0.25s ease, box-shadow 0.25s ease;
   }
   .jj-ai-input-wrap:focus-within {
-    border-color: rgba(255, 255, 255, 0.3);
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
+    border-color: rgba(0, 0, 0, 0.25);
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.03);
   }
   .jj-ai-input {
     width: 100%;
     background: transparent;
     border: none;
     outline: none;
-    color: #fff;
+    color: #000000; /* Black input text */
     font-family: var(--font-body), 'Inter', sans-serif;
     font-size: 14px;
     font-weight: 400;
@@ -133,7 +140,7 @@
     box-sizing: border-box;
   }
   .jj-ai-input::placeholder {
-    color: rgba(255, 255, 255, 0.25);
+    color: rgba(0, 0, 0, 0.35);
   }
   .jj-ai-submit {
     position: absolute;
@@ -141,7 +148,7 @@
     background: transparent;
     border: none;
     outline: none;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(0, 0, 0, 0.4);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -150,7 +157,7 @@
     transition: color 0.2s ease;
   }
   .jj-ai-submit:hover {
-    color: #fff;
+    color: #000000;
   }
   @media (max-width: 767px) {
     .jj-ai-input {
@@ -163,7 +170,7 @@
     }
   }
 
-  /* Chips */
+  /* Chips inside White Card */
   .jj-ai-chips {
     display: flex;
     flex-wrap: wrap;
@@ -176,14 +183,14 @@
     font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.3);
+    color: rgba(0, 0, 0, 0.4); /* Grey chips label */
     margin-right: 4px;
     letter-spacing: 0.05em;
   }
   .jj-ai-chip {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    color: rgba(255, 255, 255, 0.7);
+    background: rgba(0, 0, 0, 0.03); /* Light grey chip */
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    color: rgba(0, 0, 0, 0.7);
     border-radius: 20px;
     padding: 6px 14px;
     font-family: var(--font-body), 'Inter', sans-serif;
@@ -193,9 +200,9 @@
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .jj-ai-chip:hover {
-    background: #ffffff;
-    color: #000000;
-    border-color: #ffffff;
+    background: #000000; /* Black background on hover */
+    color: #ffffff; /* White text on hover */
+    border-color: #000000;
     transform: translateY(-1px);
   }
   @media (max-width: 767px) {
@@ -220,15 +227,15 @@
     padding: 2rem 0;
     font-family: var(--font-body), 'Inter', sans-serif;
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(0, 0, 0, 0.5);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
   .jj-ai-spinner {
     width: 16px;
     height: 16px;
-    border: 2px solid rgba(255,255,255,0.1);
-    border-top-color: #fff;
+    border: 2px solid rgba(0,0,0,0.06);
+    border-top-color: #000000; /* Black spinner tip */
     border-radius: 50%;
     animation: jj-spinner-anim 0.8s linear infinite;
   }
@@ -237,9 +244,9 @@
     100% { transform: rotate(360deg); }
   }
 
-  /* Results Row */
+  /* Results Row inside White Card */
   .jj-ai-results-wrap {
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
     padding-top: 2rem;
   }
   .jj-ai-results-title {
@@ -247,7 +254,7 @@
     font-size: 11px;
     font-weight: 800;
     letter-spacing: 0.15em;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(0, 0, 0, 0.4);
     margin: 0 0 1.25rem 0;
   }
   .jj-ai-results {
@@ -283,7 +290,7 @@
     align-items: center;
     justify-content: center;
     margin-bottom: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.05); /* Grey border around image card */
   }
   .jj-ai-image-wrap img {
     width: 100%;
@@ -294,7 +301,7 @@
     font-family: var(--font-ui), 'Inter', sans-serif;
     font-size: 9px;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.35);
+    color: rgba(0, 0, 0, 0.45);
     text-transform: uppercase;
     letter-spacing: 0.1em;
     margin-bottom: 4px;
@@ -303,7 +310,7 @@
     font-family: var(--font-body), 'Inter', sans-serif;
     font-size: 12px;
     font-weight: 700;
-    color: #fff;
+    color: #000000; /* Black product titles */
     text-transform: uppercase;
     margin: 0 0 4px 0;
     white-space: nowrap;
@@ -314,13 +321,13 @@
     font-family: var(--font-body), 'Inter', sans-serif;
     font-size: 12px;
     font-weight: 800;
-    color: #22c55e;
+    color: #16a34a; /* Premium green price */
     margin-bottom: 12px;
   }
   .jj-ai-btn {
     width: 100%;
-    background: #ffffff;
-    color: #000000;
+    background: #000000; /* Black add button */
+    color: #ffffff; /* White text */
     border: none;
     outline: none;
     border-radius: 4px;
@@ -335,11 +342,11 @@
     transition: opacity 0.2s ease;
   }
   .jj-ai-btn:hover {
-    opacity: 0.9;
+    opacity: 0.85;
   }
   .jj-ai-btn:disabled {
-    background: rgba(255,255,255,0.15);
-    color: rgba(255,255,255,0.4);
+    background: rgba(0, 0, 0, 0.08);
+    color: rgba(0, 0, 0, 0.35);
     cursor: not-allowed;
   }
 
@@ -347,7 +354,7 @@
     padding: 2rem 0;
     font-family: var(--font-body), 'Inter', sans-serif;
     font-size: 12px;
-    color: rgba(255,255,255,0.4);
+    color: rgba(0, 0, 0, 0.45);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -411,82 +418,133 @@
       resultsWrap.style.display = 'none';
       resultsContainer.innerHTML = '';
 
-      // Parse helper variables for natural language filtering
-      var queryLower = query.toLowerCase();
+      var queryLower = query.toLowerCase().replace(/\s+/g, ' ').trim();
       
-      // Price parsing: e.g., "under $300" -> 300
+      // Parse Price filter limit: e.g., "under $300" -> 300
       var maxPrice = null;
       var priceMatch = queryLower.match(/under\s*\$?\s*(\d+)/) || queryLower.match(/below\s*\$?\s*(\d+)/);
       if (priceMatch && priceMatch[1]) {
         maxPrice = parseFloat(priceMatch[1]);
       }
 
-      // Size parsing: e.g., "size 10" or "size 9.5"
+      // Parse Size filter limit: e.g., "size 10" or "size 9.5"
       var filterSize = null;
       var sizeMatch = queryLower.match(/size\s*(\d+(?:\.5)?)/);
       if (sizeMatch && sizeMatch[1]) {
         filterSize = sizeMatch[1];
       }
 
-      // Build predictive search query string (sanitize query, removing under/size filters for native search engine)
+      // Build clean search query for predictive search API
       var cleanQuery = query
         .replace(/under\s*\$?\s*\d+/gi, '')
         .replace(/below\s*\$?\s*\d+/gi, '')
         .replace(/size\s*\d+(?:\.5)?/gi, '')
+        .replace(/something|anything|everything|shoes|sneakers|products|items/gi, '')
         .trim();
 
+      // If clean query is empty, we fall back directly to fetching all products
       if (cleanQuery.length === 0) {
-        cleanQuery = query; // fallback
+        fetchAllProductsFallback(maxPrice, filterSize);
+        return;
       }
 
       var searchUrl = window.Shopify.routes.root + 'search/suggest.json' +
         '?q=' + encodeURIComponent(cleanQuery) +
         '&resources[type]=product' +
-        '&resources[limit]=10';
+        '&resources[limit]=24';
 
       fetch(searchUrl)
         .then(function(res) { return res.json(); })
         .then(function(data) {
-          loadingEl.style.display = 'none';
-          
           var rawProducts = [];
           if (data.resources && data.resources.results && data.resources.results.products) {
             rawProducts = data.resources.results.products;
           }
 
           // Apply client-side filters (Price and Size)
-          var filteredProducts = rawProducts.filter(function(prod) {
-            // 1. Price Filter
-            if (maxPrice !== null) {
-              var priceNum = parseFloat(prod.price) || 0;
-              if (priceNum > maxPrice) {
-                return false;
-              }
-            }
+          var filteredProducts = filterProducts(rawProducts, maxPrice, filterSize);
 
-            // 2. Size Filter
-            if (filterSize !== null) {
-              // Check if size exists in the variants array
-              if (prod.variants && prod.variants.length > 0) {
-                var sizeFound = prod.variants.some(function(v) {
-                  var vTitle = v.title.toLowerCase();
-                  return vTitle === filterSize || vTitle.indexOf(filterSize) !== -1;
-                });
-                if (!sizeFound) return false;
-              }
-            }
-
-            return true;
-          });
-
-          renderResults(filteredProducts);
+          // If no products matched the query, fall back to scanning all products in case the keyword was generic
+          if (filteredProducts.length === 0) {
+            fetchAllProductsFallback(maxPrice, filterSize);
+          } else {
+            loadingEl.style.display = 'none';
+            renderResults(filteredProducts);
+          }
         })
         .catch(function(err) {
-          console.error('[AISearch] Error consulting catalog:', err);
+          console.error('[AISearch] Predictive search failed, falling back:', err);
+          fetchAllProductsFallback(maxPrice, filterSize);
+        });
+    }
+
+    // Fallback: queries the Shopify collections/all JSON endpoint (always active and resolves all items)
+    function fetchAllProductsFallback(maxPrice, filterSize) {
+      var allProductsUrl = window.Shopify.routes.root + 'collections/all/products.json?limit=50';
+      
+      fetch(allProductsUrl)
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          loadingEl.style.display = 'none';
+          var rawProducts = [];
+          if (data && data.products) {
+            // Map REST products to the predictive search format
+            rawProducts = data.products.map(function(p) {
+              var priceNum = 0;
+              if (p.variants && p.variants.length > 0) {
+                priceNum = parseFloat(p.variants[0].price) || 0;
+              }
+
+              return {
+                title: p.title,
+                url: '/products/' + p.handle,
+                vendor: p.vendor,
+                price: priceNum,
+                available: p.variants ? p.variants.some(function(v) { return v.available; }) : false,
+                featured_image: { src: p.images && p.images.length > 0 ? p.images[0].src : '' },
+                variants: p.variants ? p.variants.map(function(v) {
+                  return { id: v.id, title: v.title, available: v.available };
+                }) : []
+              };
+            });
+          }
+
+          var filtered = filterProducts(rawProducts, maxPrice, filterSize);
+          renderResults(filtered);
+        })
+        .catch(function(err) {
+          console.error('[AISearch] Fallback loop failed:', err);
           loadingEl.style.display = 'none';
           resultsWrap.style.display = 'block';
-          resultsContainer.innerHTML = '<div class="jj-ai-no-results">Sorry, I had trouble checking the inventory. Try again!</div>';
+          resultsContainer.innerHTML = '<div class="jj-ai-no-results">Grails lookups are currently busy. Try again soon!</div>';
         });
+    }
+
+    // Shared filter function
+    function filterProducts(products, maxPrice, filterSize) {
+      return products.filter(function(prod) {
+        // 1. Price Filter
+        if (maxPrice !== null) {
+          var priceNum = parseFloat(prod.price) || 0;
+          if (priceNum > maxPrice) {
+            return false;
+          }
+        }
+
+        // 2. Size Filter
+        if (filterSize !== null) {
+          if (prod.variants && prod.variants.length > 0) {
+            var sizeFound = prod.variants.some(function(v) {
+              var vTitle = v.title.toLowerCase().replace(/\s+/g, '').trim();
+              var checkSize = filterSize.replace(/\s+/g, '').trim();
+              return vTitle === checkSize || vTitle.indexOf(checkSize) !== -1;
+            });
+            if (!sizeFound) return false;
+          }
+        }
+
+        return true;
+      });
     }
 
     // Render cards list dynamically
@@ -500,7 +558,6 @@
 
       var html = '';
       products.forEach(function(p) {
-        // Find best variant ID (first available, or first variant)
         var variantId = '';
         var isAvailable = p.available;
         if (p.variants && p.variants.length > 0) {
@@ -508,11 +565,13 @@
           variantId = firstAvail ? firstAvail.id : p.variants[0].id;
         }
 
-        var priceStr = p.price ? '$' + parseFloat(p.price).toFixed(2).replace('.00', '') : '';
+        var priceVal = parseFloat(p.price) || 0;
+        var priceStr = priceVal > 0 ? '$' + priceVal.toFixed(2).replace('.00', '') : '';
+        var imgUrl = p.featured_image ? p.featured_image.src : (p.image || '');
 
         html += '<div class="jj-ai-item">';
         html += '  <a href="' + p.url + '" class="jj-ai-image-wrap">';
-        html += '    <img src="' + (p.image || p.featured_image.src) + '" alt="' + p.title + '" loading="lazy">';
+        html += '    <img src="' + imgUrl + '" alt="' + p.title + '" loading="lazy">';
         html += '  </a>';
         html += '  <div class="jj-ai-vendor">' + (p.vendor || 'Grail') + '</div>';
         html += '  <h5 class="jj-ai-item-title"><a href="' + p.url + '" style="color:inherit;text-decoration:none;">' + p.title + '</a></h5>';
