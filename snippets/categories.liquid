@@ -19,6 +19,15 @@
   {%- assign _img_url = '' -%}
   {%- assign _prod_count = 0 -%}
 
+  {%- comment -%} Alternative hyphenated fallback checks (e.g., roughplay vs rough-play) {%- endcomment -%}
+  {%- if _ven_col == blank or _ven_col.products_count == 0 -%}
+    {%- if _ven_handle == 'roughplay' -%}
+      {%- assign _ven_col = collections['rough-play'] -%}
+    {%- elsif _ven_handle == 'rough-play' -%}
+      {%- assign _ven_col = collections['roughplay'] -%}
+    {%- endif -%}
+  {%- endif -%}
+
   {%- if _ven_col != blank and _ven_col.products_count > 0 -%}
     {%- assign _prod_count = _ven_col.products_count -%}
     {%- if _ven_col.image != blank -%}
@@ -29,17 +38,16 @@
   {%- endif -%}
 
   {%- if _img_url == '' or _prod_count == 0 -%}
-    {%- for _p in all_col.products -%}
-      {%- if _p.vendor == _ven -%}
-        {%- if _img_url == '' and _p.featured_image != blank -%}
-          {%- assign _img_url = _p.featured_image | img_url: '600x' -%}
+    {%- paginate all_col.products by 250 -%}
+      {%- for _p in all_col.products -%}
+        {%- if _p.vendor == _ven -%}
+          {%- if _img_url == '' and _p.featured_image != blank -%}
+            {%- assign _img_url = _p.featured_image | img_url: '600x' -%}
+          {%- endif -%}
+          {%- assign _prod_count = _prod_count | plus: 1 -%}
         {%- endif -%}
-        {%- assign _prod_count = _prod_count | plus: 1 -%}
-        {%- if _img_url != '' and _prod_count >= 5 -%}
-          {%- break -%}
-        {%- endif -%}
-      {%- endif -%}
-    {%- endfor -%}
+      {%- endfor -%}
+    {%- endpaginate -%}
   {%- endif -%}
 
               <div role="listitem" class="collection-item-2 w-dyn-item" data-vendor="{{ _ven | escape }}">
