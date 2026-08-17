@@ -17,13 +17,22 @@ SETUP:
 
 import os, time, json, base64, urllib.request
 
-SHOPIFY_STORE  = os.environ["SHOPIFY_STORE"]
-SHOPIFY_TOKEN  = os.environ["SHOPIFY_TOKEN"]
-GEMINI_API_KEY = os.environ["GEMINI_API_KEY"]
+SHOPIFY_STORE  = os.environ.get("SHOPIFY_STORE")
+SHOPIFY_TOKEN  = os.environ.get("SHOPIFY_TOKEN")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+
+if not SHOPIFY_STORE or not SHOPIFY_TOKEN or not GEMINI_API_KEY:
+    missing = []
+    if not SHOPIFY_STORE: missing.append("SHOPIFY_STORE")
+    if not SHOPIFY_TOKEN: missing.append("SHOPIFY_TOKEN")
+    if not GEMINI_API_KEY: missing.append("GEMINI_API_KEY")
+    print(f"❌ Error: Missing required GitHub Secrets: {', '.join(missing)}")
+    print("Please add these in your GitHub Repo Settings -> Secrets and variables -> Actions")
+    exit(1)
 
 GEMINI_URL = (
     "https://generativelanguage.googleapis.com/v1/models/"
-    f"gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
+    f"gemini-3.5-flash:generateContent?key={GEMINI_API_KEY}"
 )
 
 VISION_PROMPT = """You are a streetwear expert and product merchandiser.
