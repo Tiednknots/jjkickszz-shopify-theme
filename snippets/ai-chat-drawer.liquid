@@ -1,10 +1,16 @@
 <!-- 🤖 JJKICKSZZ AI — Storefront Chat Drawer -->
 <div class="jj-ai-chat-wrapper" id="jj-ai-chat-root">
   <!-- Floating Trigger Button -->
-  <button class="jj-ai-chat-trigger" id="jj-ai-chat-trigger" aria-label="Open sneaker stylist">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="jj-ai-spark-icon">
+  <button class="jj-ai-chat-trigger" id="jj-ai-chat-trigger" aria-label="Toggle sneaker stylist">
+    <!-- Sparkles Icon -->
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="jj-ai-spark-icon icon-sparkle">
       <path d="M9.813 15.904L9 21L8.188 15.904L3 15L8.188 14.096L9 9L9.813 14.096L15 15L9.813 15.904Z" fill="currentColor"/>
       <path d="M19.071 4.929L18.5 8L17.929 4.929L15 4.358L17.929 3.787L18.5 0.716L19.071 3.787L22 4.358L19.071 4.929Z" fill="currentColor"/>
+    </svg>
+    <!-- Close Icon -->
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="jj-ai-close-icon icon-close" style="display: none;">
+      <line x1="18" y1="6" x2="6" y2="18"></line>
+      <line x1="6" y1="6" x2="18" y2="18"></line>
     </svg>
   </button>
 
@@ -92,10 +98,10 @@
   /* Slide-Out Drawer Panel */
   .jj-ai-chat-drawer {
     position: fixed;
-    top: 0;
+    top: 74px; /* Starts at the end of the menu header */
     right: -420px; /* Initially hidden offscreen */
     width: 400px;
-    height: 100%;
+    height: calc(100% - 74px);
     background: #0b0b0b; /* Deep black theme */
     border-left: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: -10px 0 40px rgba(0,0,0,0.7);
@@ -113,6 +119,8 @@
       width: 100%;
       right: -100%;
       border-left: none;
+      top: 64px; /* Starts at the end of the mobile menu header */
+      height: calc(100% - 64px);
     }
   }
 
@@ -412,12 +420,18 @@
     function openDrawer() {
       drawerEl.classList.add('open');
       drawerEl.setAttribute('aria-hidden', 'false');
+      triggerBtn.classList.add('open');
+      triggerBtn.querySelector('.icon-sparkle').style.display = 'none';
+      triggerBtn.querySelector('.icon-close').style.display = 'block';
       inputEl.focus();
     }
 
     function closeDrawer() {
       drawerEl.classList.remove('open');
       drawerEl.setAttribute('aria-hidden', 'true');
+      triggerBtn.classList.remove('open');
+      triggerBtn.querySelector('.icon-sparkle').style.display = 'block';
+      triggerBtn.querySelector('.icon-close').style.display = 'none';
     }
 
     // Suggested prompts listeners
