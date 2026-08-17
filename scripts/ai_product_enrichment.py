@@ -40,6 +40,11 @@ if (not SHOPIFY_TOKEN or SHOPIFY_TOKEN.startswith("shpss_")) and SHOPIFY_CLIENT_
             token_data = json.loads(r.read())
             SHOPIFY_TOKEN = token_data.get("access_token")
             print("✅ Successfully generated temporary Admin Access Token.")
+    except urllib.error.HTTPError as e:
+        error_body = e.read().decode("utf-8")
+        print(f"❌ Failed to generate access token from Client Credentials: HTTP Error {e.code}: {e.reason}")
+        print(f"Shopify Error Details: {error_body}")
+        exit(1)
     except Exception as e:
         print(f"❌ Failed to generate access token from Client Credentials: {e}")
         exit(1)
