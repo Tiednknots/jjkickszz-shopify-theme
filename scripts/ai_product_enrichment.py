@@ -72,8 +72,12 @@ Given a product title and image, return ONLY a valid JSON object:
 No extra text, no markdown, just the JSON object."""
 
 
-def shopify(method, path, body=None):
-    url = f"https://{SHOPIFY_STORE}/admin/api/2024-01/{path}"
+def shopify(method, url_or_path, body=None):
+    if url_or_path.startswith("http"):
+        url = url_or_path
+    else:
+        url = f"https://{SHOPIFY_STORE}/admin/api/2024-01/{url_or_path}"
+
     data = json.dumps(body).encode() if body else None
     req = urllib.request.Request(url, data=data, method=method, headers={
         "X-Shopify-Access-Token": SHOPIFY_TOKEN,
@@ -81,7 +85,8 @@ def shopify(method, path, body=None):
     })
     try:
         with urllib.request.urlopen(req, timeout=15) as r:
-            return json.loads(r.read())
+            link = r.headers.get("Link", "")
+            return json.loads(r.read()), link
     except urllib.error.HTTPError as e:
         error_body = e.read().decode("utf-8")
         print(f"\n❌ Shopify API HTTP Error {e.code}: {e.reason}")
@@ -131,16 +136,23 @@ def main():
     print("🤖  JJKICKSZZ AI Product Enrichment")
     print("─" * 50)
 
-    # Fetch all products
+    # Fetch all products using cursor-based pagination
     all_products = []
-    page = 1
-    while True:
-        r = shopify("GET", f"products.json?limit=250&fields=id,title,product_type,body_html,images&page={page}")
+    next_url = "products.json?limit=250&fields=id,title,product_type,body_html,images"
+    
+    while next_url:
+        r, link_header = shopify("GET", next_url)
         batch = r.get("products", [])
         all_products.extend(batch)
-        if len(batch) < 250:
-            break
-        page += 1
+        
+        next_url = None
+        if link_header:
+            # Format of Link: <https://...>; rel="next", <https://...>; rel="previous"
+            parts = link_header.split(",")
+            for part in parts:
+                if 'rel="next"' in part:
+                    next_url = part.split(";")[0].strip("< >")
+                    
     print(f"✅  {len(all_products)} products found\n")
 
     updated = skipped = failed = 0
