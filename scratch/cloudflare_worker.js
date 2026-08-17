@@ -41,7 +41,7 @@ export default {
       
       if (testPrompt) {
         try {
-          const geminiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`;
+          const geminiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-3.5-flash:generateContent?key=${geminiApiKey}`;
           const response = await fetch(geminiUrl, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -133,8 +133,8 @@ Here are the catalog handles you can reference:
         });
       }
 
-      // Using gemini-2.5-flash for stable production responses (Stable v1 endpoint)
-      const geminiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`;
+      // Using gemini-3.5-flash for stable production responses (Stable v1 endpoint)
+      const geminiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-3.5-flash:generateContent?key=${geminiApiKey}`;
       
       const response = await fetch(geminiUrl, {
         method: "POST",
