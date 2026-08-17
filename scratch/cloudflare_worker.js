@@ -50,9 +50,10 @@ Follow these brand rules:
 5. Outfits: When building an outfit, try to recommend a sneaker, a tee/hoodie, and pants together, formatting each handle like [Product: handle].
 
 Here are the catalog handles you can reference:
-- Jordan 4 Retro Black Cat: [Product: jordan-4-retro-black-cat]
-- Roughplay Mixed Emotions Tee: [Product: mixed-emotions-tee]
-- JJKICKSZZ Premium Hoodie: [Product: generic-hoodie]
+- JJKICKSZZ 2-in-1 Hybrid Tee: [Product: 2-in-1-hybrid-tee]
+- JJKICKSZZ After Life Tee: [Product: after-life-tee]
+- Amiri MA Core Logo Tee: [Product: amiri-ma-core-logo-tee]
+- Balenciaga Inside Out Army Shirt: [Product: baleciaga-inside-out-army-shirt]
 - (Add more handles here as your inventory updates!)
 `;
 
