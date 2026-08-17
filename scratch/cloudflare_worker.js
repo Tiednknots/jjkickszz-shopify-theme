@@ -161,21 +161,34 @@ Answer customer queries using these details:
           contents: cleanContents,
           generationConfig: {
             temperature: 0.7,
-            maxOutputTokens: 300
+            maxOutputTokens: 1024,
+            thinkingConfig: {
+              thinkingBudget: 0
+            }
           }
         })
       });
 
       const data = await response.json();
       
-      // Parse output text from Gemini response structure
+      // Parse output text from Gemini response structure.
+      // gemini-3.5-flash is a "thinking" model — when systemInstruction is used,
+      // it returns internal reasoning in parts[0] (thought: true) and the actual
+      // reply in parts[1+]. We must skip thought parts and join only real text.
       let botResponse = "Yo! I had a connection issue. Ask me again in a second!";
-      if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts[0]) {
-        botResponse = data.candidates[0].content.parts[0].text;
+      if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+        const parts = data.candidates[0].content.parts || [];
+        const realParts = parts.filter(p => !p.thought && p.text);
+        if (realParts.length > 0) {
+          botResponse = realParts.map(p => p.text).join("").trim();
+        } else if (parts.length > 0 && parts[0].text) {
+          // Fallback: no thought flags found, use all parts
+          botResponse = parts.map(p => p.text || "").join("").trim();
+        }
       } else if (data.error) {
         botResponse = `Gemini API Error: ${data.error.message} (${data.error.status})`;
-      } else {
-        botResponse = `API Response structure mismatch. Raw response: ${JSON.stringify(data)}`;
+      } else if (data.candidates === undefined) {
+        botResponse = `API Response structure mismatch. Raw: ${JSON.stringify(data).slice(0, 200)}`;
       }
 
       return new Response(JSON.stringify({ response: botResponse }), {
