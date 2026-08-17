@@ -1,16 +1,9 @@
 /**
  * 🤖 JJKICKSZZ AI — Secure Cloudflare Worker API (Google Gemini Edition)
  * 
- * This script runs securely on Cloudflare Workers (or Vercel) to protect your Gemini API key
- * and connect your JJKICKSZZ storefront chat drawer directly to Google Gemini.
- * 
- * To Deploy:
- * 1. Go to Google AI Studio at https://aistudio.google.com and get a free API Key.
- * 2. Create a free account at cloudflare.com.
- * 3. Create a new Worker named `jjkickszz-ai`.
- * 4. Paste this code into the Worker editor.
- * 5. Add your Gemini API key in the Worker settings as an Environment Variable named `GEMINI_API_KEY`.
- * 6. Click Save and Deploy!
+ * Now with Live Shopify Catalog Syncing!
+ * Every request dynamically pulls the active products, prices, types, and handles 
+ * directly from your live store and feeds them as real-time context to Gemini 3.7.
  */
 
 export default {
@@ -19,7 +12,7 @@ export default {
     if (request.method === "OPTIONS") {
       return new Response(null, {
         headers: {
-          "Access-Control-Allow-Origin": "*", // Replace with your domain in production: "https://jjkickszz.com"
+          "Access-Control-Allow-Origin": "*",
           "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
           "Access-Control-Allow-Headers": "Content-Type",
           "Access-Control-Max-Age": "86400",
@@ -41,7 +34,6 @@ export default {
         const listRes = await fetch(listUrl);
         const listData = await listRes.json();
         
-        // If there's an error listing models (e.g. invalid key) it will show here
         return new Response(JSON.stringify(listData, null, 2), {
           headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
         });
@@ -61,7 +53,27 @@ export default {
       const userMessage = payload.message || "";
       const chatHistory = payload.history || [];
 
-      // 2. Define the Brand System Rules & Product Catalog Context
+      // 3. Query live product list from your Shopify store
+      let liveCatalogText = "";
+      try {
+        const storeUrl = "https://jjkickszz.com/collections/all/products.json?limit=150";
+        const catalogResponse = await fetch(storeUrl, {
+          headers: { "User-Agent": "JJKICKSZZ-AI-Agent/1.0" }
+        });
+        const catalogData = await catalogResponse.json();
+        if (catalogData && catalogData.products) {
+          liveCatalogText = catalogData.products.map(p => {
+            const minPrice = p.variants && p.variants[0] ? p.variants[0].price : "Contact us";
+            const inStock = p.variants && p.variants.some(v => v.available) ? "In Stock" : "Sold Out";
+            return `- ${p.title} (${p.product_type} - $${minPrice} - ${inStock}) Handle: [Product: ${p.handle}]`;
+          }).join("\n");
+        }
+      } catch (catalogErr) {
+        console.error("Failed to query live Shopify catalog:", catalogErr);
+        liveCatalogText = "Jordan 4 Retro Black Cat ($300): [Product: jordan-4-retro-black-cat]";
+      }
+
+      // 4. Define the Brand System Rules & Product Catalog Context
       const systemPrompt = `
 You are the official JJKICKSZZ AI Stylist, an expert sneakerhead and streetwear stylist helping customers on JJKICKSZZ.com.
 Maintain a cool, helpful, streetwear-fluent, and confident tone. Keep responses relatively concise (2-4 sentences max) and avoid excessive corporate politeness.
@@ -70,20 +82,18 @@ Follow these brand rules:
 1. Shipping: Orders are processed in 1-3 business days. Delivery takes 5-8 business days. We offer FREE shipping on orders over $400.
 2. Returns: All sales are final. We do not accept returns or exchanges due to the exclusive nature of our catalog.
 3. Authenticity: 100% authentic heat guaranteed. Every piece is hand-inspected. We don't play games with quality.
-4. Product recommendations: Whenever you recommend a product, you MUST include its handle inside brackets in this exact format: [Product: product-handle]. 
+4. Product recommendations: Whenever you recommend a product, you MUST include its exact handle inside brackets in this format: [Product: product-handle].
    Example: "Check out the Amiri MA Tee: [Product: amiri-ma-tee]."
    Only recommend handles that you are confident exist in the catalog.
 5. Outfits: When building an outfit, try to recommend a sneaker, a tee/hoodie, and pants together, formatting each handle like [Product: handle].
 
-Here are the catalog handles you can reference:
-- JJKICKSZZ 2-in-1 Hybrid Tee: [Product: 2-in-1-hybrid-tee]
-- JJKICKSZZ After Life Tee: [Product: after-life-tee]
-- Amiri MA Core Logo Tee: [Product: amiri-ma-core-logo-tee]
-- Balenciaga Inside Out Army Shirt: [Product: baleciaga-inside-out-army-shirt]
-- (Add more handles here as your inventory updates!)
+Here is JJKICKSZZ's real-time inventory feed:
+${liveCatalogText}
+
+Search the inventory list above to suggest relevant products matching the user's questions about brands, clothing types, budgets, or outfit styles.
 `;
 
-      // 3. Format history array for Gemini API (roles: user / model)
+      // 5. Format history array for Gemini API (roles: user / model)
       const contents = [];
       
       chatHistory.forEach(msg => {
@@ -100,7 +110,7 @@ Here are the catalog handles you can reference:
         parts: [{ text: userMessage }]
       });
 
-      // 4. Query Google Gemini API securely
+      // 6. Query Google Gemini API securely (Stable v1 endpoint targeting gemini-3.7-flash)
       const geminiApiKey = env.GEMINI_API_KEY;
       if (!geminiApiKey) {
         return new Response(JSON.stringify({ error: "GEMINI_API_KEY is not configured in the worker environment." }), {
@@ -109,7 +119,6 @@ Here are the catalog handles you can reference:
         });
       }
 
-      // Using gemini-3.7-flash for state-of-the-art responses (Stable v1 endpoint)
       const geminiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-3.7-flash:generateContent?key=${geminiApiKey}`;
       
       const response = await fetch(geminiUrl, {
@@ -124,7 +133,7 @@ Here are the catalog handles you can reference:
           contents: contents,
           generationConfig: {
             temperature: 0.7,
-            maxOutputTokens: 250
+            maxOutputTokens: 300
           }
         })
       });
