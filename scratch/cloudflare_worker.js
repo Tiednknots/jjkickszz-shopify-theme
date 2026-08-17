@@ -27,7 +27,14 @@ export default {
       });
     }
 
-    if (request.method !== "POST") {
+    // 2. Handle GET request checks (friendly confirmation in browser previews)
+    if (request.method === "GET") {
+      return new Response("JJKICKSZZ AI Stylist API is online! 👟", {
+        headers: { "Content-Type": "text/plain", "Access-Control-Allow-Origin": "*" }
+      });
+    }
+
+    if (request.method !== "POST" && request.method !== "OPTIONS") {
       return new Response("Method not allowed", { status: 405 });
     }
 
