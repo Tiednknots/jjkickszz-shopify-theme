@@ -109,8 +109,8 @@ Here are the catalog handles you can reference:
         });
       }
 
-      // Using gemini-1.5-flash for ultra-low latency responses (Stable v1 endpoint)
-      const geminiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`;
+      // Using gemini-3.7-flash for state-of-the-art responses (Stable v1 endpoint)
+      const geminiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-3.7-flash:generateContent?key=${geminiApiKey}`;
       
       const response = await fetch(geminiUrl, {
         method: "POST",
