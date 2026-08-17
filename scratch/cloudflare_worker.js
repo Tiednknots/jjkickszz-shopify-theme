@@ -27,11 +27,29 @@ export default {
       });
     }
 
-    // 2. Handle GET request checks (friendly confirmation in browser previews)
+    // 2. Handle GET request checks (friendly confirmation and model list debugging)
     if (request.method === "GET") {
-      return new Response("JJKICKSZZ AI Stylist API is online! 👟", {
-        headers: { "Content-Type": "text/plain", "Access-Control-Allow-Origin": "*" }
-      });
+      const geminiApiKey = env.GEMINI_API_KEY;
+      if (!geminiApiKey) {
+        return new Response("JJKICKSZZ AI Stylist API is online! (But GEMINI_API_KEY is not configured in Cloudflare variables)", {
+          headers: { "Content-Type": "text/plain", "Access-Control-Allow-Origin": "*" }
+        });
+      }
+      
+      try {
+        const listUrl = `https://generativelanguage.googleapis.com/v1/models?key=${geminiApiKey}`;
+        const listRes = await fetch(listUrl);
+        const listData = await listRes.json();
+        
+        // If there's an error listing models (e.g. invalid key) it will show here
+        return new Response(JSON.stringify(listData, null, 2), {
+          headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
+        });
+      } catch (err) {
+        return new Response(`Error listing models: ${err.message}`, {
+          headers: { "Content-Type": "text/plain", "Access-Control-Allow-Origin": "*" }
+        });
+      }
     }
 
     if (request.method !== "POST" && request.method !== "OPTIONS") {
