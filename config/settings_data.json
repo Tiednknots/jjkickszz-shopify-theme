@@ -46,8 +46,8 @@
           "heading": "NEW DROPS",
           "button_text": "View All Products",
           "button_link": "shopify://pages/shop",
-          "button_bg_color": "#D70000",
-          "button_txt_color": "#FFFFFF",
+          "button_bg_color": "#d70000",
+          "button_txt_color": "#ffffff",
           "use_auto_grid": true,
           "custom_collection": ""
         }
@@ -61,8 +61,8 @@
           "authentic_full_text": "We don’t play games with quality. Every piece that touches our inventory is inspected by hand—checking the stitching, the weight, and the tags. If it’s not legit, it doesn’t ship. You get exactly what you paid for, verified and secured.",
           "button_link": "authenticity-policy",
           "button_link_text": "Authenticity Policy",
-          "button_text_color": "#FFFFFF",
-          "button_color": "#D70000"
+          "button_text_color": "#ffffff",
+          "button_color": "#d70000"
         }
       },
       "home_shop_by_brand": {
@@ -94,8 +94,16 @@
           "subheading": "New Piece",
           "product": "amor-galleria-paradise",
           "button_text": "Shop Release",
-          "button_bg_color": "#FFFFFF",
+          "button_bg_color": "#ffffff",
           "button_txt_color": "#000000"
+        }
+      },
+      "home_ai_search_4cby9d": {
+        "type": "home-ai-search",
+        "name": "JJKICKSZZ AI Search",
+        "settings": {
+          "title": "JJKICKSZZ AI",
+          "subtitle": "Talk to our sneaker assistant to find your grails instantly."
         }
       }
     },
@@ -106,7 +114,8 @@
       "home_featured_product_ECmYW8",
       "general_section",
       "home_shop_by_brand",
-      "home_custom_blocks"
+      "home_custom_blocks",
+      "home_ai_search_4cby9d"
     ]
   }
 }
