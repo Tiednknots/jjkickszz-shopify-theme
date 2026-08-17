@@ -192,7 +192,7 @@ def main():
             print(f"→ FAILED ({e})")
             failed += 1
 
-        time.sleep(0.6)   # ~1.6 req/sec — safe for both APIs
+        time.sleep(3.2)   # ~18 req/min — safely under Gemini free tier limit of 20 RPM
 
     print(f"\n{'─'*50}")
     print(f"Done.  Updated: {updated}  |  Skipped: {skipped}  |  Failed: {failed}")
