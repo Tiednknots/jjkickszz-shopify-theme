@@ -405,6 +405,42 @@
 
     if (!triggerBtn || !drawerEl) return;
 
+    // ── Live Product Catalog ─────────────────────────────────────────
+    // Fetched once when the drawer opens. Sent with every request so
+    // Gemini knows the REAL inventory (types, prices, colors).
+    var liveCatalog = null;
+
+    function fetchLiveCatalog(callback) {
+      if (liveCatalog !== null) { callback(liveCatalog); return; }
+      fetch('/collections/all/products.json?limit=250')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          var products = (data && data.products) ? data.products : [];
+          var lines = products.map(function(p) {
+            var price = p.variants && p.variants[0] ? ('$' + (parseFloat(p.variants[0].price)).toFixed(0)) : '';
+            var colors = [];
+            p.options && p.options.forEach(function(opt) {
+              if (opt.name.toLowerCase() === 'color') colors = opt.values;
+            });
+            var colorStr = colors.length ? ' | Colors: ' + colors.join(', ') : '';
+            var desc = p.body_html ? p.body_html.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim().slice(0, 100) : '';
+            return 'Handle: ' + p.handle +
+              ' | Name: ' + p.title +
+              ' | Type: ' + (p.product_type || 'Apparel') +
+              ' | Price: ' + price +
+              colorStr +
+              (desc ? ' | Description: ' + desc : '');
+          });
+          liveCatalog = lines.join('\n');
+          callback(liveCatalog);
+        })
+        .catch(function() {
+          liveCatalog = ''; // fallback — worker will use hardcoded list
+          callback(liveCatalog);
+        });
+    }
+    // ────────────────────────────────────────────────────────────────
+
     // Toggle Drawer Open
     triggerBtn.addEventListener('click', function() {
       var isOpen = drawerEl.classList.contains('open');
@@ -454,45 +490,42 @@
     });
 
     function sendUserMessage(text) {
-      // Append User message UI
       appendMessage('user', text);
       scrollToBottom();
-
-      // Show typing indicator
       var loaderId = appendTypingIndicator();
       scrollToBottom();
 
-      // Consult backend serverless endpoint
-      var payload = {
-        message: text,
-        history: getChatHistory()
-      };
+      // Fetch live catalog first (cached after first call), then send to worker
+      fetchLiveCatalog(function(catalog) {
+        var payload = {
+          message: text,
+          history: getChatHistory(),
+          catalog: catalog
+        };
 
-      // SERVERLESS ENDPOINT URL (This endpoint securely passes commands to Google Gemini API)
-      var workerEndpoint = 'https://jjkickszz-ai.create-d8d.workers.dev/';
+        var workerEndpoint = 'https://jjkickszz-ai.create-d8d.workers.dev/';
 
-      fetch(workerEndpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      })
-      .then(function(res) { return res.json(); })
-      .then(function(data) {
-        removeTypingIndicator(loaderId);
-        
-        var rawText = data.response || '';
-        if (!rawText) {
-          console.error('[AIChat] Error or empty response from worker:', data);
+        fetch(workerEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          removeTypingIndicator(loaderId);
+          var rawText = data.response || '';
+          if (!rawText || rawText.indexOf('Gemini API Error') === 0) {
+            console.error('[AIChat] Worker error:', data);
+            processOfflineFallback(text);
+            return;
+          }
+          processBotResponse(rawText);
+        })
+        .catch(function(err) {
+          console.error('[AIChat] Network error:', err);
+          removeTypingIndicator(loaderId);
           processOfflineFallback(text);
-          return;
-        }
-        processBotResponse(rawText);
-      })
-      .catch(function(err) {
-        console.error('[AIChat] Error querying endpoint:', err);
-        removeTypingIndicator(loaderId);
-        // Fallback Response if serverless endpoint is offline or not set up
-        processOfflineFallback(text);
+        });
       });
     }
 
@@ -641,8 +674,32 @@
     function appendMessage(sender, text) {
       var msgDiv = document.createElement('div');
       msgDiv.className = 'jj-ai-msg ' + sender;
-      msgDiv.innerHTML = '<div class="jj-ai-msg-bubble">' + escapeHTML(text) + '</div>';
+      var formatted = sender === 'bot' ? formatBotText(text) : escapeHTML(text);
+      msgDiv.innerHTML = '<div class="jj-ai-msg-bubble">' + formatted + '</div>';
       messagesContainer.appendChild(msgDiv);
+    }
+
+    // Convert Gemini markdown output to readable HTML
+    function formatBotText(text) {
+      // Escape HTML entities first to prevent XSS
+      var safe = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+      // Convert **bold** to <b>bold</b>
+      safe = safe.replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
+      // Convert *italic* to <em>italic</em>
+      safe = safe.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+      // Convert numbered list items (1. ... \n2. ...) — each on its own line
+      safe = safe.replace(/^(\d+\.\s)/gm, '<br><b>$1</b>');
+      // Convert double newlines to paragraph breaks
+      safe = safe.replace(/\n\n+/g, '<br><br>');
+      // Convert single newlines to line breaks
+      safe = safe.replace(/\n/g, '<br>');
+      // Clean up leading/trailing break tags
+      safe = safe.replace(/^(<br>)+|(<br>)+$/g, '');
+      return safe;
     }
 
     function appendTypingIndicator() {
@@ -678,13 +735,19 @@
 
     function getChatHistory() {
       var history = [];
+      // Only include .jj-ai-msg elements (not outfit cards) and skip empty bubbles
       var bubbleEls = messagesContainer.querySelectorAll('.jj-ai-msg');
       bubbleEls.forEach(function(el) {
         var role = el.classList.contains('bot') ? 'assistant' : 'user';
-        var text = el.querySelector('.jj-ai-msg-bubble').textContent.trim();
-        history.push({ role: role, content: text });
+        var bubble = el.querySelector('.jj-ai-msg-bubble');
+        if (!bubble) return;
+        // Get text content only (strip any injected HTML tags from formatBotText)
+        var text = bubble.innerText ? bubble.innerText.trim() : bubble.textContent.trim();
+        if (text.length > 2) {
+          history.push({ role: role, content: text });
+        }
       });
-      return history.slice(-6); // Only pass the last 6 messages to keep payloads small
+      return history.slice(-8); // Last 8 messages for better context
     }
   })();
 </script>
