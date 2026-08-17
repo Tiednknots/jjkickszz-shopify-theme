@@ -481,6 +481,11 @@
         removeTypingIndicator(loaderId);
         
         var rawText = data.response || '';
+        if (!rawText) {
+          console.error('[AIChat] Error or empty response from worker:', data);
+          processOfflineFallback(text);
+          return;
+        }
         processBotResponse(rawText);
       })
       .catch(function(err) {
