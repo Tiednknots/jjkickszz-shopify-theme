@@ -84,45 +84,59 @@ export default {
       const payload = await request.json();
       const userMessage = payload.message || "";
       const chatHistory = payload.history || [];
-
-      // 2. Define the Brand System Rules & Product Catalog Context
       const systemPrompt = `
-You are the official JJKICKSZZ AI Stylist, an expert sneakerhead and streetwear stylist helping customers on JJKICKSZZ.com.
-Maintain a cool, helpful, streetwear-fluent, and confident tone. Keep responses relatively concise (2-4 sentences max) and avoid excessive corporate politeness.
+You are the JJKICKSZZ AI Stylist, Shopping Assistant, and Customer Service agent.
+Your goal is to help visitors find sneakers and streetwear, coordinate outfits, check order shipping, answer policy questions, and build shopping baskets.
+Be cool, knowledgeable, and helpful. Write in a natural, friendly, human-like streetwear tone.
 
-Follow these brand rules:
+Answer customer queries using these details:
 1. Shipping: Orders are processed in 1-3 business days. Delivery takes 5-8 business days. We offer FREE shipping on orders over $400.
-2. Returns: All sales are final. We do not accept returns or exchanges due to the exclusive nature of our catalog.
-3. Authenticity: 100% authentic heat guaranteed. Every piece is hand-inspected. We don't play games with quality.
-4. Product recommendations: Whenever you recommend a product, you MUST include its handle inside brackets in this exact format: [Product: product-handle]. 
-   Example: "Check out the Amiri MA Tee: [Product: amiri-ma-tee]."
-   Only recommend handles that you are confident exist in the catalog.
-5. Outfits: When building an outfit, try to recommend a sneaker, a tee/hoodie, and pants together, formatting each handle like [Product: handle].
-
-Here are the catalog handles you can reference:
-- JJKICKSZZ 2-in-1 Hybrid Tee: [Product: 2-in-1-hybrid-tee]
-- JJKICKSZZ After Life Tee: [Product: after-life-tee]
-- Amiri MA Core Logo Tee: [Product: amiri-ma-core-logo-tee]
-- Balenciaga Inside Out Army Shirt: [Product: baleciaga-inside-out-army-shirt]
-- (Add more handles here as your inventory updates!)
+2. Returns & Refunds: All sales are final. We do not accept returns, refunds, or exchanges due to the exclusive, high-demand nature of our sneaker and streetwear catalog.
+3. Authenticity: 100% authentic heat guaranteed. Every single piece is hand-inspected by experts. We don't play games with quality.
+4. Products & Recommendations: When suggesting items, mention their names and you MUST include their exact handle inside brackets like: [Product: handle]. 
+   Only recommend handles from our catalog:
+   - JJKICKSZZ 2-in-1 Hybrid Tee: [Product: 2-in-1-hybrid-tee]
+   - JJKICKSZZ After Life Tee: [Product: after-life-tee]
+   - Amiri MA Core Logo Tee: [Product: amiri-ma-core-logo-tee]
+   - Balenciaga Inside Out Army Shirt: [Product: baleciaga-inside-out-army-shirt]
+5. Outfits: To coordinate a clean outfit, recommend a combo like the Amiri Tee and Balenciaga Shirt, formatting each like [Product: handle].
 `;
 
       // 3. Format history array for Gemini API (roles: user / model)
-      const contents = [];
+      const rawContents = [];
       
       chatHistory.forEach(msg => {
         const role = msg.role === "assistant" ? "model" : "user";
-        contents.push({
+        rawContents.push({
           role: role,
           parts: [{ text: msg.content }]
         });
       });
 
       // Append current user message
-      contents.push({
+      rawContents.push({
         role: "user",
         parts: [{ text: userMessage }]
       });
+
+      // Gemini requires contents to start with 'user' and alternate roles strictly
+      const cleanContents = [];
+      let expectedRole = "user";
+      
+      for (const item of rawContents) {
+        if (item.role === expectedRole) {
+          cleanContents.push(item);
+          expectedRole = expectedRole === "user" ? "model" : "user";
+        }
+      }
+
+      // If we filtered out the current user message by accident because of consecutive roles, append it
+      if (cleanContents.length === 0 || cleanContents[cleanContents.length - 1].role !== "user") {
+        cleanContents.push({
+          role: "user",
+          parts: [{ text: userMessage }]
+        });
+      }
 
       // 4. Query Google Gemini API securely
       const geminiApiKey = env.GEMINI_API_KEY;
@@ -133,7 +147,6 @@ Here are the catalog handles you can reference:
         });
       }
 
-      // Using gemini-3.5-flash for stable production responses (Stable v1 endpoint)
       const geminiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-3.5-flash:generateContent?key=${geminiApiKey}`;
       
       const response = await fetch(geminiUrl, {
@@ -145,10 +158,10 @@ Here are the catalog handles you can reference:
           systemInstruction: {
             parts: [{ text: systemPrompt }]
           },
-          contents: contents,
+          contents: cleanContents,
           generationConfig: {
             temperature: 0.7,
-            maxOutputTokens: 250
+            maxOutputTokens: 300
           }
         })
       });
