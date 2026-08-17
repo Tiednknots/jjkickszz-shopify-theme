@@ -15,19 +15,42 @@ SETUP:
      python3 ai_product_enrichment.py
 """
 
-import os, time, json, base64, urllib.request
+import os, time, json, base64, urllib.request, urllib.parse
 
 SHOPIFY_STORE  = os.environ.get("SHOPIFY_STORE")
 SHOPIFY_TOKEN  = os.environ.get("SHOPIFY_TOKEN")
+SHOPIFY_CLIENT_ID = os.environ.get("SHOPIFY_CLIENT_ID")
+SHOPIFY_CLIENT_SECRET = os.environ.get("SHOPIFY_CLIENT_SECRET")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+
+# If client credentials are provided, exchange them for a temporary token dynamically
+if not SHOPIFY_TOKEN and SHOPIFY_CLIENT_ID and SHOPIFY_CLIENT_SECRET and SHOPIFY_STORE:
+    print("🔑 Authenticating with Shopify Client Credentials...")
+    try:
+        auth_url = f"https://{SHOPIFY_STORE}/admin/oauth/access_token"
+        payload = urllib.parse.urlencode({
+            "client_id": SHOPIFY_CLIENT_ID,
+            "client_secret": SHOPIFY_CLIENT_SECRET,
+            "grant_type": "client_credentials"
+        }).encode("utf-8")
+        req = urllib.request.Request(auth_url, data=payload, method="POST", headers={
+            "Content-Type": "application/x-www-form-urlencoded"
+        })
+        with urllib.request.urlopen(req, timeout=15) as r:
+            token_data = json.loads(r.read())
+            SHOPIFY_TOKEN = token_data.get("access_token")
+            print("✅ Successfully generated temporary Admin Access Token.")
+    except Exception as e:
+        print(f"❌ Failed to generate access token from Client Credentials: {e}")
+        exit(1)
 
 if not SHOPIFY_STORE or not SHOPIFY_TOKEN or not GEMINI_API_KEY:
     missing = []
     if not SHOPIFY_STORE: missing.append("SHOPIFY_STORE")
-    if not SHOPIFY_TOKEN: missing.append("SHOPIFY_TOKEN")
+    if not SHOPIFY_TOKEN and not (SHOPIFY_CLIENT_ID and SHOPIFY_CLIENT_SECRET):
+        missing.append("SHOPIFY_TOKEN (or SHOPIFY_CLIENT_ID and SHOPIFY_CLIENT_SECRET)")
     if not GEMINI_API_KEY: missing.append("GEMINI_API_KEY")
-    print(f"❌ Error: Missing required GitHub Secrets: {', '.join(missing)}")
-    print("Please add these in your GitHub Repo Settings -> Secrets and variables -> Actions")
+    print(f"❌ Error: Missing required credentials: {', '.join(missing)}")
     exit(1)
 
 GEMINI_URL = (
