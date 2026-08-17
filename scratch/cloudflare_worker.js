@@ -117,6 +117,10 @@ Here are the catalog handles you can reference:
       let botResponse = "Yo! I had a connection issue. Ask me again in a second!";
       if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts[0]) {
         botResponse = data.candidates[0].content.parts[0].text;
+      } else if (data.error) {
+        botResponse = `Gemini API Error: ${data.error.message} (${data.error.status})`;
+      } else {
+        botResponse = `API Response structure mismatch. Raw response: ${JSON.stringify(data)}`;
       }
 
       return new Response(JSON.stringify({ response: botResponse }), {
