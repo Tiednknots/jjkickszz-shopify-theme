@@ -1,15 +1,16 @@
 /**
- * 🤖 JJKICKSZZ AI — Secure Cloudflare Worker API
+ * 🤖 JJKICKSZZ AI — Secure Cloudflare Worker API (Google Gemini Edition)
  * 
- * This script runs securely on Cloudflare Workers (or Vercel) to protect your OpenAI API key
- * and connect your JJKICKSZZ storefront chat drawer directly to OpenAI.
+ * This script runs securely on Cloudflare Workers (or Vercel) to protect your Gemini API key
+ * and connect your JJKICKSZZ storefront chat drawer directly to Google Gemini.
  * 
  * To Deploy:
- * 1. Create a free account at cloudflare.com.
- * 2. Create a new Worker named `jjkickszz-ai`.
- * 3. Paste this code into the Worker editor.
- * 4. Add your OpenAI API key in the Worker settings as an Environment Variable named `OPENAI_API_KEY`.
- * 5. Click Save and Deploy!
+ * 1. Go to Google AI Studio at https://aistudio.google.com and get a free API Key.
+ * 2. Create a free account at cloudflare.com.
+ * 3. Create a new Worker named `jjkickszz-ai`.
+ * 4. Paste this code into the Worker editor.
+ * 5. Add your Gemini API key in the Worker settings as an Environment Variable named `GEMINI_API_KEY`.
+ * 6. Click Save and Deploy!
  */
 
 export default {
@@ -18,7 +19,7 @@ export default {
     if (request.method === "OPTIONS") {
       return new Response(null, {
         headers: {
-          "Access-Control-Allow-Origin": "*", // Or replace with your domain: "https://jjkickszz.com"
+          "Access-Control-Allow-Origin": "*", // Replace with your domain in production: "https://jjkickszz.com"
           "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
           "Access-Control-Allow-Headers": "Content-Type",
           "Access-Control-Max-Age": "86400",
@@ -45,7 +46,7 @@ Follow these brand rules:
 2. Returns: All sales are final. We do not accept returns or exchanges due to the exclusive nature of our catalog.
 3. Authenticity: 100% authentic heat guaranteed. Every piece is hand-inspected. We don't play games with quality.
 4. Product recommendations: Whenever you recommend a product, you MUST include its handle inside brackets in this exact format: [Product: product-handle]. 
-   Example: "Check out the Jordan 4 Black Cat: [Product: jordan-4-retro-black-cat]."
+   Example: "Check out the Amiri MA Tee: [Product: amiri-ma-tee]."
    Only recommend handles that you are confident exist in the catalog.
 5. Outfits: When building an outfit, try to recommend a sneaker, a tee/hoodie, and pants together, formatting each handle like [Product: handle].
 
@@ -57,45 +58,59 @@ Here are the catalog handles you can reference:
 - (Add more handles here as your inventory updates!)
 `;
 
-      // 3. Construct messages array for OpenAI
-      const messages = [
-        { role: "system", content: systemPrompt }
-      ];
-
-      // Append chat history (role mapping: assistant/user)
+      // 3. Format history array for Gemini API (roles: user / model)
+      const contents = [];
+      
       chatHistory.forEach(msg => {
-        messages.push({ role: msg.role, content: msg.content });
+        const role = msg.role === "assistant" ? "model" : "user";
+        contents.push({
+          role: role,
+          parts: [{ text: msg.content }]
+        });
       });
 
       // Append current user message
-      messages.push({ role: "user", content: userMessage });
+      contents.push({
+        role: "user",
+        parts: [{ text: userMessage }]
+      });
 
-      // 4. Query OpenAI API securely
-      const openAiApiKey = env.OPENAI_API_KEY;
-      if (!openAiApiKey) {
-        return new Response(JSON.stringify({ error: "OPENAI_API_KEY is not configured in the worker environment." }), {
+      // 4. Query Google Gemini API securely
+      const geminiApiKey = env.GEMINI_API_KEY;
+      if (!geminiApiKey) {
+        return new Response(JSON.stringify({ error: "GEMINI_API_KEY is not configured in the worker environment." }), {
           status: 500,
           headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
         });
       }
 
-      const openAiUrl = "https://api.openai.com/1/chat/completions";
-      const response = await fetch(openAiUrl, {
+      // Using gemini-1.5-flash for ultra-low latency responses
+      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`;
+      
+      const response = await fetch(geminiUrl, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${openAiApiKey}`
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          model: "gpt-4o-mini", // Cost-effective, lightning-fast model
-          messages: messages,
-          temperature: 0.7,
-          max_tokens: 250
+          systemInstruction: {
+            parts: [{ text: systemPrompt }]
+          },
+          contents: contents,
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 250
+          }
         })
       });
 
       const data = await response.json();
-      const botResponse = data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : "Yo! I had a connection issue. Ask me again in a second!";
+      
+      // Parse output text from Gemini response structure
+      let botResponse = "Yo! I had a connection issue. Ask me again in a second!";
+      if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts[0]) {
+        botResponse = data.candidates[0].content.parts[0].text;
+      }
 
       return new Response(JSON.stringify({ response: botResponse }), {
         headers: {
