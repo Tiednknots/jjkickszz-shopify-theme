@@ -312,9 +312,53 @@ export default {
     try {
       const { message = "", history = [] } = await request.json();
 
+      // Check if message contains an order number (e.g. #1005 or 1005)
+      let trackingContext = "";
+      const orderMatch = message.match(/#(\d{4,})/);
+      if (orderMatch && env.SHOPIFY_ADMIN_TOKEN) {
+        const orderName = `#${orderMatch[1]}`;
+        try {
+          const shopifyToken = env.SHOPIFY_ADMIN_TOKEN || env.SHOPIFY_TOKEN;
+          const orderUrl = `https://${SHOPIFY_DOMAIN}/admin/api/2024-01/orders.json?name=${encodeURIComponent(orderName)}&status=any`;
+          const orderRes = await fetch(orderUrl, {
+            headers: {
+              "X-Shopify-Access-Token": shopifyToken,
+              "Accept": "application/json"
+            }
+          });
+          if (orderRes.ok) {
+            const { orders } = await orderRes.json();
+            if (orders && orders.length > 0) {
+              const order = orders[0];
+              const fStatus = order.fulfillment_status || "Unfulfilled";
+              let trackingInfo = "No tracking information available yet. The order is currently processing.";
+              if (order.fulfillments && order.fulfillments.length > 0) {
+                const f = order.fulfillments[0];
+                trackingInfo = `Shipped via ${f.tracking_company || "carrier"}. Tracking Number: ${f.tracking_number || "N/A"}. Tracking Link: ${f.tracking_url || "N/A"}`;
+              }
+              trackingContext = `\n\n## CUSTOMER ORDER LOOKUP DETAILS:
+Order Status for ${orderName}:
+- Fulfillment Status: ${fStatus}
+- Financial Status: ${order.financial_status || "Paid"}
+- Shipping/Tracking Info: ${trackingInfo}
+- Order Date: ${order.created_at || "N/A"}
+Please tell the customer these exact details in a friendly, conversational plug tone.`;
+            } else {
+              trackingContext = `\n\n## CUSTOMER ORDER LOOKUP DETAILS:
+Order ${orderName} was not found in the shop database. Suggest they verify the order number.`;
+            }
+          }
+        } catch (e) {
+          console.error("Order lookup failed:", e);
+        }
+      }
+
       // Fetch live catalog (cached 5 min via Cloudflare CDN)
       const catalogResult = await getLiveCatalog();
-      const systemPrompt = buildSystemPrompt(catalogResult ? catalogResult.products : null);
+      let systemPrompt = buildSystemPrompt(catalogResult ? catalogResult.products : null);
+      if (trackingContext) {
+        systemPrompt += trackingContext;
+      }
 
       // Build conversation — Gemini requires strict user/model alternation
       const raw = [
