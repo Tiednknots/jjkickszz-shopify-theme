@@ -24,7 +24,10 @@
         </svg>
         <span>JJKICKSZZ AI STYLIST</span>
       </div>
-      <button class="jj-ai-chat-close" id="jj-ai-chat-close" aria-label="Close stylist">&times;</button>
+      <div class="jj-ai-chat-header-actions">
+        <button class="jj-ai-chat-reset" id="jj-ai-chat-reset" title="End & Clear Chat">Clear Chat</button>
+        <button class="jj-ai-chat-close" id="jj-ai-chat-close" aria-label="Close stylist">&times;</button>
+      </div>
     </div>
 
     <!-- Messages Container -->
@@ -157,6 +160,28 @@
   }
   .jj-ai-chat-close:hover {
     color: #ffffff;
+  }
+  .jj-ai-chat-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .jj-ai-chat-reset {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.5);
+    font-family: var(--font-body), 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .jj-ai-chat-reset:hover {
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.05);
   }
 
   /* Message Window */
@@ -460,6 +485,9 @@
       triggerBtn.querySelector('.icon-sparkle').style.display = 'none';
       triggerBtn.querySelector('.icon-close').style.display = 'block';
       inputEl.focus();
+      try {
+        sessionStorage.setItem('jj-ai-chat-open', 'true');
+      } catch(e) {}
     }
 
     function closeDrawer() {
@@ -468,6 +496,9 @@
       triggerBtn.classList.remove('open');
       triggerBtn.querySelector('.icon-sparkle').style.display = 'block';
       triggerBtn.querySelector('.icon-close').style.display = 'none';
+      try {
+        sessionStorage.setItem('jj-ai-chat-open', 'false');
+      } catch(e) {}
     }
 
     // Suggested prompts listeners
@@ -607,45 +638,63 @@
           addBtn.type = 'button';
           addBtn.className = 'jj-ai-chat-outfit-btn';
           addBtn.textContent = btnText;
+          addBtn.setAttribute('data-variants', variantsList.join(','));
           
-          addBtn.addEventListener('click', function() {
-            addBtn.disabled = true;
-            addBtn.textContent = 'Adding...';
-
-            var items = variantsList.map(function(vId) {
-              return { id: parseInt(vId, 10), quantity: 1 };
-            });
-
-            fetch(window.Shopify.routes.root + 'cart/add.js', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ items: items })
-            })
-            .then(function(res) { return res.json(); })
-            .then(function(data) {
-              addBtn.disabled = false;
-              addBtn.textContent = 'Added!';
-              setTimeout(function() { addBtn.textContent = btnText; }, 2000);
-              
-              // Trigger theme cart drawer
-              if (typeof window.Udesly !== 'undefined') {
-                window.Udesly.dispatch('product-added', true);
-              } else {
-                window.location.href = '/cart';
-              }
-            })
-            .catch(function(err) {
-              addBtn.disabled = false;
-              addBtn.textContent = btnText;
-              console.error('[AIChat] Multi add failed:', err);
-            });
-          });
-
           outfitCard.appendChild(addBtn);
+          bindOutfitButton(addBtn);
         }
         
+        saveChatState();
         scrollToBottom();
       });
+    }
+
+    function bindOutfitButton(addBtn) {
+      var variantsStr = addBtn.getAttribute('data-variants') || '';
+      if (!variantsStr) return;
+      var variantsList = variantsStr.split(',');
+      var btnText = addBtn.textContent;
+
+      addBtn.addEventListener('click', function() {
+        addBtn.disabled = true;
+        addBtn.textContent = 'Adding...';
+
+        var items = variantsList.map(function(vId) {
+          return { id: parseInt(vId, 10), quantity: 1 };
+        });
+
+        fetch(window.Shopify.routes.root + 'cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ items: items })
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          addBtn.disabled = false;
+          addBtn.textContent = 'Added!';
+          setTimeout(function() { addBtn.textContent = btnText; }, 2000);
+          
+          // Trigger theme cart drawer
+          if (typeof window.Udesly !== 'undefined') {
+            window.Udesly.dispatch('product-added', true);
+          } else {
+            window.location.href = '/cart';
+          }
+        })
+        .catch(function(err) {
+          addBtn.disabled = false;
+          addBtn.textContent = btnText;
+          console.error('[AIChat] Multi add failed:', err);
+        });
+      });
+    }
+
+    function saveChatState() {
+      try {
+        sessionStorage.setItem('jj-ai-chat-history-html', messagesContainer.innerHTML);
+      } catch(e) {
+        console.warn('[AIChat] Failed to save chat state:', e);
+      }
     }
 
     function processOfflineFallback(text) {
@@ -677,6 +726,7 @@
       var formatted = sender === 'bot' ? formatBotText(text) : escapeHTML(text);
       msgDiv.innerHTML = '<div class="jj-ai-msg-bubble">' + formatted + '</div>';
       messagesContainer.appendChild(msgDiv);
+      saveChatState();
     }
 
     // Convert Gemini markdown output to readable HTML
@@ -748,6 +798,44 @@
         }
       });
       return history.slice(-8); // Last 8 messages for better context
+    }
+
+    // ── Restore State on Load ────────────────────────────────────────
+    try {
+      var savedHistory = sessionStorage.getItem('jj-ai-chat-history-html');
+      if (savedHistory) {
+        messagesContainer.innerHTML = savedHistory;
+        var savedButtons = messagesContainer.querySelectorAll('.jj-ai-chat-outfit-btn');
+        savedButtons.forEach(bindOutfitButton);
+      }
+      
+      var isDrawerOpen = sessionStorage.getItem('jj-ai-chat-open') === 'true';
+      if (isDrawerOpen) {
+        setTimeout(openDrawer, 300);
+      }
+    } catch (e) {
+      console.warn('[AIChat] Failed to restore chat state:', e);
+    }
+
+    // ── Clear Chat Listener ─────────────────────────────────────────
+    var resetBtn = document.getElementById('jj-ai-chat-reset');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (confirm("Reset stylist chat history?")) {
+          try {
+            sessionStorage.removeItem('jj-ai-chat-history-html');
+            sessionStorage.setItem('jj-ai-chat-open', 'false');
+          } catch(err) {}
+          messagesContainer.innerHTML = 
+            '<div class="jj-ai-msg bot">' +
+            '  <div class="jj-ai-msg-bubble">' +
+            "    Yo! I'm your JJKICKSZZ AI Stylist. Ask me to find sneakers, coordinate outfits, check returns, or look up sizes!" +
+            '  </div>' +
+            '</div>';
+          closeDrawer();
+        }
+      });
     }
   })();
 </script>
