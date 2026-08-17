@@ -51,8 +51,25 @@ def shopify(method, path, body=None):
         "X-Shopify-Access-Token": SHOPIFY_TOKEN,
         "Content-Type": "application/json"
     })
-    with urllib.request.urlopen(req, timeout=15) as r:
-        return json.loads(r.read())
+    try:
+        with urllib.request.urlopen(req, timeout=15) as r:
+            return json.loads(r.read())
+    except urllib.error.HTTPError as e:
+        error_body = e.read().decode("utf-8")
+        print(f"\n❌ Shopify API HTTP Error {e.code}: {e.reason}")
+        print(f"URL attempted: {url}")
+        print(f"Response: {error_body}")
+        print("\nPossible solutions:")
+        if e.code == 401:
+            print("1. Your SHOPIFY_TOKEN may be incorrect or missing scopes.")
+        elif e.code == 404:
+            print("1. Your SHOPIFY_STORE domain might be wrong (must be the .myshopify.com name, e.g. jjkickszz.myshopify.com).")
+        exit(1)
+    except urllib.error.URLError as e:
+        print(f"\n❌ Network Connection Error: {e.reason}")
+        print(f"Failed to connect to: {url}")
+        print("Please check your SHOPIFY_STORE domain secret.")
+        exit(1)
 
 
 def to_b64(url):
