@@ -23,8 +23,8 @@ SHOPIFY_CLIENT_ID = os.environ.get("SHOPIFY_CLIENT_ID")
 SHOPIFY_CLIENT_SECRET = os.environ.get("SHOPIFY_CLIENT_SECRET")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 
-# If client credentials are provided, exchange them for a temporary token dynamically
-if not SHOPIFY_TOKEN and SHOPIFY_CLIENT_ID and SHOPIFY_CLIENT_SECRET and SHOPIFY_STORE:
+# If client credentials are provided and token is missing or a storefront token (shpss_), exchange them
+if (not SHOPIFY_TOKEN or SHOPIFY_TOKEN.startswith("shpss_")) and SHOPIFY_CLIENT_ID and SHOPIFY_CLIENT_SECRET and SHOPIFY_STORE:
     print("🔑 Authenticating with Shopify Client Credentials...")
     try:
         auth_url = f"https://{SHOPIFY_STORE}/admin/oauth/access_token"
