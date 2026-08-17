@@ -241,6 +241,54 @@ export default {
 
     // Shopify Webhook enrichment route
     const urlObj = new URL(request.url);
+
+    // ── OAuth Route: Initiate install flow ──
+    if (urlObj.pathname === "/auth" || urlObj.pathname.endsWith("/auth")) {
+      const shop = urlObj.searchParams.get("shop") || "jjkickszz.myshopify.com";
+      const clientId = env.SHOPIFY_CLIENT_ID;
+      if (!clientId) {
+        return new Response("Error: SHOPIFY_CLIENT_ID environment variable not configured in Cloudflare settings.", { status: 400 });
+      }
+      const redirectUri = `https://${urlObj.hostname}/auth/callback`;
+      const authorizeUrl = `https://${shop}/admin/oauth/authorize?client_id=${clientId}&scope=read_products,write_products&redirect_uri=${encodeURIComponent(redirectUri)}`;
+      return Response.redirect(authorizeUrl, 302);
+    }
+
+    // ── OAuth Callback Route: Exchange code for shpat_ token ──
+    if (urlObj.pathname === "/auth/callback" || urlObj.pathname.endsWith("/auth/callback")) {
+      const code = urlObj.searchParams.get("code");
+      const shop = urlObj.searchParams.get("shop");
+      if (!code || !shop) {
+        return new Response("Missing code or shop parameters.", { status: 400 });
+      }
+      const clientId = env.SHOPIFY_CLIENT_ID;
+      const clientSecret = env.SHOPIFY_CLIENT_SECRET;
+      if (!clientId || !clientSecret) {
+        return new Response("Error: SHOPIFY_CLIENT_ID or SHOPIFY_CLIENT_SECRET not configured in Cloudflare settings.", { status: 500 });
+      }
+
+      try {
+        const tokenRes = await fetch(`https://${shop}/admin/oauth/access_token`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            client_id: clientId,
+            client_secret: clientSecret,
+            code
+          })
+        });
+        const tokenData = await tokenRes.json();
+        if (tokenData.access_token) {
+          return new Response(`🎉 SUCCESS! Your Admin Access Token has been generated.\n\nCopy this token and save it as your SHOPIFY_TOKEN secret in GitHub:\n\n${tokenData.access_token}\n`, {
+            headers: { "Content-Type": "text/plain" }
+          });
+        }
+        return new Response(`Failed to generate token: ${JSON.stringify(tokenData)}`, { status: 500 });
+      } catch (err) {
+        return new Response(`Exchange error: ${err.message}`, { status: 500 });
+      }
+    }
+
     if (urlObj.pathname === "/enrich" || urlObj.pathname.endsWith("/enrich")) {
       try {
         const product = await request.json();
