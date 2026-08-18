@@ -19,28 +19,50 @@
 {% else %}
     {% include "backup-layout" %}
 {% endif %}
-{%- comment -%}Music player disabled{%- endcomment -%}
+{%- render 'music-player' -%}
 <script>
   (function() {
     function translateSizes() {
       const elements = document.querySelectorAll('.sizes-variants');
       elements.forEach(el => {
         let txt = el.textContent.trim().toUpperCase();
-        if (txt === 'SMALL') el.textContent = 'S';
+        if (txt === 'XSMALL' || txt === 'X-SMALL' || txt === 'XS' || txt === 'EXTRA SMALL' || txt === 'X SMALL') el.textContent = 'XS';
+        else if (txt === 'SMALL') el.textContent = 'S';
         else if (txt === 'MEDIUM') el.textContent = 'M';
         else if (txt === 'LARGE') el.textContent = 'L';
-        else if (txt === 'XLARGE' || txt === 'X-LARGE') el.textContent = 'XL';
+        else if (txt === 'XLARGE' || txt === 'X-LARGE' || txt === 'EXTRA LARGE') el.textContent = 'XL';
         else if (txt === 'XXLARGE' || txt === 'XX-LARGE' || txt === '2XL' || txt === 'XX LARGE') el.textContent = 'XXL';
         else if (txt === 'XXXLARGE' || txt === 'XXX-LARGE' || txt === '3XL' || txt === 'XXX LARGE') el.textContent = '3XL';
         else if (txt === 'ONE SIZE' || txt === 'ONESIZE') el.textContent = 'O/S';
       });
     }
+
+    // Run immediately
+    translateSizes();
+
+    // Run on DOM load
     document.addEventListener('DOMContentLoaded', translateSizes);
     window.addEventListener('load', translateSizes);
+
+    // Watch for dynamic updates (Finsweet, Udesly, Shopify Apps)
+    const observer = new MutationObserver((mutations) => {
+      let shouldRun = false;
+      for (const mutation of mutations) {
+        if (mutation.addedNodes.length > 0) {
+          shouldRun = true;
+          break;
+        }
+      }
+      if (shouldRun) {
+        translateSizes();
+      }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
   })();
 </script>
 <script>
-  // --- SCROLL POSITION RETENTION (HISTORY BACK/FORWARD ONLY) ---
+  // --- SCROLL POSITION RETENTION ON BACK NAVIGATION ---
   (function() {
     const safeStorage = {
       getItem(key) {
@@ -48,9 +70,6 @@
       },
       setItem(key, value) {
         try { sessionStorage.setItem(key, value); } catch (e) {}
-      },
-      removeItem(key) {
-        try { sessionStorage.removeItem(key); } catch (e) {}
       }
     };
 
@@ -79,19 +98,11 @@
       }
     });
 
+    // Save scroll state on page unload
     window.addEventListener('beforeunload', saveScrollPositions);
     window.addEventListener('pagehide', saveScrollPositions);
 
-    let hasUserScrolled = false;
-    window.addEventListener('scroll', () => {
-      // If the user starts scrolling down manually, flag it to prevent script snapping
-      if (window.scrollY > 15) {
-        hasUserScrolled = true;
-      }
-    }, { passive: true });
-
     const restoreScrollPositions = () => {
-      if (hasUserScrolled) return; // Cancel if the user is scrolling manually
       const saved = safeStorage.getItem(getStorageKey());
       if (!saved) return;
       try {
@@ -112,74 +123,15 @@
       } catch (e) {}
     };
 
-    // Only restore scroll position for back/forward navigation or refresh reloads
-    let shouldRestore = false;
-    try {
-      const entries = performance.getEntriesByType('navigation');
-      if (entries.length > 0) {
-        const navType = entries[0].type;
-        if (navType === 'back_forward' || navType === 'reload') {
-          shouldRestore = true;
-        } else {
-          safeStorage.removeItem(getStorageKey());
-        }
-      } else {
-        // Fallback for older browsers
-        if (window.performance && (window.performance.navigation.type === 1 || window.performance.navigation.type === 2)) {
-          shouldRestore = true;
-        } else {
-          safeStorage.removeItem(getStorageKey());
-        }
-      }
-    } catch (e) {}
-
-    if (shouldRestore) {
-      document.addEventListener('DOMContentLoaded', restoreScrollPositions);
-      window.addEventListener('load', () => {
-        setTimeout(restoreScrollPositions, 50);
-        setTimeout(restoreScrollPositions, 150);
-        setTimeout(restoreScrollPositions, 350);
-        setTimeout(restoreScrollPositions, 750);
-        setTimeout(restoreScrollPositions, 1500);
-      });
-    }
-
-    // Scroll-In Micro Animations Observer
-    document.addEventListener('DOMContentLoaded', function() {
-      // 1. Tag all valid sections
-      var sections = document.querySelectorAll('.shopify-section');
-      sections.forEach(function(sec) {
-        if (sec.querySelector('.navbar') || sec.querySelector('.white-section.menu') || sec.classList.contains('shopify-section-header')) {
-          return;
-        }
-        sec.classList.add('scroll-animate');
-      });
-
-      // 2. Set up observer
-      if ('IntersectionObserver' in window) {
-        var observer = new IntersectionObserver(function(entries, obs) {
-          entries.forEach(function(entry) {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('animated');
-              obs.unobserve(entry.target);
-            }
-          });
-        }, {
-          threshold: 0.02,
-          rootMargin: '0px 0px -20px 0px'
-        });
-
-        document.querySelectorAll('.scroll-animate').forEach(function(el) {
-          observer.observe(el);
-        });
-      } else {
-        // Fallback for old browsers
-        document.querySelectorAll('.scroll-animate').forEach(function(el) {
-          el.classList.add('animated');
-        });
-      }
+    // Restore scroll positions at multiple intervals to handle dynamic load-in
+    document.addEventListener('DOMContentLoaded', restoreScrollPositions);
+    window.addEventListener('load', () => {
+      setTimeout(restoreScrollPositions, 50);
+      setTimeout(restoreScrollPositions, 150);
+      setTimeout(restoreScrollPositions, 350);
+      setTimeout(restoreScrollPositions, 750);
+      setTimeout(restoreScrollPositions, 1500);
     });
   })();
 </script>
-{%- render 'ai-chat-drawer' -%}
 </body></html>

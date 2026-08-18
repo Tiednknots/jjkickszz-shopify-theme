@@ -59,111 +59,11 @@
       {
         "type": "color",
         "id": "color_secret_red",
-        "label": "Accent / Brand Red",
-        "default": "#c60000"
+        "label": "Color secret red",
+        "default": "#cf0000"
       }
     ]
   },
-  {
-    "name": "Typography & Text Colors",
-    "settings": [
-      {
-        "type": "header",
-        "content": "Global Text Colors"
-      },
-      {
-        "type": "color",
-        "id": "color_body_text",
-        "label": "Body Text Color",
-        "default": "#ffffff",
-        "info": "Main readable text on all pages"
-      },
-      {
-        "type": "color",
-        "id": "color_heading_text",
-        "label": "Heading Text Color",
-        "default": "#ffffff",
-        "info": "H1, H2, H3 tags across the site"
-      },
-      {
-        "type": "color",
-        "id": "color_muted_text",
-        "label": "Muted / Secondary Text Color",
-        "default": "#999999",
-        "info": "Subtitles, captions, labels"
-      },
-      {
-        "type": "header",
-        "content": "Links"
-      },
-      {
-        "type": "color",
-        "id": "color_link",
-        "label": "Link Color",
-        "default": "#ffffff"
-      },
-      {
-        "type": "color",
-        "id": "color_link_hover",
-        "label": "Link Hover Color",
-        "default": "#cccccc"
-      },
-      {
-        "type": "header",
-        "content": "Page Background"
-      },
-      {
-        "type": "color",
-        "id": "color_page_bg",
-        "label": "Page Background Color",
-        "default": "#0a0a0a"
-      },
-      {
-        "type": "color",
-        "id": "color_surface",
-        "label": "Surface / Card Background Color",
-        "default": "#141414"
-      }
-    ]
-  },
-  {
-    "name": "Buttons",
-    "settings": [
-      {
-        "type": "header",
-        "content": "Primary Button"
-      },
-      {
-        "type": "color",
-        "id": "color_btn_primary_bg",
-        "label": "Primary Button Background",
-        "default": "#c60000"
-      },
-      {
-        "type": "color",
-        "id": "color_btn_primary_text",
-        "label": "Primary Button Text",
-        "default": "#ffffff"
-      },
-      {
-        "type": "header",
-        "content": "Secondary Button"
-      },
-      {
-        "type": "color",
-        "id": "color_btn_secondary_bg",
-        "label": "Secondary Button Background",
-        "default": "#ffffff"
-      },
-      {
-        "type": "color",
-        "id": "color_btn_secondary_text",
-        "label": "Secondary Button Text",
-        "default": "#000000"
-      }
-    ]
-  },
-
   {
     "name": "Products Collection Settings",
     "settings": [

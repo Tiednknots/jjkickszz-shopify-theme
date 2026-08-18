@@ -113,8 +113,8 @@
 
   .feat-btn-{{ section.id }} {
     display: inline-block;
-    background-color: {{ section.settings.button_bg_color | default: 'var(--secret-red)' }} !important;
-    color: {{ section.settings.button_txt_color | default: '#fff' }} !important;
+    background-color: var(--secret-red);
+    color: #fff;
     padding: 14px 32px;
     font-family: 'Inter', sans-serif;
     font-size: 13px;
@@ -227,18 +227,6 @@
       "id": "button_text",
       "label": "Button Text",
       "default": "Shop Release"
-    },
-    {
-      "type": "color",
-      "id": "button_bg_color",
-      "label": "Button Background Color",
-      "default": "#ea2c2c"
-    },
-    {
-      "type": "color",
-      "id": "button_txt_color",
-      "label": "Button Text Color",
-      "default": "#ffffff"
     }
   ],
   "presets": [
