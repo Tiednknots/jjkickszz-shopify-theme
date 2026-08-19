@@ -1,6 +1,7 @@
 {% paginate collection.products by 48 %}
 {% capture listItems %}
-{%- for item in collection.products -%}
+{%- assign sorted_products = collection.products | sort: 'created_at' | reverse -%}
+{%- for item in sorted_products -%}
  <div role="listitem" class="collection-item-2 margin w-dyn-item" data-vendor="{{ item.vendor | escape }}">
                     <a href="{{ item.url }}" class="link-block-2 w-inline-block">
                       {%- assign _is_sold_out = true -%}
@@ -15,6 +16,7 @@
                             {%- if _sl_down contains 'xxxl' or _sl_down contains '3xl' -%}{%- assign _sl = '3XL' -%}
                             {%- elsif _sl_down contains 'xxl' or _sl_down contains '2xl' or _sl_down contains 'xx-large' or _sl_down contains 'xx large' or _sl_down == 'xxlarge' -%}{%- assign _sl = 'XXL' -%}
                             {%- elsif _sl_down contains 'xl' or _sl_down contains 'x-large' or _sl_down contains 'x large' or _sl_down contains 'xlarge' -%}{%- assign _sl = 'XL' -%}
+                            {%- elsif _sl_down contains 'xs' or _sl_down contains 'xsmall' or _sl_down contains 'x-small' or _sl_down contains 'extra small' or _sl_down == 'xs' -%}{%- assign _sl = 'XS' -%}
                             {%- elsif _sl_down contains 'small' or _sl_down == 's' -%}{%- assign _sl = 'S' -%}
                             {%- elsif _sl_down contains 'medium' or _sl_down == 'm' -%}{%- assign _sl = 'M' -%}
                             {%- elsif _sl_down contains 'large' or _sl_down == 'l' -%}{%- assign _sl = 'L' -%}
