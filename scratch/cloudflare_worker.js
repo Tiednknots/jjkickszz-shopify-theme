@@ -54,16 +54,39 @@ async function getLiveCatalog() {
     const products = json.products || [];
     if (!products.length) return { error: "No products returned", products: null };
 
-    const lines = products
-      .filter(p => p.variants && p.variants.some(v => v.available))
-      .map(p => {
-        const price = `$${parseFloat(p.variants[0].price).toFixed(0)}`;
-        // Prefer Shopify's product_type field — fall back to title inference
-        const cat = (p.product_type && p.product_type.trim())
-          ? p.product_type.trim()
-          : getCategory(p.title);
-        return `${p.title} | ${cat} | ${price} | handle:${p.handle}`;
-      });
+    // Filter to only available products with at least one image
+    const validProducts = products.filter(p => 
+      p.images && 
+      p.images.length > 0 && 
+      p.variants && 
+      p.variants.some(v => v.available)
+    );
+
+    // Sort by ID descending (newest first)
+    const sorted = validProducts.sort((a, b) => b.id - a.id);
+
+    // Keep top 15 newest items at the top to prioritize fresh arrivals
+    const newest = sorted.slice(0, 15);
+    const rest = sorted.slice(15);
+
+    // Fisher-Yates shuffle on the remaining products to add variety and prevent repetitive recommendations
+    for (let i = rest.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const temp = rest[i];
+      rest[i] = rest[j];
+      rest[j] = temp;
+    }
+
+    const shuffledCatalog = [...newest, ...rest];
+
+    const lines = shuffledCatalog.map(p => {
+      const price = `$${parseFloat(p.variants[0].price).toFixed(0)}`;
+      // Prefer Shopify's product_type field — fall back to title inference
+      const cat = (p.product_type && p.product_type.trim())
+        ? p.product_type.trim()
+        : getCategory(p.title);
+      return `${p.title} | ${cat} | ${price} | handle:${p.handle}`;
+    });
 
     return { error: null, products: lines.join("\n"), count: lines.length };
   } catch (e) {

@@ -496,6 +496,7 @@
               }
 
               return {
+                id: p.id,
                 title: p.title,
                 url: '/products/' + p.handle,
                 vendor: p.vendor,
@@ -523,6 +524,17 @@
     // Shared filter function
     function filterProducts(products, maxPrice, filterSize) {
       return products.filter(function(prod) {
+        // Do not show sold out products
+        if (!prod.available) {
+          return false;
+        }
+
+        // Do not show products missing an image
+        var img = prod.featured_image ? (prod.featured_image.src || prod.featured_image) : (prod.image || '');
+        if (!img || img.indexOf('placeholder') !== -1 || img === '') {
+          return false;
+        }
+
         // 1. Price Filter
         if (maxPrice !== null) {
           var priceNum = parseFloat(prod.price) || 0;
@@ -555,6 +567,11 @@
         resultsContainer.innerHTML = '<div class="jj-ai-no-results">No matches in stock right now. Try adjusting your query or sizes!</div>';
         return;
       }
+
+      // Recommend newer items first: sort products by ID descending (newest first)
+      products.sort(function(a, b) {
+        return (parseInt(b.id, 10) || 0) - (parseInt(a.id, 10) || 0);
+      });
 
       var html = '';
       products.forEach(function(p) {
