@@ -1,6 +1,7 @@
 {% capture listItems %}
-{% paginate collections.all.products by 250 %}
-{%- for item in collections.all.products limit: 1 %}
+{% paginate collections.all.products by 999 %}
+{%- assign allItems = collections.all.products -%}
+{%- for item in allItems limit: 1 -%}
  <div role="listitem" class="w-dyn-item"></div>
 {%- endfor -%}
 {% endpaginate %}

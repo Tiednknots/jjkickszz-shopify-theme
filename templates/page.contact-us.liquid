@@ -1,540 +1,160 @@
 {%- assign headerSnippetPath = "header-pagecontact-us" -%}{%- assign wfPage = "69dd79dbff0fc2ea86e647e8" -%}{%- assign bodyClasses = "" -%}
   {%- render 'global-navbar' -%}
   {%- section 'scrolling-highlights' -%}
-
-  <style>
-    /* ── CONTACT PAGE — THE VAULT BRAND REDESIGN ─────────────────── */
-    .jj-contact-page {
-      background: #0a0a0a;
-      min-height: 100vh;
-      width: 100%;
-      padding: 80px 4rem 120px;
-      box-sizing: border-box;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6rem;
-      align-items: center;
-    }
-
-    /* ── LEFT COLUMN ─────────────────────────────────────────────── */
-    .jj-contact-left {
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-      position: sticky;
-      top: 120px;
-    }
-
-    .jj-contact-eyebrow {
-      font-family: 'Inter', sans-serif;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.35);
-      margin: 0;
-    }
-
-    .jj-contact-headline {
-      font-family: 'Inter', sans-serif;
-      font-size: clamp(3rem, 6vw, 5.5rem);
-      font-weight: 900;
-      line-height: 0.92;
-      letter-spacing: -0.03em;
-      color: #ffffff;
-      text-transform: uppercase;
-      margin: 0;
-    }
-
-    .jj-contact-headline span {
-      display: block;
-      color: rgba(255,255,255,0.18);
-    }
-
-    .jj-contact-subtext {
-      font-family: 'Inter', sans-serif;
-      font-size: 14px;
-      line-height: 1.7;
-      color: rgba(255,255,255,0.45);
-      margin: 0;
-      max-width: 360px;
-    }
-
-    .jj-contact-divider {
-      width: 40px;
-      height: 1px;
-      background: rgba(255,255,255,0.15);
-    }
-
-    .jj-contact-info-block {
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-    }
-
-    .jj-contact-info-row {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .jj-contact-info-label {
-      font-family: 'Inter', sans-serif;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.25);
-    }
-
-    .jj-contact-info-value {
-      font-family: 'Inter', sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      color: rgba(255,255,255,0.7);
-      text-decoration: none;
-      transition: color 0.2s ease;
-    }
-
-    .jj-contact-info-value:hover {
-      color: #ffffff;
-    }
-
-    .jj-contact-response-note {
-      font-family: 'Inter', sans-serif;
-      font-size: 12px;
-      color: rgba(255,255,255,0.2);
-      font-style: italic;
-      margin: 0;
-    }
-
-    /* ── RIGHT COLUMN — FORM ──────────────────────────────────────── */
-    .jj-contact-right {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-
-    .jj-product-context-banner {
-      display: none;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 4px;
-      padding: 14px 18px;
-      margin-bottom: 2rem;
-      font-family: 'Inter', sans-serif;
-      font-size: 12px;
-      color: rgba(255,255,255,0.5);
-    }
-
-    .jj-product-context-banner strong {
-      color: rgba(255,255,255,0.85);
-      display: block;
-      font-size: 13px;
-      margin-bottom: 2px;
-    }
-
-    .jj-contact-form {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-
-    /* ── FLOATING LABEL FIELD ─────────────────────────────────────── */
-    .jj-field-wrap {
-      position: relative;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      margin-bottom: 2px;
-      transition: border-color 0.25s ease;
-    }
-
-    .jj-field-wrap:focus-within {
-      border-bottom-color: rgba(255,255,255,0.5);
-    }
-
-    .jj-field-wrap label {
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      font-family: 'Inter', sans-serif;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.25);
-      pointer-events: none;
-      transition: all 0.2s ease;
-    }
-
-    .jj-field-wrap.textarea-wrap label {
-      top: 24px;
-      transform: none;
-    }
-
-    .jj-field-wrap.active label,
-    .jj-field-wrap:focus-within label {
-      top: 10px;
-      transform: none;
-      font-size: 9px;
-      letter-spacing: 0.18em;
-      color: rgba(255,255,255,0.4);
-    }
-
-    .jj-field-wrap input,
-    .jj-field-wrap textarea,
-    .jj-field-wrap select {
-      background: transparent;
-      border: none;
-      outline: none;
-      width: 100%;
-      color: #ffffff;
-      font-family: 'Inter', sans-serif;
-      font-size: 14px;
-      padding: 32px 0 12px 0;
-      box-sizing: border-box;
-      resize: none;
-      appearance: none;
-      -webkit-appearance: none;
-    }
-
-    .jj-field-wrap select {
-      cursor: pointer;
-    }
-
-    .jj-field-wrap select option {
-      background: #141414;
-      color: #fff;
-    }
-
-    .jj-field-wrap textarea {
-      min-height: 130px;
-      line-height: 1.6;
-    }
-
-    /* Two-column row for name + phone */
-    .jj-form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-    }
-
-    /* ── SUBMIT BUTTON ─────────────────────────────────────────────── */
-    .jj-contact-submit-wrap {
-      margin-top: 2.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-    }
-
-    .jj-contact-submit {
-      background: #ffffff;
-      color: #000000;
-      border: none;
-      font-family: 'Inter', sans-serif;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      padding: 16px 40px;
-      cursor: pointer;
-      transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
-    }
-
-    .jj-contact-submit:hover {
-      background: rgba(255,255,255,0.88);
-      transform: translateY(-1px);
-    }
-
-    .jj-contact-submit:active {
-      transform: translateY(0);
-    }
-
-    .jj-contact-legal {
-      font-family: 'Inter', sans-serif;
-      font-size: 10px;
-      color: rgba(255,255,255,0.15);
-      line-height: 1.5;
-      max-width: 200px;
-    }
-
-    /* ── SUCCESS / ERROR STATES ────────────────────────────────────── */
-    .jj-form-success {
-      display: none;
-      text-align: center;
-      padding: 4rem 2rem;
-    }
-
-    .jj-form-success.visible {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .jj-success-icon {
-      width: 48px;
-      height: 48px;
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: rgba(255,255,255,0.7);
-    }
-
-    .jj-success-title {
-      font-family: 'Inter', sans-serif;
-      font-size: 20px;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      color: #fff;
-      margin: 0;
-    }
-
-    .jj-success-sub {
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      color: rgba(255,255,255,0.4);
-      margin: 0;
-    }
-
-    .jj-form-error-msg {
-      display: none;
-      font-family: 'Inter', sans-serif;
-      font-size: 12px;
-      color: rgba(255,255,255,0.5);
-      margin-top: 1rem;
-      padding: 12px 16px;
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .jj-form-error-msg.visible {
-      display: block;
-    }
-
-    /* ── MOBILE ─────────────────────────────────────────────────────── */
-    @media (max-width: 991px) {
-      .jj-contact-page {
-        grid-template-columns: 1fr;
-        gap: 3rem;
-        padding: 50px 2rem 80px;
-      }
-
-      .jj-contact-left {
-        position: static;
-      }
-
-      .jj-contact-headline {
-        font-size: clamp(2.8rem, 10vw, 4rem);
-      }
-
-      .jj-form-row {
-        grid-template-columns: 1fr;
-        gap: 0;
-      }
-
-      .jj-contact-submit-wrap {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .jj-contact-submit {
-        width: 100%;
-        text-align: center;
-        padding: 18px;
-      }
-
-      .jj-contact-legal {
-        max-width: 100%;
-      }
-    }
-  </style>
-
-  <div class="jj-contact-page">
-
-    <!-- ── LEFT: Brand Editorial Column ──────────────────────────── -->
-    <div class="jj-contact-left">
-      <p class="jj-contact-eyebrow">Customer Support</p>
-      <h1 class="jj-contact-headline">
-        Get in<br>
-        <span>contact with</span>
-        us.
-      </h1>
-      <p class="jj-contact-subtext">
-        Have questions about a sneaker, your order, or sizing? Fill out the form below and the team will get back to you personally.
-      </p>
-      <div class="jj-contact-divider"></div>
-      <div class="jj-contact-info-block">
-        <div class="jj-contact-info-row">
-          <span class="jj-contact-info-label">Email</span>
-          <a href="mailto:info@jjkickszz.com" class="jj-contact-info-value">info@jjkickszz.com</a>
-        </div>
-        <div class="jj-contact-info-row">
-          <span class="jj-contact-info-label">Based in</span>
-          <span class="jj-contact-info-value">New York City, NY</span>
-        </div>
-        <div class="jj-contact-info-row">
-          <span class="jj-contact-info-label">Hours</span>
-          <span class="jj-contact-info-value">Mon – Fri, 10AM – 7PM EST</span>
-        </div>
+  <div class="div-block-1158 i23r">
+    <h1 class="heading-9 qjwe">{{ 't7f274abe' | t }}</h1>
+    <div class="w-form">
+      {%- form "contact",  class: "form" -%}
+        <div class="div-block-1159">
+          <div class="div-block-1160"><label for="contact[name]">{{ 't24eeab' | t }}</label><input class="text-field w-input" maxlength="256" name="contact[name]" data-name="Name" placeholder="" type="text" id="name"></div>
+          <div class="div-block-1161"><label for="contact[phone]">{{ 't4984d4e' | t }}</label><input class="text-field w-input" maxlength="256" name="contact[phone]" data-name="Phone" placeholder="" type="tel" id="Phone"></div>
+        </div><label for="email">{{ 'tn2b7010d0' | t }}</label><input class="text-field-2 w-input" maxlength="256" name="contact[email]" data-name="Email" placeholder="" type="email" id="email" required=""><label for="contact[customer_message]">{{ 'tn2b7010d0' | t }}</label><textarea required="" placeholder="" maxlength="5000" id="Customer-Message" name="contact[customer_message]" data-name="Customer Message" class="textarea w-input"></textarea><input type="submit" data-wait="Please wait..." class="button long-form w-button" value="{{ 'tn6bbed3c8' | t }}">
+      {%- assign form_success = form.posted_successfully? -%}{%- assign form_errors = form.errors -%}{%- render "form-general-script", form_success: form_success, form_errors: form_errors -%}{%- endform -%}
+      <div class="w-form-done  {% if form_success %}form-posted-successfully{% endif %}">
+        <div>{{ 't5a0ea5a1' | t }}</div>
       </div>
-      <p class="jj-contact-response-note">We typically respond within 24 hours.</p>
-    </div>
-
-    <!-- ── RIGHT: Form Column ─────────────────────────────────────── -->
-    <div class="jj-contact-right">
-
-      <!-- Product context banner (shown when coming from a product page) -->
-      <div class="jj-product-context-banner" id="jj-product-banner">
-        <strong id="jj-product-banner-title"></strong>
-        Your question will be pre-filled with this product's details.
-      </div>
-
-      <!-- Success state -->
-      <div class="jj-form-success" id="jj-form-success">
-        <div class="jj-success-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <polyline points="20 6 9 17 4 12"></polyline>
-          </svg>
-        </div>
-        <p class="jj-success-title">Message Sent.</p>
-        <p class="jj-success-sub">We'll be in touch shortly.</p>
-      </div>
-
-      {%- form "contact", class: "jj-contact-form", id: "jj-contact-form" -%}
-
-        <div class="jj-form-row">
-          <div class="jj-field-wrap" id="jj-wrap-name">
-            <label for="jj-name">Full Name</label>
-            <input type="text" id="jj-name" name="contact[name]" maxlength="256" autocomplete="name">
-          </div>
-          <div class="jj-field-wrap" id="jj-wrap-phone">
-            <label for="jj-phone">Phone (optional)</label>
-            <input type="tel" id="jj-phone" name="contact[phone]" maxlength="64" autocomplete="tel">
-          </div>
-        </div>
-
-        <div class="jj-field-wrap" id="jj-wrap-email">
-          <label for="jj-email">Email Address</label>
-          <input type="email" id="jj-email" name="contact[email]" maxlength="256" required autocomplete="email">
-        </div>
-
-        <div class="jj-field-wrap" id="jj-wrap-subject">
-          <label for="jj-subject">Subject</label>
-          <select id="jj-subject" name="contact[subject]">
-            <option value=""></option>
-            <option value="Product Question">Product Question</option>
-            <option value="Order Inquiry">Order Inquiry</option>
-            <option value="Authenticity">Authenticity Concern</option>
-            <option value="Shipping">Shipping & Delivery</option>
-            <option value="Returns">Returns & Exchanges</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
-
-        <div class="jj-field-wrap" id="jj-wrap-message">
-          <label for="jj-message">Your Message</label>
-          <input type="hidden" id="jj-product-context-field" name="contact[product_context]" value="">
-          <textarea id="jj-message" name="contact[customer_message]" maxlength="5000" required></textarea>
-        </div>
-
-        <div class="jj-contact-submit-wrap">
-          <button type="submit" class="jj-contact-submit">Send Message</button>
-          <p class="jj-contact-legal">By submitting you agree to our privacy policy. Your info is never shared.</p>
-        </div>
-
-        <div class="jj-form-error-msg" id="jj-form-error">
-          Something went wrong. Please try again or email us directly.
-        </div>
-
-      {%- assign form_success = form.posted_successfully? -%}
-      {%- assign form_errors = form.errors -%}
-      {%- render "form-general-script", form_success: form_success, form_errors: form_errors -%}
-      {%- endform -%}
-
+      {%- unless form_success -%}<div class="w-form-fail  {% if form.errors %}form-has-errors{% endif %}">
+        <div>{%- render "form-errors", form_errors: form_errors -%}</div>
+      </div>{%- endunless -%}
     </div>
   </div>
-
   {%- section 'footer' -%}
-
   <script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=692e9588093fdf59aecf42c9" type="text/javascript" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
   <script src="{{ 'webflow.js' | asset_url }}" type="text/javascript"></script>
+  <script src="https://unpkg.com/@barba/core"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@finsweet/cms-library@1/cms-library.js"></script>
   <style>
-    .w-commerce-commerceaddtocarterrorstate { display: none !important; }
-  </style>
+  /* Force hide the native Webflow error state */
+  .w-commerce-commerceaddtocarterrorstate { display: none !important; }
+</style>
   <script>
-    (function() {
-      // ── FLOATING LABEL ACTIVATION ────────────────────────────────
-      document.querySelectorAll('.jj-field-wrap input, .jj-field-wrap textarea, .jj-field-wrap select').forEach(function(el) {
-        var wrap = el.closest('.jj-field-wrap');
-        function update() {
-          if (el.value && el.value.length > 0) {
-            wrap.classList.add('active');
-          } else {
-            wrap.classList.remove('active');
-          }
-        }
-        el.addEventListener('input', update);
-        el.addEventListener('change', update);
-        el.addEventListener('focus', function() { wrap.classList.add('active'); });
-        el.addEventListener('blur', update);
-        update();
-      });
-
-      // ── PRODUCT PRE-FILL FROM URL PARAMS ─────────────────────────
-      var params = new URLSearchParams(window.location.search);
-      var productTitle = params.get('product');
-      var productHandle = params.get('handle');
-
-      if (productTitle) {
-        // Show product context banner
-        var banner = document.getElementById('jj-product-banner');
-        var bannerTitle = document.getElementById('jj-product-banner-title');
-        if (banner && bannerTitle) {
-          bannerTitle.textContent = decodeURIComponent(productTitle);
-          banner.style.display = 'block';
-        }
-
-        // Set subject select to "Product Question"
-        var subjectEl = document.getElementById('jj-subject');
-        if (subjectEl) {
-          subjectEl.value = 'Product Question';
-          var subjectWrap = document.getElementById('jj-wrap-subject');
-          if (subjectWrap) subjectWrap.classList.add('active');
-        }
-
-        // Inject product context into hidden field
-        var contextField = document.getElementById('jj-product-context-field');
-        if (contextField) {
-          var contextStr = 'Product: ' + decodeURIComponent(productTitle);
-          if (productHandle) contextStr += ' (/products/' + productHandle + ')';
-          contextField.value = contextStr;
-        }
-
-        // Pre-fill message
-        var msgEl = document.getElementById('jj-message');
-        if (msgEl) {
-          msgEl.value = 'Hi, I have a question about: ' + decodeURIComponent(productTitle) + '\n\n';
-          var msgWrap = document.getElementById('jj-wrap-message');
-          if (msgWrap) msgWrap.classList.add('active');
+  // --- 1. SCROLLBAR ENGINE ---
+  function initCustomScroll() {
+    const containers = document.querySelectorAll('.contents-of-scroll');
+    containers.forEach(container => {
+      let track = null; let bar = null; let parent = container.parentElement;
+      for (let i = 0; i < 6; i++) {
+        if (parent) {
+          track = parent.querySelector('.track-for-scrolly');
+          if (track) { bar = track.querySelector('.bar-of-scrolly') || parent.querySelector('.bar-of-scrolly'); break; }
+          parent = parent.parentElement;
         }
       }
-
-      // ── FORM SUCCESS DETECTION ───────────────────────────────────
-      {%- if form.posted_successfully? -%}
-      var formEl = document.getElementById('jj-contact-form');
-      var successEl = document.getElementById('jj-form-success');
-      if (formEl) formEl.style.display = 'none';
-      if (successEl) successEl.classList.add('visible');
-      {%- endif -%}
-
-      {%- if form.errors -%}
-      var errorEl = document.getElementById('jj-form-error');
-      if (errorEl) errorEl.classList.add('visible');
-      {%- endif -%}
-    })();
-  </script>
+      if (track && bar) {
+        let isDragging = false; let startX, startLeft;
+        const updateBar = () => {
+          if (isDragging) return; 
+          const scrollLeft = container.scrollLeft;
+          const maxScroll = container.scrollWidth - container.clientWidth;
+          if (maxScroll <= 0) return;
+          const scrollPercent = scrollLeft / maxScroll;
+          const maxMove = track.clientWidth - bar.clientWidth;
+          bar.style.transform = `translateX(${scrollPercent * maxMove}px)`;
+        };
+        const onMouseDown = (e) => {
+          isDragging = true; startX = e.pageX;
+          const matrix = new DOMMatrix(window.getComputedStyle(bar).getPropertyValue('transform'));
+          startLeft = matrix.m41; 
+          document.body.style.userSelect = 'none'; bar.style.cursor = 'grabbing';
+          document.addEventListener('mousemove', onMouseMove);
+          document.addEventListener('mouseup', onMouseUp);
+        };
+        const onMouseMove = (e) => {
+          if (!isDragging) return;
+          const maxMove = track.clientWidth - bar.clientWidth;
+          let newLeft = startLeft + (e.pageX - startX);
+          if (newLeft < 0) newLeft = 0; if (newLeft > maxMove) newLeft = maxMove;
+          bar.style.transform = `translateX(${newLeft}px)`;
+          container.scrollLeft = (newLeft / maxMove) * (container.scrollWidth - container.clientWidth);
+        };
+        const onMouseUp = () => {
+          isDragging = false; document.body.style.userSelect = ''; bar.style.cursor = 'pointer';
+          document.removeEventListener('mousemove', onMouseMove);
+          document.removeEventListener('mouseup', onMouseUp);
+        };
+        container.addEventListener('scroll', updateBar);
+        window.addEventListener('resize', updateBar);
+        bar.addEventListener('mousedown', onMouseDown);
+        setTimeout(updateBar, 100);
+      }
+    });
+  }
+  // --- 2. GALLERY CLICK WATCHER ---
+  function initGallery() {
+    document.addEventListener('click', function(e) {
+      const thumbWrapper = e.target.closest('.thumb-image');
+      if (!thumbWrapper) return; 
+      const thumbImg = thumbWrapper.tagName === 'IMG' ? thumbWrapper : thumbWrapper.querySelector('img');
+      if (!thumbImg) return;
+      const mainImg = document.getElementById('main-image');
+      if (!mainImg) return;
+      const oldMainSrc = mainImg.src; const oldMainSrcSet = mainImg.srcset;
+      mainImg.src = thumbImg.src; mainImg.srcset = thumbImg.srcset;
+      thumbImg.src = oldMainSrc; thumbImg.srcset = oldMainSrcSet;
+    }, true);
+  }
+  // --- 3. CURSOR LOGIC ---
+  function initCursor() {
+    var tricksCursor = document.querySelector('.cursor');
+    if (tricksCursor) {
+      if (window.cursorFunc) window.removeEventListener('mousemove', window.cursorFunc);
+      window.cursorFunc = function(e) {
+        tricksCursor.style.top = e.clientY + 'px';
+        tricksCursor.style.left = e.clientX + 'px';
+      };
+      window.addEventListener('mousemove', window.cursorFunc);
+    }
+    if (typeof $ !== 'undefined') {
+      $("a, .nav_link, .project-block, .logo").off("mouseenter mouseleave").hover(
+        function() { $('.cursor').addClass('cursor-hover'); },
+        function() { $('.cursor').removeClass('cursor-hover'); }
+      );
+      $("body").off("mousedown mouseup").hover(function(){}, function(){});
+      $("body").mousedown(function() { $('.cursor').addClass('cursor-pressed'); });
+      $("body").mouseup(function() { $('.cursor').removeClass('cursor-pressed'); });
+    }
+  }
+  // --- 4. TABS LOGIC ---
+  function initTabs() {
+    if (typeof FsLibrary !== 'undefined' && document.querySelector('.fs-dynamic-feed')) {
+      try {
+        new FsLibrary('.fs-dynamic-feed').tabs({
+          tabComponent: '.fs-tabs', tabContent: '.fs-tab-content',
+          tabbackground: '.fs-background', tabName: '.fs-tab-name'
+        });
+      } catch(e) {}
+    }
+  }
+    // Actively watch and hide Webflow error state
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((m) => {
+        if (m.target.classList.contains('w-commerce-commerceaddtocarterrorstate') && m.target.style.display !== 'none') {
+          m.target.style.display = 'none';
+        }
+      });
+    });
+    document.querySelectorAll('.w-commerce-commerceaddtocarterrorstate').forEach(el => {
+      observer.observe(el, { attributes: true, attributeFilter: ['style'] });
+    });
+  }
+  // --- 6. WEBFLOW RELOAD (Fixes Accordions & UI) ---
+  function forceWebflowReload() {
+    if (window.Webflow) {
+      window.Webflow.destroy();
+      window.Webflow.ready();
+      if (window.Webflow.require('ix2')) window.Webflow.require('ix2').init();
+    }
+    // Fallback script reload
+    const scripts = document.querySelectorAll('script');
+    let webflowSrc = null;
+    scripts.forEach(s => { if (s.src && s.src.includes('webflow')) { webflowSrc = s.src; s.remove(); } });
+    if (webflowSrc) {
+      const ns = document.createElement('script');
+      ns.src = webflowSrc; ns.type = 'text/javascript'; ns.async = false;
+      document.body.appendChild(ns);
+    }
+  }
+</script>
 
 {{ 'udesly-shopify.min.js' | asset_url | script_tag }}

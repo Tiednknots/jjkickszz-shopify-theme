@@ -3,62 +3,145 @@
   <div data-barba="wrapper" class="barba-wrapper">
     <div data-barba-namespace="shop" data-barba="container" class="page-content">
       <div class="white-section menu">
-        <section class="section-3" style="height: 44px; min-height: 44px; display: flex; align-items: center; overflow: hidden; background-color: #0b0b0b; color: #ffffff; border-top: 1px solid #2e2e2e; border-bottom: 1px solid #2e2e2e;">
-          <div class="code-embed-3 w-embed" style="width: 100%; height: 100%; display: flex; align-items: center;">
+        <section class="section-3">
+          <div option:html="Scrolling-text (use chatgpt to generate html scrolling text or change the text inside)" class="code-embed-3 w-embed">
             <style>
-              .jj-marquee-container {
-                width: 100%;
-                height: 100%;
-                display: flex;
-                align-items: center;
-                overflow: hidden;
-                position: relative;
-              }
-              .jj-marquee-track-inner {
-                display: flex;
-                align-items: center;
-                width: max-content;
-                flex-shrink: 0;
-                animation: jj-marquee-anim 25s linear infinite !important;
-                will-change: transform;
-              }
-              .jj-content-group-item {
-                display: flex;
-                align-items: center;
-                padding-right: 4rem;
-                flex-shrink: 0;
-              }
-              .jj-text-badge {
-                font-size: 11px;
-                font-family: 'Inter', sans-serif;
-                font-weight: 600;
-                text-transform: uppercase;
-                letter-spacing: 0.12em;
-                white-space: nowrap;
-                margin-right: 3rem;
-                color: #ffffff;
-              }
-              @keyframes jj-marquee-anim {
-                0% { transform: translateX(0); }
-                100% { transform: translateX(-50%); }
-              }
-            </style>
-            <div class="jj-marquee-container">
-              <div class="jj-marquee-track-inner">
-                {% for i in (1..6) %}
-                <div class="jj-content-group-item">
-                  <span class="jj-text-badge">100% Authentic Heat 🔥 Guaranteed</span>
-                  <span class="jj-text-badge">All Sales Are Final</span>
-                  <span class="jj-text-badge">Free Shipping on orders over $400</span>
+  /* --- 1. OUTER WRAPPER (Full Width) --- */
+  .jj-marquee-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center; /* Forces the marquee to the center */
+    align-items: center;
+    position: relative;
+  }
+  /* --- 2. THE CENTERED VISIBLE AREA (Restricted Width) --- */
+  .jj-centered-mask {
+    /* VISIBILITY CONTROLS */
+    width: 60%; /* Only show text in the middle 60% of the parent */
+    max-width: 800px; /* Optional cap so it doesn't get too wide on giant screens */
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    /* FADE MASK: Soft edges on the constrained area */
+    mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
+  }
+  /* --- 3. THE SCROLLING TRACK --- */
+  .jj-marquee-track {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    flex-shrink: 0;
+    /* EDITED: Slower Speed (25s) */
+    animation: promo-scroll 25s linear infinite;
+  }
+  /* --- CONTENT GROUPS --- */
+  .jj-content-group {
+    display: flex;
+    align-items: center;
+    /* This padding pushes the next duplicate away */
+    padding-right: 6rem; 
+  }
+  /* --- TEXT STYLING --- */
+  .jj-text-item {
+    font-size: inherit; 
+    color: inherit; 
+    font-weight: inherit;
+    white-space: nowrap;
+    margin-right: 4rem; /* Gap between statements */
+  }
+  .jj-text-item:last-child { margin-right: 0; }
+  /* --- ANIMATION --- */
+  @keyframes promo-scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); } 
+  }
+  /* --- MOBILE --- */
+  @media (max-width: 767px) {
+    /* EDITED: Slower Mobile Speed (20s) */
+    .jj-marquee-track { animation-duration: 20s; } 
+    /* Make it wider on phones so it's readable */
+    .jj-centered-mask { width: 90%; }
+    .jj-content-group { padding-right: 3rem; }
+    .jj-text-item { margin-right: 2rem; }
+  }
+</style>
+            <div class="jj-marquee-wrapper">
+              <div class="jj-centered-mask">
+                <div class="jj-marquee-track">
+                  <div class="jj-content-group">
+                    <span class="jj-text-item">100% Authentic Heat 🔥 Guaranteed</span>
+                    <span class="jj-text-item">All Sales Are Final</span>
+                    <span class="jj-text-item">Free Shipping on orders over $400</span>
+                  </div>
+                  <div class="jj-content-group">
+                    <span class="jj-text-item">100% Authentic Heat 🔥 Guaranteed</span>
+                    <span class="jj-text-item">All Sales Are Final</span>
+                    <span class="jj-text-item">Free Shipping on orders over $400</span>
+                  </div>
+                  <div class="jj-content-group">
+                    <span class="jj-text-item">100% Authentic Heat 🔥 Guaranteed</span>
+                    <span class="jj-text-item">All Sales Are Final</span>
+                    <span class="jj-text-item">Free Shipping on orders over $400</span>
+                  </div>
+                  <div class="jj-content-group">
+                    <span class="jj-text-item">100% Authentic Heat 🔥 Guaranteed</span>
+                    <span class="jj-text-item">All Sales Are Final</span>
+                    <span class="jj-text-item">Free Shipping on orders over $400</span>
+                  </div>
                 </div>
-                {% endfor %}
               </div>
             </div>
           </div>
         </section>
       </div>
       <div class="filter-contents">
-        {%- render 'shop-filter-bar' -%}
+        <div class="column-selection">
+          <div class="column-2"><svg data-w-id="acb4c30b-e360-f6c8-1a84-021acb79425b" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="64" height="64" viewBox="0 0 56 56" app="ikonik" class="stack-button">
+              <path d="M 13.7851 49.5742 L 42.2382 49.5742 C 47.1366 49.5742 49.5743 47.1367 49.5743 42.3086 L 49.5743 13.6914 C 49.5743 8.8633 47.1366 6.4258 42.2382 6.4258 L 13.7851 6.4258 C 8.9101 6.4258 6.4257 8.8398 6.4257 13.6914 L 6.4257 42.3086 C 6.4257 47.1602 8.9101 49.5742 13.7851 49.5742 Z M 10.1992 13.8789 C 10.1992 11.4414 11.5117 10.1992 13.8554 10.1992 L 42.1679 10.1992 C 44.4882 10.1992 45.8007 11.4414 45.8007 13.8789 L 45.8007 25.9961 L 10.1992 25.9961 Z M 13.8554 45.8008 C 11.5117 45.8008 10.1992 44.5586 10.1992 42.1211 L 10.1992 29.9336 L 45.8007 29.9336 L 45.8007 42.1211 C 45.8007 44.5586 44.4882 45.8008 42.1679 45.8008 Z" app="ikonik"></path>
+            </svg></div>
+          <div class="column-2"><svg data-w-id="be5679f3-2ac8-3032-24a5-ef684b4fd9ea" xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="64" height="64" viewBox="0 0 56 56" app="ikonik" class="column-button">
+              <path d="M 13.7851 49.5742 L 42.2382 49.5742 C 47.1366 49.5742 49.5743 47.1367 49.5743 42.3086 L 49.5743 13.6914 C 49.5743 8.8633 47.1366 6.4258 42.2382 6.4258 L 13.7851 6.4258 C 8.9101 6.4258 6.4257 8.8398 6.4257 13.6914 L 6.4257 42.3086 C 6.4257 47.1602 8.9101 49.5742 13.7851 49.5742 Z M 13.8554 45.8008 C 11.5117 45.8008 10.1992 44.5586 10.1992 42.1211 L 10.1992 13.8789 C 10.1992 11.4414 11.5117 10.1992 13.8554 10.1992 L 26.0429 10.1992 L 26.0429 45.8008 Z M 42.1679 10.1992 C 44.4882 10.1992 45.8007 11.4414 45.8007 13.8789 L 45.8007 42.1211 C 45.8007 44.5586 44.4882 45.8008 42.1679 45.8008 L 29.9804 45.8008 L 29.9804 10.1992 Z" app="ikonik"></path>
+            </svg></div>
+        </div>
+        <div class="accordion-wrap">
+          <div class="accordion">
+            <div class="accordion-top">
+              <div class="accordion-top-wrap">
+                <div class="accordion-top-text">{{ 't6fd12c48' | t }}</div>
+              </div>
+              <div class="accordion-top-icon">
+                <div class="accordion-top-icon-wrap">
+                  <div class="accordion-icon-stripe-1"></div>
+                  <div class="accordion-icon-stripe-2"></div>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-bottom">
+              <div class="accordian-bottom-container">
+                <div class="accordion-divider-wrap">
+                  <div class="accordion-divider"></div>
+                </div>
+                <div class="accordion-bottom-wrap" style="max-height:300px;overflow-y:auto;position:relative;">
+                  <div class="menu-shopify hgv">
+                    {%- for _ven in shop.vendors -%}<a href="/collections/vendors?q={{ _ven | url_escape }}" class="link-to sdfw">{{ _ven }}</a>{%- endfor -%}
+                  </div>
+                  <div style="position: sticky; bottom: 0; left: 0; width: 100%; height: 40px; background: linear-gradient(to top, #080808, transparent); pointer-events: none; display: flex; align-items: center; justify-content: center;">
+                    <div style="font-size: 12px; opacity: 0.6; animation: bounce 1.5s infinite; color: #fff;">↓</div>
+                  </div>
+                </div>
+                <style>
+                  @keyframes bounce {
+                    0%, 100% { transform: translateY(0); }
+                    50% { transform: translateY(5px); }
+                  }
+                </style>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="section-hold two">
         <section class="section-5 mobile shop">
@@ -69,17 +152,15 @@
           </div>
         </section>
       </div>
-      {%- if settings.collection_2_categories_template != blank -%}
       <div class="section-hold one">
         <section class="section-5 mobile shop">
           <div class="div-block-8">
             <div class="brand-view">
-              {%- render "markup_for_collection_2_categories_template" -%}
+              {%- if settings.collection_2_categories_template != blank -%}{%- render "markup_for_collection_2_categories_template" -%}{%- else -%}{%- render "products_where_category_idin_current_sorted_by_created_on_number_0" -%}{%- endif -%}
             </div>
           </div>
         </section>
       </div>
-      {%- endif -%}
       {%- section 'footer' -%}
     </div>
   </div>
@@ -189,8 +270,8 @@
         });
       } catch(e) {}
     }
-  // --- 5. OBSERVER LOGIC ---
-  function initObserver() {
+  }
+    // Actively watch and hide Webflow error state
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((m) => {
         if (m.target.classList.contains('w-commerce-commerceaddtocarterrorstate') && m.target.style.display !== 'none') {
@@ -204,13 +285,19 @@
   }
   // --- 6. WEBFLOW RELOAD (Fixes Accordions & UI) ---
   function forceWebflowReload() {
-    if (window.Webflow && typeof window.Webflow.ready === 'function') {
-      try {
-        window.Webflow.destroy();
-        window.Webflow.ready();
-        const ix2 = window.Webflow.require('ix2');
-        if (ix2 && typeof ix2.init === 'function') ix2.init();
-      } catch (e) {}
+    if (window.Webflow) {
+      window.Webflow.destroy();
+      window.Webflow.ready();
+      if (window.Webflow.require('ix2')) window.Webflow.require('ix2').init();
+    }
+    // Fallback script reload
+    const scripts = document.querySelectorAll('script');
+    let webflowSrc = null;
+    scripts.forEach(s => { if (s.src && s.src.includes('webflow')) { webflowSrc = s.src; s.remove(); } });
+    if (webflowSrc) {
+      const ns = document.createElement('script');
+      ns.src = webflowSrc; ns.type = 'text/javascript'; ns.async = false;
+      document.body.appendChild(ns);
     }
   }
   // --- 7. ACCORDION (Shop By Brand Filter) ---
@@ -237,8 +324,6 @@
         if (!isOpen) {
           bottom.style.display = 'block';
           this.classList.add('active');
-          var wrap = bottom.querySelector('.accordion-bottom-wrap');
-          if (wrap) wrap.scrollTop = 0;
         }
       });
     });
@@ -248,7 +333,6 @@
     initGallery();
     initCursor();
     initTabs();
-    initObserver();
     initAccordion();
   });
   window.addEventListener('load', function() {

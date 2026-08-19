@@ -13,49 +13,26 @@
 {%- endif -%}
 
 {% capture listItems %}
+{%- paginate all_col.products by 1000 -%}
 {% for _ven in shop.vendors %}
-  {%- assign _ven_handle = _ven | handleize -%}
-  {%- assign _ven_col = collections[_ven_handle] -%}
   {%- assign _img_url = '' -%}
   {%- assign _prod_count = 0 -%}
-
-  {%- comment -%} Alternative hyphenated fallback checks (e.g., roughplay vs rough-play) {%- endcomment -%}
-  {%- if _ven_col == blank or _ven_col.products_count == 0 -%}
-    {%- if _ven_handle == 'roughplay' -%}
-      {%- assign _ven_col = collections['rough-play'] -%}
-    {%- elsif _ven_handle == 'rough-play' -%}
-      {%- assign _ven_col = collections['roughplay'] -%}
-    {%- endif -%}
-  {%- endif -%}
-
-  {%- if _ven_col != blank and _ven_col.products_count > 0 -%}
-    {%- assign _prod_count = _ven_col.products_count -%}
-    {%- if _ven_col.image != blank -%}
-      {%- assign _img_url = _ven_col.image | img_url: '600x' -%}
-    {%- elsif _ven_col.products.first.featured_image != blank -%}
-      {%- assign _img_url = _ven_col.products.first.featured_image | img_url: '600x' -%}
-    {%- endif -%}
-  {%- endif -%}
-
-  {%- if _img_url == '' or _prod_count == 0 -%}
-    {%- paginate all_col.products by 250 -%}
-      {%- for _p in all_col.products -%}
-        {%- if _p.vendor == _ven -%}
-          {%- if _img_url == '' and _p.featured_image != blank -%}
-            {%- assign _img_url = _p.featured_image | img_url: '600x' -%}
-          {%- endif -%}
-          {%- assign _prod_count = _prod_count | plus: 1 -%}
+  {%- if all_col -%}
+    {%- for _p in all_col.products -%}
+      {%- if _p.vendor == _ven -%}
+        {%- if _img_url == '' -%}
+          {%- assign _img_url = _p.featured_image | img_url: '600x' -%}
         {%- endif -%}
-      {%- endfor -%}
-    {%- endpaginate -%}
+        {%- assign _prod_count = _prod_count | plus: 1 -%}
+      {%- endif -%}
+    {%- endfor -%}
   {%- endif -%}
-
-              <div role="listitem" class="collection-item-2 w-dyn-item" data-vendor="{{ _ven | escape }}">
-                <a href="{{ pages['shop'].url | default: '/collections/all' }}?vendor={{ _ven | url_escape }}" class="link-block-2 mobile w-inline-block">
+              <div role="listitem" class="collection-item-2 w-dyn-item">
+                <a href="/collections/vendors?q={{ _ven | url_escape }}" class="link-block-2 mobile w-inline-block">
                   <div class="div-block-15 basd">
                     <div class="collection-title" style="margin-bottom: 2px;">{{ _ven }}</div>
                     <div class="collection-product-count" style="position: relative; z-index: 2; font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255, 255, 255, 0.6); pointer-events: none;">
-                      {{ _prod_count }} {% if _prod_count == 1 %}Product{% else %}Products{% endif %}
+                      {{ _prod_count }} {{ _prod_count | pluralize: 'Product', 'Products' }}
                     </div>
                     {%- if _img_url != '' -%}
                       <img src="{{ _img_url }}" alt="{{ _ven }}" loading="lazy" class="image-15" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;z-index:1;">
@@ -65,11 +42,12 @@
                 </a>
               </div>
 {% endfor %}
+{%- endpaginate -%}
 {% endcapture %}
 {% assign items_length = listItems | strip | size %}
 
-<div class="collection-list-wrapper w-dyn-list" udy-collection="collection" style="width: 100%; max-width: 100%; overflow: hidden;">
-            {%- unless items_length == 0 -%}<div role="list" class="collection-list-2 contents-of-scroll asd w-dyn-items" style="display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; overflow-x: auto !important; overflow-y: hidden !important; -webkit-overflow-scrolling: touch !important; touch-action: pan-x !important; width: 100% !important; scroll-snap-type: x mandatory !important; padding-bottom: 12px;">
+<div class="collection-list-wrapper w-dyn-list" udy-collection="collection">
+            {%- unless items_length == 0 -%}<div role="list" class="collection-list-2 contents-of-scroll asd w-dyn-items">
               {{ listItems }}
             </div>{%- endunless -%}
             {%- if items_length == 0 -%}<div class="w-dyn-empty">

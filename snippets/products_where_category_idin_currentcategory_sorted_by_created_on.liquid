@@ -59,7 +59,6 @@
               {%- endif -%}
             </div>
           </div>
-{%- capture _jj_meta -%}{{ item.vendor }}|{{ item.product_type }}|{{ item.tags | join: "|" }}|{{ item.price | money_without_trailing_zeros }}|{{ item.price_min | money_without_trailing_zeros }}|{{ item.price_max | money_without_trailing_zeros }}{%- for _v in item.variants -%}|{{ _v.title }}{%- endfor -%}{%- for _opt in item.options_with_values -%}{%- for _val in _opt.values -%}|{{ _val }}{%- endfor -%}{%- endfor -%}{%- endcapture -%}<span class="jj-search-meta" aria-hidden="true" style="display:none;position:absolute;width:1px;height:1px;overflow:hidden;">{{ _jj_meta }}</span>
         </a>
       </div>
       {%- assign _similar_count = _similar_count | plus: 1 -%}
