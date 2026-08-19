@@ -563,8 +563,7 @@
     function processBotResponse(rawText) {
       // Parse out product handles like [Product: handle]
       var handles = [];
-      // Flexible match that extracts everything inside [Product: ...] and handles case insensitivity
-      var cleanText = rawText.replace(/\[Product:\s*([^\]]+)\]/gi, function(match, handle) {
+      var cleanText = rawText.replace(/\[Product:\s*([a-zA-Z0-9\-]+)\]/g, function(match, handle) {
         handles.push(handle.trim());
         return ''; // remove references from the displayed bubble text
       });
