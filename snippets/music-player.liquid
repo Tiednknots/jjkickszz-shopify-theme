@@ -1,353 +1,502 @@
 {% comment %}
-  JJKICKSZZ AI Chat & Universal Music Floater (v26.0 - Standalone)
-  Features:
-  - Music Controls: Play / Pause toggle + Mute / Unmute toggle
-  - AI Chat Trigger: "JJKICKSZZ AI — What are you looking for today? 👟"
-  - 30-Second Engagement Tooltip: Auto pops-up after 30s of browsing to encourage chat interaction
-  - Streetwear Flat-Lay Outfit Builder & AI Assistant Modal Drawer
+  Universal Music Player - Refined Left-Align UI (v3.2)
+  Features: 
+  - Sequence: Reveal -> Autoplay -> Auto-minimize
+  - Placement: 3rem (Desktop) / 1em (Mobile)
+  - Layout: Disk Left / Bar Right
+  - Custom Graphic: Vault Radio Vinyl SVG
+  - Stability: Safe SessionStorage, Safe CurrentTime Restoration, Smart Autoplay Pause Respect
 {% endcomment %}
 
 <style>
   :root {
-    --jj-bg: rgba(10, 10, 10, 0.95);
-    --jj-accent: #c60000;
-    --jj-text: #ffffff;
-    --jj-z: 2147483647;
+    --player-bg: rgba(10, 10, 10, 0.95);
+    --player-accent: #c60000;
+    --player-text: #ffffff;
+    --player-text-dim: rgba(255, 255, 255, 0.6);
+    --player-radius: 30px;
+    --disk-size: 64px;
+    --player-z: 2147483647; /* Maximum Z-Index to avoid overlap */
   }
 
-  /* Floating Bar Container */
-  .jj-floater-wrapper {
+  /* Main Container - Anchor to Left */
+  .jj-player-wrapper {
     position: fixed;
     bottom: 24px;
-    right: 24px;
-    z-index: var(--jj-z);
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 8px;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  }
-
-  /* 30-Second Engagement Bubble Tooltip */
-  .jj-persuasion-bubble {
-    background: linear-gradient(135deg, rgba(30, 0, 0, 0.95), rgba(15, 15, 15, 0.98));
-    border: 1px solid rgba(198, 0, 0, 0.5);
-    color: #fff;
-    padding: 12px 14px;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(198, 0, 0, 0.3);
-    max-width: 280px;
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    animation: jjPopIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    cursor: pointer;
-  }
-
-  @keyframes jjPopIn {
-    from { opacity: 0; transform: translateY(12px) scale(0.95); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-  }
-
-  .jj-bubble-icon {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: rgba(198, 0, 0, 0.2);
-    border: 1px solid rgba(198, 0, 0, 0.4);
+    left: 3rem; /* Desktop default */
+    z-index: var(--player-z);
     display: flex;
     align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
+    gap: 0px;
+    font-family: 'Inter', sans-serif;
+    color: var(--player-text);
   }
 
-  /* Main Combined Pill */
-  .jj-floater-bar {
-    background: var(--jj-bg);
+  /* The Vinyl Disk (Toggle) */
+  .jj-player-disk {
+    width: var(--disk-size);
+    height: var(--disk-size);
+    background: #000;
+    border-radius: 50%;
+    position: relative;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    transition: transform 0.3s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+    flex-shrink: 0;
+    z-index: 5;
+    overflow: hidden;
+  }
+
+  .jj-player-disk:hover {
+    transform: scale(1.08);
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .jj-player-disk.playing svg {
+    animation: spin 8s linear infinite;
+    opacity: 1;
+  }
+
+  @keyframes pulse-ring {
+    0% { transform: scale(0.95); opacity: 0.5; }
+    50% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(0.95); opacity: 0.5; }
+  }
+
+  .jj-player-disk.playing::before {
+    content: '';
+    position: absolute;
+    top: -4px; left: -4px; right: -4px; bottom: -4px;
+    border: 2px solid var(--player-accent);
+    border-radius: 50%;
+    animation: pulse-ring 2s ease-in-out infinite;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  /* Expanded Bar - Slides to the Right */
+  .jj-player-bar {
+    height: 52px;
+    background: var(--player-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 40px;
-    padding: 6px 12px 6px 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0 26px 26px 0; /* Rounded on right side */
     display: flex;
     align-items: center;
-    gap: 10px;
-    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.7);
+    padding: 0 20px 0 30px;
+    margin-left: -26px; /* Overlap with disk */
+    transform: translateX(20px);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+    max-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    z-index: 4;
   }
 
-  /* Left: Music Controls */
-  .jj-music-box {
+  .jj-player-wrapper.expanded .jj-player-bar {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+    max-width: 400px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  }
+
+  .jj-track-meta {
     display: flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(20, 20, 20, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 30px;
-    padding: 4px 8px;
+    flex-direction: column;
+    margin-right: 20px;
+    min-width: 110px;
   }
 
-  .jj-btn-circle {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: none;
-    background: var(--jj-accent);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: transform 0.2s, background-color 0.2s;
-  }
-
-  .jj-btn-circle:hover {
-    transform: scale(1.05);
-    background: #e60000;
-  }
-
-  .jj-btn-icon {
-    background: none;
-    border: none;
-    color: #888;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: color 0.2s, background-color 0.2s;
-  }
-
-  .jj-btn-icon:hover {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.1);
-  }
-
-  .jj-btn-icon.muted {
-    color: var(--jj-accent);
-  }
-
-  .jj-divider {
-    width: 1px;
-    height: 24px;
-    background: rgba(255, 255, 255, 0.12);
-  }
-
-  /* Right: AI Chat Trigger */
-  .jj-chat-trigger {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: none;
-    border: none;
-    color: #fff;
-    cursor: pointer;
-    padding: 4px 6px;
-    text-align: left;
-  }
-
-  .jj-ai-badge {
-    font-size: 9px;
+  .jj-track-title {
+    font-size: 12px;
     font-weight: 800;
-    letter-spacing: 1px;
-    color: var(--jj-accent);
+    letter-spacing: 0.5px;
     text-transform: uppercase;
   }
 
-  .jj-ai-msg {
-    font-size: 11px;
-    font-weight: 500;
-    color: #e4e4e7;
-    white-space: nowrap;
+  .jj-track-artist {
+    font-size: 9px;
+    color: var(--player-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
   }
 
-  /* AI Chat & Flat-Lay Modal Drawer */
-  .jj-drawer-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.75);
-    backdrop-filter: blur(8px);
-    z-index: calc(var(--jj-z) + 1);
+  .jj-player-controls {
     display: flex;
-    justify-content: flex-end;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
+    align-items: center;
+    gap: 15px;
   }
 
-  .jj-drawer-overlay.open {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  .jj-drawer-content {
-    width: 100%;
-    max-width: 480px;
-    height: 100%;
-    background: #09090b;
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
-    display: flex;
-    flex-direction: column;
-    transform: translateX(100%);
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  .jj-control-btn {
+    background: none;
+    border: none;
     color: #fff;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s, color 0.2s;
   }
 
-  .jj-drawer-overlay.open .jj-drawer-content {
-    transform: translateX(0);
+  .jj-control-btn:hover {
+    color: var(--player-accent);
+    transform: scale(1.2);
   }
 
+  /* Responsive Adjustments */
   @media (max-width: 767px) {
-    .jj-floater-wrapper {
-      right: 12px;
-      bottom: 16px;
+    .jj-player-wrapper {
+      bottom: 20px;
+      left: 1em;
     }
-    .jj-ai-msg {
-      font-size: 10px;
+    .jj-player-wrapper.expanded .jj-player-bar {
+      max-width: 260px;
+      padding-left: 40px;
     }
+    .jj-track-meta { display: none; }
   }
 </style>
 
-<!-- Floating Component UI -->
-<div class="jj-floater-wrapper">
-  
-  <!-- 30-Second Persuasion Tooltip -->
-  <div class="jj-persuasion-bubble" id="jj-persuasion-bubble" style="display: none;">
-    <div class="jj-bubble-icon">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#c60000" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-    </div>
-    <div style="flex:1;" onclick="openAiChatDrawer()">
-      <div style="font-size:10px; font-weight:800; color:#c60000; text-transform:uppercase; margin-bottom:2px;">JJKICKSZZ AI STYLIST</div>
-      <div style="font-size:11px; color:#ddd; line-height:1.3;">👋 Looking for size 10s or want me to build a custom outfit under your budget?</div>
-    </div>
-    <button onclick="closePersuasionBubble(event)" style="background:none; border:none; color:#777; cursor:pointer; padding:2px;">✕</button>
+<div class="jj-player-wrapper" id="jj-player-context">
+  <div class="jj-player-disk" id="jj-disk-toggle">
+    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block;">
+      <!-- Outer vinyl ring -->
+      <circle cx="32" cy="32" r="31" fill="#111" stroke="#333" stroke-width="1"/>
+      <!-- Groove rings -->
+      <circle cx="32" cy="32" r="27" fill="none" stroke="#1e1e1e" stroke-width="1"/>
+      <circle cx="32" cy="32" r="23" fill="none" stroke="#1e1e1e" stroke-width="1"/>
+      <circle cx="32" cy="32" r="19" fill="none" stroke="#1e1e1e" stroke-width="1"/>
+      <circle cx="32" cy="32" r="15" fill="none" stroke="#222" stroke-width="1"/>
+      <!-- Center label -->
+      <circle cx="32" cy="32" r="11" fill="#c60000"/>
+      <!-- Label text ring -->
+      <circle cx="32" cy="32" r="8" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.5"/>
+      <!-- Center hole -->
+      <circle cx="32" cy="32" r="2.5" fill="#000"/>
+      <!-- Highlight -->
+      <ellipse cx="22" cy="18" rx="5" ry="3" fill="rgba(255,255,255,0.04)" transform="rotate(-30 22 18)"/>
+    </svg>
   </div>
 
-  <!-- Main Control Pill -->
-  <div class="jj-floater-bar">
-    
-    <!-- Music Controls (Play/Pause & Mute/Unmute) -->
-    <div class="jj-music-box">
-      <button class="jj-btn-circle" id="jj-play-toggle" title="Play/Pause">
-        <svg id="jj-icon-play" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-        <svg id="jj-icon-pause" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+  <div class="jj-player-bar" id="jj-universal-player">
+    <div class="jj-track-meta">
+      <div class="jj-track-title">{{ settings.music_title | default: 'VAULT RADIO NYC' }}</div>
+      <div class="jj-track-artist">{{ settings.music_artist | default: 'LIVE MIX — 2026' }}</div>
+    </div>
+
+    <div class="jj-player-controls">
+      <button class="jj-control-btn" id="jj-play-pause-btn">
+        <svg id="jj-play-icon" viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+        <svg id="jj-pause-icon" viewBox="0 0 24 24" width="24" height="24" fill="currentColor" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg>
       </button>
-
-      <button class="jj-btn-icon" id="jj-mute-toggle" title="Mute/Unmute">
-        <svg id="jj-icon-volume" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/></svg>
-        <svg id="jj-icon-muted" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><path d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6"/></svg>
-      </button>
-    </div>
-
-    <div class="jj-divider"></div>
-
-    <!-- AI Chat Trigger -->
-    <button class="jj-chat-trigger" onclick="openAiChatDrawer()">
-      <div style="width:26px; height:26px; border-radius:50%; background:#18181b; border:1px solid #3f3f46; display:flex; align-items:center; justify-center:center;">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#c60000" stroke-width="2"><path d="M12 2l2.4 7.2h7.6l-6 4.8 2.4 7.2-6-4.8-6 4.8 2.4-7.2-6-4.8h7.6z"/></svg>
+      
+      <div class="jj-player-time" style="font-size: 10px; font-family: monospace; opacity: 0.5;">
+        <span id="jj-current-time">0:00</span>
       </div>
-      <div>
-        <div class="jj-ai-badge">JJKICKSZZ AI</div>
-        <div class="jj-ai-msg">What are you looking for today? 👟</div>
-      </div>
-    </button>
-  </div>
-</div>
 
-<!-- Audio Stream Tag -->
-{%- assign music_src = settings.music_url | default: 'https://dl.dropboxusercontent.com/scl/fi/27cr46xqki92kkrv0oep1/New-Rap-Songs-2026-Mix-May-Trap-Tape-133-New-Hip-Hop-2026-Mixtape-DJ-Noize-DJ-Noize-128k-_compressed?rlkey=ylnxkkoxlzniy1opm7atb9xti&raw=1' -%}
-<audio id="jj-floater-audio" preload="metadata" loop>
-  <source src="{{ music_src }}" type="audio/mpeg">
-</audio>
-
-<!-- AI Chat Drawer Modal Container -->
-<div class="jj-drawer-overlay" id="jj-chat-drawer-overlay" onclick="closeAiChatDrawer(event)">
-  <div class="jj-drawer-content" onclick="event.stopPropagation()">
-    <!-- Header -->
-    <div style="padding:16px; border-bottom:1px solid #27272a; display:flex; justify-content:space-between; align-items:center; background:#000;">
-      <div>
-        <div style="font-size:13px; font-weight:800; text-transform:uppercase; tracking-wide:1px;">JJKICKSZZ AI Assistant & Stylist</div>
-        <div style="font-size:10px; color:#22c55e; font-family:monospace;">● Live Store Catalog Synchronized</div>
+      <div class="jj-volume-wrap" style="display: flex; align-items: center; gap: 8px; margin-left: 5px;">
+        <input type="range" id="jj-volume-slider" min="0" max="1" step="0.01" value="0.7" style="width: 50px; height: 2px; accent-color: var(--player-accent);">
       </div>
-      <button onclick="closeAiChatDrawer()" style="background:none; border:none; color:#888; cursor:pointer; font-size:18px;">✕</button>
-    </div>
-
-    <!-- Body Area -->
-    <div style="flex:1; padding:20px; overflow-y:auto; font-size:12px; line-height:1.6; color:#ccc;">
-      <div style="background:#18181b; border:1px solid #27272a; padding:12px; border-radius:12px; margin-bottom:16px;">
-        <span style="color:#c60000; font-weight:bold;">JJKICKSZZ AI:</span> Yo! I can help you find Jordan 4s under $300, check shoe sizing in stock, or build you a complete 3-piece streetwear outfit flat-lay matching your budget.
-      </div>
-      <p style="text-align:center; opacity:0.6; margin-top:40px;">[ Interactive Chat & Flat-Lay Outfit Builder Integration Active ]</p>
     </div>
   </div>
+
+  {%- assign music_src = settings.music_url | default: 'https://www.dropbox.com/scl/fi/27cr46xqki92kkrv0oep1/New-Rap-Songs-2026-Mix-May-Trap-Tape-133-New-Hip-Hop-2026-Mixtape-DJ-Noize-DJ-Noize-128k-_compressed?rlkey=ylnxkkoxlzniy1opm7atb9xti&st=dv3a153b&dl=0' -%}
+  {%- if music_src contains 'dropbox.com' -%}
+    {%- if music_src contains 'dl=0' -%}
+      {%- assign music_src = music_src | replace: 'dl=0', 'raw=1' -%}
+    {%- elsif music_src contains 'dl=1' -%}
+      {%- assign music_src = music_src | replace: 'dl=1', 'raw=1' -%}
+    {%- else -%}
+      {%- unless music_src contains 'raw=1' -%}
+        {%- if music_src contains '?' -%}
+          {%- assign music_src = music_src | append: '&raw=1' -%}
+        {%- else -%}
+          {%- assign music_src = music_src | append: '?raw=1' -%}
+        {%- endif -%}
+      {%- endunless -%}
+    {%- endif -%}
+  {%- endif -%}
+  <audio id="jj-main-audio" preload="metadata">
+    <source src="{{ music_src }}" type="audio/mpeg">
+  </audio>
 </div>
 
 <script>
 (function() {
-  const audio = document.getElementById('jj-floater-audio');
-  const playBtn = document.getElementById('jj-play-toggle');
-  const muteBtn = document.getElementById('jj-mute-toggle');
-  const playIcon = document.getElementById('jj-icon-play');
-  const pauseIcon = document.getElementById('jj-icon-pause');
-  const volumeIcon = document.getElementById('jj-icon-volume');
-  const mutedIcon = document.getElementById('jj-icon-muted');
-  const bubble = document.getElementById('jj-persuasion-bubble');
+  const audio = document.getElementById('jj-main-audio');
+  const wrapper = document.getElementById('jj-player-context');
+  const disk = document.getElementById('jj-disk-toggle');
+  const playPauseBtn = document.getElementById('jj-play-pause-btn');
+  const playIcon = document.getElementById('jj-play-icon');
+  const pauseIcon = document.getElementById('jj-pause-icon');
+  const currentTimeEl = document.getElementById('jj-current-time');
+  const volumeSlider = document.getElementById('jj-volume-slider');
 
-  if (!audio || !playBtn || !muteBtn) return;
+  if (!audio || !wrapper || !disk || !playPauseBtn || !playIcon || !pauseIcon || !currentTimeEl || !volumeSlider) {
+    console.warn("[MusicPlayer] Some elements were not found. Disabling player integration.");
+    return;
+  }
 
-  // 30-Second Inactivity Engagement Timer
-  setTimeout(function() {
-    if (bubble && sessionStorage.getItem('jj_bubble_closed') !== 'true') {
-      bubble.style.display = 'flex';
+  // Auto-convert Dropbox sharing links dynamically in case they are set in Shopify Customizer
+  let audioSrc = audio.querySelector('source') ? audio.querySelector('source').getAttribute('src') : audio.src;
+  if (audioSrc && audioSrc.includes('dropbox.com')) {
+    audioSrc = audioSrc.replace('dl=0', 'raw=1').replace('dl=1', 'raw=1');
+    if (!audioSrc.includes('raw=1')) {
+      audioSrc += (audioSrc.includes('?') ? '&' : '?') + 'raw=1';
     }
-  }, 30000);
+    const sourceEl = audio.querySelector('source');
+    if (sourceEl) {
+      sourceEl.setAttribute('src', audioSrc);
+    }
+    audio.src = audioSrc;
+  }
 
-  window.closePersuasionBubble = function(e) {
-    if (e) e.stopPropagation();
-    if (bubble) bubble.style.display = 'none';
-    sessionStorage.setItem('jj_bubble_closed', 'true');
+  // Safe SessionStorage wrapper to prevent SecurityError in private browsing
+  const safeStorage = {
+    getItem(key) {
+      try {
+        return sessionStorage.getItem(key);
+      } catch (e) {
+        return null;
+      }
+    },
+    setItem(key, value) {
+      try {
+        sessionStorage.setItem(key, value);
+      } catch (e) {}
+    }
   };
 
-  window.openAiChatDrawer = function() {
-    const overlay = document.getElementById('jj-chat-drawer-overlay');
-    if (overlay) overlay.classList.add('open');
-    if (bubble) bubble.style.display = 'none';
+  const formatTime = (s) => {
+    const mins = Math.floor(s / 60);
+    const secs = Math.floor(s % 60);
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
 
-  window.closeAiChatDrawer = function(e) {
-    const overlay = document.getElementById('jj-chat-drawer-overlay');
-    if (overlay) overlay.classList.remove('open');
+  // Flag to track page unload
+  let isUnloading = false;
+  window.addEventListener('beforeunload', () => {
+    isUnloading = true;
+    safeStorage.setItem('jj_player_time', audio.currentTime);
+    safeStorage.setItem('jj_player_playing', userPlaying ? 'true' : 'false');
+  });
+  window.addEventListener('pagehide', () => {
+    isUnloading = true;
+    safeStorage.setItem('jj_player_time', audio.currentTime);
+    safeStorage.setItem('jj_player_playing', userPlaying ? 'true' : 'false');
+  });
+
+  // Read saved state first, defaults to true if not explicitly paused
+  let userPlaying = safeStorage.getItem('jj_player_playing') !== 'false';
+
+  const saveState = () => {
+    if (isUnloading) return;
+    safeStorage.setItem('jj_player_time', audio.currentTime);
+    safeStorage.setItem('jj_player_playing', userPlaying ? 'true' : 'false');
+    safeStorage.setItem('jj_player_volume', audio.volume);
+    safeStorage.setItem('jj_player_expanded', wrapper.classList.contains('expanded'));
   };
 
-  // Play / Pause Action
-  playBtn.onclick = function(e) {
+  const playOnInteract = () => {
+    if (userPlaying) {
+      audio.play().then(() => {
+        removeInteractionListeners();
+      }).catch(e => {
+        console.log("[MusicPlayer] Play blocked on interaction:", e);
+      });
+    } else {
+      removeInteractionListeners();
+    }
+
+    // Also force play all hero videos on the page in case they were blocked by mobile Low Power Mode
+    document.querySelectorAll('.jj-hero-video').forEach(video => {
+      if (video.paused) {
+        video.play().catch(err => console.log("[MusicPlayer] Video play failed:", err));
+      }
+    });
+  };
+
+  const addInteractionListeners = () => {
+    document.addEventListener('click', playOnInteract);
+    document.addEventListener('touchstart', playOnInteract, { passive: true });
+    document.addEventListener('scroll', playOnInteract, { passive: true });
+  };
+
+  const removeInteractionListeners = () => {
+    document.removeEventListener('click', playOnInteract);
+    document.removeEventListener('touchstart', playOnInteract);
+    document.removeEventListener('scroll', playOnInteract);
+  };
+
+  const attemptPlay = () => {
+    audio.play().then(() => {
+      // Audio played successfully, make sure userPlaying matches
+      userPlaying = true;
+      saveState();
+    }).catch((err) => {
+      console.log("[MusicPlayer] Autoplay failed, waiting for user interaction:", err);
+      // Wait for interaction to play
+      addInteractionListeners();
+    });
+
+    // Attempt video play immediately
+    document.querySelectorAll('.jj-hero-video').forEach(video => {
+      video.play().catch(e => {
+        // Videos also get interaction play
+        addInteractionListeners();
+      });
+    });
+  };
+
+  const restoreVolumeAndProgress = () => {
+    const savedVolume = safeStorage.getItem('jj_player_volume');
+    const savedTime = safeStorage.getItem('jj_player_time');
+
+    if (savedVolume) {
+      audio.volume = parseFloat(savedVolume);
+      volumeSlider.value = savedVolume;
+    }
+
+    if (savedTime) {
+      const time = parseFloat(savedTime);
+      if (audio.readyState >= 1) {
+        audio.currentTime = time;
+      } else {
+        const onMetadata = () => {
+          audio.currentTime = time;
+          audio.removeEventListener('loadedmetadata', onMetadata);
+        };
+        audio.addEventListener('loadedmetadata', onMetadata);
+      }
+    }
+  };
+
+  const loadState = () => {
+    restoreVolumeAndProgress();
+
+    const savedExpanded = safeStorage.getItem('jj_player_expanded');
+    const playerSeen = safeStorage.getItem('jj_player_seen');
+
+    if (!playerSeen) {
+      wrapper.classList.add('expanded');
+      safeStorage.setItem('jj_player_seen', 'true');
+      setTimeout(() => {
+        if (!isUnloading) {
+          wrapper.classList.remove('expanded');
+          saveState();
+        }
+      }, 7000);
+    } else {
+      if (savedExpanded === 'true') wrapper.classList.add('expanded');
+    }
+    
+    // Only attempt autoplay if the user didn't explicitly pause it
+    if (userPlaying) {
+      attemptPlay();
+    }
+  };
+
+  disk.onclick = () => {
+    wrapper.classList.toggle('expanded');
+    saveState();
+  };
+
+  playPauseBtn.onclick = (e) => {
     e.stopPropagation();
     if (audio.paused) {
-      audio.play().then(() => {
-        playIcon.style.display = 'none';
-        pauseIcon.style.display = 'block';
-      }).catch(err => console.log('Playback blocked:', err));
+      userPlaying = true;
+      audio.play().catch(err => console.log("[MusicPlayer] Play request failed:", err));
     } else {
+      userPlaying = false;
       audio.pause();
+    }
+    saveState();
+  };
+
+  audio.onplay = () => {
+    playIcon.style.display = 'none';
+    pauseIcon.style.display = 'block';
+    disk.classList.add('playing');
+    
+    // Auto-minimize after 5 seconds of active playback
+    setTimeout(() => {
+      if (!audio.paused && !isUnloading) {
+        wrapper.classList.remove('expanded');
+        saveState();
+      }
+    }, 5000);
+  };
+
+  audio.onpause = () => {
+    // Only set userPlaying = false if this pause event didn't fire due to page unloading
+    if (!isUnloading) {
       playIcon.style.display = 'block';
       pauseIcon.style.display = 'none';
+      disk.classList.remove('playing');
     }
   };
 
-  // Mute / Unmute Action
-  muteBtn.onclick = function(e) {
-    e.stopPropagation();
-    audio.muted = !audio.muted;
-    if (audio.muted) {
-      volumeIcon.style.display = 'none';
-      mutedIcon.style.display = 'block';
-      muteBtn.classList.add('muted');
-    } else {
-      volumeIcon.style.display = 'block';
-      mutedIcon.style.display = 'none';
-      muteBtn.classList.remove('muted');
+  let lastSavedTime = 0;
+  audio.ontimeupdate = () => {
+    currentTimeEl.innerText = formatTime(audio.currentTime);
+    if (!isUnloading) {
+      const now = Date.now();
+      // Throttle sessionStorage writes to once every 2 seconds to improve page performance
+      if (now - lastSavedTime > 2000) {
+        safeStorage.setItem('jj_player_time', audio.currentTime);
+        lastSavedTime = now;
+      }
     }
   };
+
+  // --- 8. ROBUSTNESS & AUTO-RECOVERY ENGINE ---
+  let errorCount = 0;
+  audio.addEventListener('error', (e) => {
+    console.error("[MusicPlayer] Audio error encountered:", audio.error);
+    if (userPlaying && errorCount < 3) {
+      errorCount++;
+      const savedTime = parseFloat(safeStorage.getItem('jj_player_time') || audio.currentTime);
+      console.log(`[MusicPlayer] Attempting auto-recovery (attempt ${errorCount}/3) from time: ${savedTime}`);
+      setTimeout(() => {
+        audio.load();
+        const onMetadata = () => {
+          audio.currentTime = savedTime;
+          audio.play().catch(err => console.log("[MusicPlayer] Recovery play failed:", err));
+          audio.removeEventListener('loadedmetadata', onMetadata);
+        };
+        audio.addEventListener('loadedmetadata', onMetadata);
+      }, 1000);
+    }
+  }, true);
+
+  audio.addEventListener('waiting', () => {
+    console.log("[MusicPlayer] Audio is buffering...");
+  });
+
+  audio.addEventListener('playing', () => {
+    errorCount = 0; // Reset error count on successful playback
+  });
+
+  volumeSlider.oninput = (e) => {
+    audio.volume = e.target.value;
+    saveState();
+  };
+
+  // Safe deferred load initialization
+  if (document.readyState === 'complete') {
+    setTimeout(loadState, 800);
+  } else {
+    window.addEventListener('load', () => setTimeout(loadState, 800));
+  }
 })();
 </script>
+

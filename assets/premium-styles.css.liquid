@@ -7,14 +7,22 @@
 
 /* ── DESIGN TOKENS ──────────────────────────────────────────── */
 :root {
-  --secret-red: #c60000;
-  --page-bg: #0a0a0a;
-  --surface: #141414;
+  /* System defaults (overridden below by Shopify settings where set) */
+  --secret-red: {{ settings.color_secret_red | default: '#c60000' }};
+  --page-bg: {{ settings.color_page_bg | default: '#0a0a0a' }};
+  --surface: {{ settings.color_surface | default: '#141414' }};
   --surface-2: #1c1c1c;
   --border: rgba(255,255,255,0.07);
-  --text-primary: #ffffff;
-  --text-muted: rgba(255,255,255,0.45);
+  --text-primary: {{ settings.color_body_text | default: '#ffffff' }};
+  --text-heading: {{ settings.color_heading_text | default: '#ffffff' }};
+  --text-muted: {{ settings.color_muted_text | default: '#999999' }};
   --text-dim: rgba(255,255,255,0.25);
+  --link-color: {{ settings.color_link | default: '#ffffff' }};
+  --link-hover: {{ settings.color_link_hover | default: '#cccccc' }};
+  --btn-primary-bg: {{ settings.color_btn_primary_bg | default: '#c60000' }};
+  --btn-primary-text: {{ settings.color_btn_primary_text | default: '#ffffff' }};
+  --btn-secondary-bg: {{ settings.color_btn_secondary_bg | default: '#ffffff' }};
+  --btn-secondary-text: {{ settings.color_btn_secondary_text | default: '#000000' }};
   --accent-green: #22c55e;
   --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   --font-ui: 'Inter', 'Helvetica Neue', Arial, sans-serif;
@@ -28,6 +36,8 @@
   --gradient-dark: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 100%);
 }
 
+
+
 @media (max-width: 767px) {
   :root { --pad-h: 1rem; }
 }
@@ -36,18 +46,20 @@
 *, *::before, *::after { box-sizing: border-box; }
 .w-commerce-commerceaddtocarterrorstate { display: none !important; }
 
-/* Force all major wrappers to allow height to flow naturally */
-.body-3,
-.section-hold,
-.div-block-8,
-.div-block-629,
-.product-template-container,
-.template-product .page-content,
-.template-product .barba-wrapper {
+/* Force main layout wrappers to allow height to flow naturally for scroll behavior */
+.barba-wrapper,
+.page-content {
   height: auto !important;
-  min-height: 0 !important;
-  max-height: none !important;
+}
+
+html, body {
+  background-color: #0b0b0b !important;
+  color: #fff !important;
   overflow: visible !important;
+}
+.page-content {
+  overflow: visible !important;
+  overflow-x: clip !important;
 }
 
 /* ── PAGE TRANSITIONS ───────────────────────────────────────── */
@@ -1018,8 +1030,60 @@ h1, .heading { letter-spacing: -0.02em; line-height: 1; }
   }
 }
 
-/* ── CUSTOM DYNAMIC COLLECTIONS MOBILE SCROLL LAYOUTS ───────── */
+/* ── SHOP BY BRAND / HORIZONTAL CATEGORY SCROLL ENGINE ─────── */
+.collection-list-2.contents-of-scroll,
+.contents-of-scroll {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-x !important;
+  scroll-snap-type: x mandatory !important;
+  padding-bottom: 16px !important;
+  padding-left: 4rem !important;
+  padding-right: 4rem !important;
+  scroll-padding-left: 4rem !important;
+  scroll-padding-right: 4rem !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 991px) {
+  .collection-list-2.contents-of-scroll,
+  .contents-of-scroll {
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+    scroll-padding-left: 2rem !important;
+    scroll-padding-right: 2rem !important;
+  }
+}
+
+.collection-list-2.contents-of-scroll .collection-item-2 {
+  flex: 0 0 280px !important;
+  min-width: 280px !important;
+  max-width: 280px !important;
+  scroll-snap-align: start !important;
+  margin-right: 14px !important;
+  box-sizing: border-box !important;
+}
+
 @media (max-width: 767px) {
+  .collection-list-2.contents-of-scroll {
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+    scroll-padding-left: 2rem !important;
+    scroll-padding-right: 2rem !important;
+  }
+  .collection-list-2.contents-of-scroll .collection-item-2 {
+    flex: 0 0 75vw !important;
+    min-width: 75vw !important;
+    max-width: 300px !important;
+  }
+}
+
   /* 1x1 Horizontal Scroll on Mobile */
   .collection-list-2.contents-of-scroll.scroll-1x1 {
     display: flex !important;
@@ -1027,7 +1091,9 @@ h1, .heading { letter-spacing: -0.02em; line-height: 1; }
     overflow-x: auto !important;
     gap: 12px !important;
     scroll-snap-type: x mandatory !important;
-    padding: 1rem 0 !important;
+    padding: 1rem 2rem !important;
+    scroll-padding-left: 2rem !important;
+    scroll-padding-right: 2rem !important;
     -webkit-overflow-scrolling: touch !important;
   }
   .collection-list-2.contents-of-scroll.scroll-1x1 .collection-item-2 {
@@ -1045,7 +1111,9 @@ h1, .heading { letter-spacing: -0.02em; line-height: 1; }
     grid-column-gap: 12px !important;
     grid-row-gap: 16px !important;
     scroll-snap-type: x mandatory !important;
-    padding: 1rem 0 !important;
+    padding: 1rem 2rem !important;
+    scroll-padding-left: 2rem !important;
+    scroll-padding-right: 2rem !important;
     -webkit-overflow-scrolling: touch !important;
   }
   .collection-list-2.contents-of-scroll.scroll-2x2 .collection-item-2 {
@@ -1103,6 +1171,118 @@ h1, .heading { letter-spacing: -0.02em; line-height: 1; }
 /* Homepage-specific body background color */
 body.template-index, .body.template-index {
   background-color: #0B0B0B !important;
+}
+
+/* ── REMOVE DOUBLE BORDERS ON MARQUEE ─────────────────────────── */
+.white-section.menu {
+  border-top: none !important;
+  border-bottom: 1px solid #2e2e2e !important;
+  box-shadow: none !important;
+}
+
+/* ── HIDE ACCESSIBILITY WIDGET ICON ───────────────────────────── */
+#userwayAccessibilityIcon,
+.userway-trigger,
+[id*="userway"],
+[class*="userway"],
+#accessibe-widget,
+#accessibility-icon,
+.accessibility-icon,
+#uwy,
+.uwy-icon-wrapper,
+iframe[src*="userway"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* ── AUTHENTICITY SECTION DESCRIPTION FONT SIZE ───────────────── */
+.paragraph-2.text {
+  font-family: var(--font-body) !important;
+  font-size: clamp(14px, 1.4vw, 17px) !important;
+  font-weight: 300 !important;
+  line-height: 1.65 !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* ── HERO BANNER PADDING & CORNERS ───────────────────────────── */
+.custom-image-video-banner-section {
+  padding: 2.5rem 4rem 1.5rem !important; /* Matches desktop navbar padding */
+  box-sizing: border-box !important;
+  width: 100% !important;
+}
+.custom-image-video-banner-section .banner-image-video-container {
+  margin: 0 !important; /* Removes Webflow margins to fit padding perfectly */
+  border-radius: 16px !important;
+  border: 1px solid rgba(255,255,255,0.06) !important;
+  transition: filter 0.1s ease, opacity 0.1s ease;
+  will-change: filter, opacity;
+}
+
+@media (max-width: 767px) {
+  .custom-image-video-banner-section {
+    padding: 1.25rem 2rem 0.5rem !important; /* Matches mobile navbar padding */
+  }
+  .custom-image-video-banner-section .banner-image-video-container {
+    border-radius: 12px !important;
+  }
+}
+
+/* ── SCROLL-IN MICRO ANIMATIONS ───────────────────────────────── */
+.scroll-animate {
+  opacity: 0 !important;
+  transform: translateY(28px) scale(0.985) !important;
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  will-change: opacity, transform;
+}
+.scroll-animate.animated {
+  opacity: 1 !important;
+  transform: translateY(0) scale(1) !important;
+}
+
+/* ── SHOP BY BRAND SCROLLER GLOBAL HEIGHT LIMIT ────────────────── */
+.hero-brand-listing .brand-view .collection-list-wrapper,
+.hero-brand-listing .brand-view .collection-list-2.contents-of-scroll {
+  height: 45vh !important;
+  max-height: 45vh !important;
+  overflow: visible !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+}
+
+.hero-brand-listing .brand-view .collection-item-2 {
+  height: 100% !important;
+}
+
+.hero-brand-listing .brand-view .link-block-2.mobile {
+  height: 100% !important;
+  max-height: 45vh !important;
+  min-height: auto !important;
+}
+
+/* ── SIMILAR PRODUCTS MOBILE HEIGHT & RATIOS ─────────────────── */
+@media (max-width: 767px) {
+  .new-similar-items .collection-list-2.contents-of-scroll {
+    height: auto !important;
+    max-height: none !important;
+  }
+  .new-similar-items .collection-item-2.product {
+    height: auto !important;
+    width: 60vw !important;
+  }
+  .new-similar-items .collection-item-2.product .link-block-2 {
+    height: auto !important;
+  }
+  .new-similar-items .collection-item-2.product .div-block-15 {
+    height: 52vh !important; /* Increased by 15% from base 45vh */
+    min-height: auto !important;
+    max-height: none !important;
+  }
+  .new-similar-items .collection-item-2.product .image-6 {
+    height: 100% !important;
+    object-fit: cover !important;
+  }
 }
 
 

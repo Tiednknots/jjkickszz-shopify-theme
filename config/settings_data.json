@@ -1,38 +1,121 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "current": {
+    "color_secret_red": "#D70000",
+    "color_link": "#FFFFFF",
+    "color_btn_primary_text": "#FFFFFF",
     "sections": {
       "main_section": {
         "type": "main-section",
-        "settings": {}
+        "settings": {
+          "main_text": "JJKICKSZZ",
+          "button_text": "New Drops",
+          "main_paragraph": "Your direct line to high-heat releases and rare archive grails. We handle the sourcing and the rigorous scanning so you don't have to—guaranteeing 100% authentic fits, every single time.",
+          "video_file": "shopify://files/videos/SnapInsta.to_AQPKuntvyORM3JuG0HKRhQ7h-RPZJQq4ztN8tOUAvsPiy2RArBfd1cGdT9fDp_VXeCBW5-3yKnhcK4oeGWHoSWgzYLpgU-SKUDYnSfE.mp4",
+          "video_url": "",
+          "button_link": "shop",
+          "button_link_text": "New Drops",
+          "button_text_color": "#000000",
+          "button_color": "#d70000",
+          "hide_paragraph": true
+        }
       },
       "home_marquee": {
         "type": "home-marquee",
-        "settings": {}
+        "settings": {
+          "text_1": "100% Authentic Heat 🔥 Guaranteed",
+          "text_2": "All Sales Are Final",
+          "text_3": "Free Shipping on orders over $400",
+          "bg_color": "#090909",
+          "text_color": "#ffffff",
+          "show_borders": true,
+          "border_color": "#2e2e2e"
+        }
       },
       "home_new_drops": {
         "type": "home-new-drops",
-        "settings": {}
+        "settings": {
+          "heading": "NEW DROPS",
+          "button_text": "View All Products",
+          "button_link": "shopify://pages/shop",
+          "button_bg_color": "#d70000",
+          "button_txt_color": "#ffffff",
+          "use_auto_grid": true,
+          "custom_collection": ""
+        }
       },
       "general_section": {
         "type": "general-section",
-        "settings": {}
+        "settings": {
+          "section_title": "VERIFIED AUTHENTICITY",
+          "button_text": "Authenticity Policy",
+          "section_sub_heading": "100% Authentic. Every Single Time.",
+          "authentic_full_text": "We don’t play games with quality. Every piece that touches our inventory is inspected by hand—checking the stitching, the weight, and the tags. If it’s not legit, it doesn’t ship. You get exactly what you paid for, verified and secured.",
+          "button_link": "authenticity-policy",
+          "button_link_text": "Authenticity Policy",
+          "button_text_color": "#ffffff",
+          "button_color": "#d70000"
+        }
       },
       "home_shop_by_brand": {
         "type": "home-shop-by-brand",
-        "settings": {}
+        "settings": {
+          "heading": "SHOP BY BRAND",
+          "gradient_color_1": "#000000",
+          "gradient_opacity_1": 40,
+          "gradient_color_2": "#0a0a0a",
+          "gradient_opacity_2": 90
+        }
       },
       "home_custom_blocks": {
         "type": "home-custom-blocks",
-        "settings": {}
+        "settings": {
+          "enable_section": true
+        }
+      },
+      "footer": {
+        "type": "footer",
+        "settings": {
+          "footer_header": "Join the Kickszz Crew"
+        }
+      },
+      "home_featured_product_ECmYW8": {
+        "type": "home-featured-product",
+        "name": "Featured Product Accent",
+        "settings": {
+          "subheading": "New Piece",
+          "product": "amor-galleria-paradise",
+          "button_text": "Shop Release",
+          "button_bg_color": "#ffffff",
+          "button_txt_color": "#000000"
+        }
+      },
+      "home_ai_search_4cby9d": {
+        "type": "home-ai-search",
+        "name": "JJKICKSZZ AI Search",
+        "settings": {
+          "title": "JJKICKSZZ AI",
+          "subtitle": "Talk to our sneaker assistant to find your grails instantly."
+        }
       }
     },
     "content_for_index": [
       "main_section",
       "home_marquee",
       "home_new_drops",
+      "home_featured_product_ECmYW8",
       "general_section",
       "home_shop_by_brand",
-      "home_custom_blocks"
+      "home_custom_blocks",
+      "home_ai_search_4cby9d"
     ]
   }
 }
