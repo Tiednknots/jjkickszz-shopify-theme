@@ -1760,16 +1760,20 @@ iframe[src*="userway"] {
 
 /* ── DESKTOP PRODUCT SECTION HEIGHT (90vh) & LEFT EDGE VERTICAL LIGHTBOX THUMBNAILS ── */
 @media screen and (min-width: 992px) {
-  .page-content,
-  .product-template-container,
-  div.div-block-629,
-  div.div-block-629 .thumbnail-section {
+  /* Column section that contains left and right containers ONLY */
+  div.div-block-629 {
     min-height: 90vh !important;
     height: 90vh !important;
     max-height: 90vh !important;
     display: flex !important;
     align-items: center !important;
     box-sizing: border-box !important;
+  }
+
+  div.div-block-629 .thumbnail-section,
+  div.div-block-629 .product-container {
+    height: 100% !important;
+    max-height: 100% !important;
   }
 
   div.more-image-container,
