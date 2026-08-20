@@ -1,0 +1,13 @@
+<script>
+  // Redirect back to the referring page and trigger the cart drawer open
+  var ref = document.referrer;
+  if (ref && ref.indexOf(window.location.hostname) !== -1) {
+    if (ref.indexOf('/cart') === -1) {
+      window.location.href = ref + (ref.indexOf('?') !== -1 ? '&' : '?') + 'open_cart=true';
+    } else {
+      window.location.href = '/?open_cart=true';
+    }
+  } else {
+    window.location.href = '/?open_cart=true';
+  }
+</script>
