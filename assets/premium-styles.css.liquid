@@ -1757,3 +1757,167 @@ iframe[src*="userway"] {
     -webkit-overflow-scrolling: touch !important;
   }
 }
+
+/* ── DESKTOP PRODUCT SECTION HEIGHT (90vh) & LEFT EDGE VERTICAL LIGHTBOX THUMBNAILS ── */
+@media screen and (min-width: 992px) {
+  .page-content,
+  .product-template-container,
+  div.div-block-629,
+  div.div-block-629 .thumbnail-section {
+    min-height: 90vh !important;
+    height: 90vh !important;
+    max-height: 90vh !important;
+    display: flex !important;
+    align-items: center !important;
+    box-sizing: border-box !important;
+  }
+
+  div.more-image-container,
+  div.more-image-wrapper {
+    position: relative !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
+    border-radius: 12px !important;
+  }
+
+  div.more-image-container div.more-image-wrapper #main-image,
+  div.more-image-container div.more-image-wrapper .main-image,
+  #main-image,
+  .main-image {
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 85vh !important;
+    object-fit: cover !important;
+    border-radius: 12px !important;
+    transition: transform 0.15s ease-out !important;
+    cursor: zoom-in !important;
+    margin: 0 !important;
+  }
+
+  /* Lightbox thumbnails wrapper against left edge with 1rem padding, stacked vertically */
+  .collection-list-wrapper-2,
+  div.more-image-container div.more-image-wrapper .collection-list-wrapper-2 {
+    position: absolute !important;
+    left: 1rem !important; /* 1rem padding from left edge */
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 75px !important;
+    min-width: 75px !important;
+    z-index: 20 !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Vertical stack for lightbox thumbnails */
+  .collection-list-3,
+  div.more-image-container div.more-image-wrapper .collection-list-3 {
+    display: flex !important;
+    flex-direction: column !important; /* Stacked vertically */
+    gap: 12px !important;
+    justify-content: center !important;
+    align-items: center !important;
+    max-height: 70vh !important;
+    overflow-y: auto !important;
+    scrollbar-width: none !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  div.more-image-container div.more-image-wrapper .collection-list-3::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  div.more-image-container div.more-image-wrapper .collection-item-3 {
+    width: 70px !important;
+    height: 70px !important;
+    flex-shrink: 0 !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    border-radius: 8px !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    overflow: hidden !important;
+    cursor: pointer !important;
+    transition: transform 0.2s ease, border-color 0.2s ease !important;
+  }
+
+  div.more-image-container div.more-image-wrapper .collection-item-3:hover,
+  div.more-image-container div.more-image-wrapper .collection-item-3.w--current,
+  div.more-image-container div.more-image-wrapper .collection-item-3 img.active {
+    border-color: #ffffff !important;
+    transform: scale(1.06) !important;
+  }
+
+  div.more-image-container div.more-image-wrapper .collection-item-3 img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    background: transparent !important;
+  }
+}
+
+/* Parent divs transparent background */
+.thumbnail-section,
+.more-image-container,
+.more-image-wrapper,
+.collection-list-wrapper-2,
+.collection-list-3,
+.collection-item-3,
+.dots-wrapper,
+.w-slider-nav {
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Hide indicators & thumbnails when single image */
+{% if product.images.size <= 1 %}
+.collection-list-wrapper-2,
+.more-image-container .collection-list-wrapper-2,
+.w-slider-nav,
+.dots-wrapper,
+.w-slider-dot,
+.jj-swipe-dots {
+  display: none !important;
+}
+{% endif %}
+
+@media screen and (max-width: 991px) {
+  .thumbnail-section,
+  div.thumbnail-section {
+    margin-top: 2rem !important;
+  }
+  .jj-swipe-dots {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin: 12px 0 16px 0 !important;
+  }
+  .jj-swipe-dot {
+    width: 8px !important;
+    height: 8px !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.3) !important;
+    transition: all 0.2s ease !important;
+    cursor: pointer !important;
+  }
+  .jj-swipe-dot.active {
+    background: #ffffff !important;
+    width: 20px !important;
+    border-radius: 10px !important;
+  }
+}

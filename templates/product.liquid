@@ -229,22 +229,15 @@
           <div class="thumbnail-section">
             <div class="more-image-container">
               <div class="more-image-wrapper"><img loading="eager" fetchpriority="high" src="{{ product.featured_image | img_url: '1024x' }}" alt="{{ product.featured_image.alt }}" id="main-image" class="main-image" data-commerce-type="variation-image" srcset="{{ product.featured_image | img_url: '1920x' }} 1920w,{{ product.featured_image | img_url: '1600x' }} 1600w,{{ product.featured_image | img_url: '1366x' }} 1366w,{{ product.featured_image | img_url: '1024x' }} 1024w,{{ product.featured_image | img_url: '768x' }} 768w,{{ product.featured_image | img_url: '640x' }} 640w">
-                {% if product.variants.size > 1 and product.selected_or_first_available_variant.metafields.udesly['more-images'].size > 0 %}{%- assign setItems = product.selected_or_first_available_variant.metafields.udesly['more-images'] -%}<div class="collection-list-wrapper-2 w-dyn-list" data-commerce-type="more-images">
-                  {%- unless setItems.size == 0 -%}<div role="list" class="collection-list-3 w-dyn-items">
-                    {%- for setItem in setItems  -%}<div role="listitem" class="collection-item-3 w-dyn-item"><img loading="lazy" src="{{ setItem.more-images }}" data-large-src="{{ setItem.more-images }}" alt="" id="thumb-image" class="thumb-image"></div>{%- endfor -%}
-                  </div>{%- endunless -%}
-                  {%- if setItems.size == 0 -%}<div class="empty-state-5 w-dyn-empty"></div>{%- endif -%}
-                <template><div class="collection-list-wrapper-2 w-dyn-list" udesly-repeater="true" data-commerce-type="more-images">
+{% assign total_imgs = product.images.size %}{% if total_imgs > 1 %}{% if product.variants.size > 1 and product.selected_or_first_available_variant.metafields.udesly['more-images'].size > 0 %}{%- assign setItems = product.selected_or_first_available_variant.metafields.udesly['more-images'] -%}<div class="collection-list-wrapper-2 w-dyn-list" data-commerce-type="more-images">
                   <div role="list" class="collection-list-3 w-dyn-items">
-                    <div role="listitem" class="collection-item-3 w-dyn-item"><img loading="lazy" src="{# setItem.more-images #}" alt="" id="thumb-image" class="thumb-image"></div>
+                    {%- for setItem in setItems  -%}<div role="listitem" class="collection-item-3 w-dyn-item"><img loading="lazy" src="{{ setItem.more-images }}" data-large-src="{{ setItem.more-images }}" alt="" id="thumb-image" class="thumb-image{% if forloop.first %} w--current active{% endif %}"></div>{%- endfor -%}
                   </div>
-                  <div class="empty-state-5 w-dyn-empty"></div>
-                </div></template></div>{% else %}{%- assign setItems = product.images -%}<div class="collection-list-wrapper-2 w-dyn-list" data-commerce-type="more-images">
-                  {%- unless setItems.size == 0 -%}<div role="list" class="collection-list-3 w-dyn-items">
-                    {%- for setItem in setItems  -%}<div role="listitem" class="collection-item-3 w-dyn-item"><img loading="lazy" src="{{ setItem | product_img_url: '1024x' }}" data-large-src="{{ setItem | product_img_url: '1024x' }}" alt="" id="thumb-image" class="thumb-image"></div>{%- endfor -%}
-                  </div>{%- endunless -%}
-                  {%- if setItems.size == 0 -%}<div class="empty-state-5 w-dyn-empty"></div>{%- endif -%}
-                </div>{%- endif -%}
+                </div>{% else %}{%- assign setItems = product.images -%}<div class="collection-list-wrapper-2 w-dyn-list" data-commerce-type="more-images">
+                  <div role="list" class="collection-list-3 w-dyn-items">
+                    {%- for setItem in setItems  -%}<div role="listitem" class="collection-item-3 w-dyn-item"><img loading="lazy" src="{{ setItem | product_img_url: '1024x' }}" data-large-src="{{ setItem | product_img_url: '1024x' }}" alt="" id="thumb-image" class="thumb-image{% if forloop.first %} w--current active{% endif %}"></div>{%- endfor -%}
+                  </div>
+                </div>{% endif %}{% endif %}
               </div>
             </div>
           </div>
@@ -2336,6 +2329,30 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+
+      // Mobile Swipe Indicators & Single Image Dot Hide
+      (function initSwipeDots() {
+        var dotsContainer = document.getElementById('jj-swipe-dots');
+        var thumbs = document.querySelectorAll('.thumb-image, .collection-item-3 img');
+        if (!dotsContainer) return;
+        if (thumbs.length <= 1) {
+          dotsContainer.style.display = 'none';
+          return;
+        }
+
+        dotsContainer.innerHTML = '';
+        thumbs.forEach(function(t, idx) {
+          var dot = document.createElement('div');
+          dot.className = 'jj-swipe-dot' + (idx === 0 ? ' active' : '');
+          dot.addEventListener('click', function() {
+            t.click();
+            dotsContainer.querySelectorAll('.jj-swipe-dot').forEach(function(d) { d.classList.remove('active'); });
+            dot.classList.add('active');
+          });
+          dotsContainer.appendChild(dot);
+        });
+      })();
+
 
       // Mobile Image Gallery Touch Swiping
       (function initMobileGallerySwipe() {
