@@ -2277,7 +2277,16 @@
               var applyDiscount = activeItems.length >= 2;
               var promise = Promise.resolve();
               if (applyDiscount) {
-                promise = sessionStorage.setItem('jj_outfit_discount', 'true'); fetch('/discount/OUTFIT25').catch(function() {});
+                var count = parseInt(sessionStorage.getItem('jj_bundle_count') || '0', 10) + 1;
+                sessionStorage.setItem('jj_bundle_count', count.toString());
+                var code = 'OUTFIT25';
+                if (count === 2) code = 'OUTFIT25-2';
+                else if (count === 3) code = 'OUTFIT25-3';
+                else if (count === 4) code = 'OUTFIT25-4';
+                else if (count >= 5) code = 'OUTFIT25-5';
+                sessionStorage.setItem('jj_outfit_discount_code', code);
+                sessionStorage.setItem('jj_outfit_discount', 'true');
+                fetch('/discount/' + code).catch(function() {});
               }
 
               promise.then(function() {
