@@ -580,12 +580,16 @@
       flex-direction: column !important;
       padding: 0 !important;
       gap: 0 !important;
+      margin-bottom: 0 !important;
+      padding-bottom: 0 !important;
     }
 
     .thumbnail-section {
       max-height: none !important;
       overflow: visible !important;
       position: static !important; /* Not sticky on mobile */
+      margin-bottom: 0 !important;
+      padding-bottom: 0 !important;
     }
 
     /* Padded wrapper for the gallery card */
@@ -593,6 +597,9 @@
       margin-top: 1rem !important; /* exactly 1rem from marquee to gallery */
       padding: 0 1rem !important;    /* exactly 1rem left/right padding */
       box-sizing: border-box !important;
+      margin-bottom: 0 !important;
+      padding-bottom: 0 !important;
+      height: calc((100vw - 2rem) * 4 / 3) !important; /* Lock to portrait height */
     }
 
     /* Horizontal scroll track with gaps */
@@ -608,6 +615,9 @@
       padding: 0 !important;
       width: 100% !important;
       box-sizing: border-box !important;
+      margin-bottom: 0 !important;
+      padding-bottom: 0 !important;
+      height: 100% !important;
     }
     .more-image-wrapper::-webkit-scrollbar { display: none !important; }
 
@@ -616,15 +626,16 @@
       min-width: calc(100vw - 2rem) !important;
       max-width: calc(100vw - 2rem) !important;
       width: calc(100vw - 2rem) !important;
-      height: calc(100vw - 2rem) !important; /* Perfect square card */
-      aspect-ratio: 1 / 1 !important;
-      object-fit: contain !important;
-      background: #ffffff !important;
+      height: 100% !important; /* Lock height to match container */
+      aspect-ratio: 3 / 4 !important; /* Tall, premium aspect ratio */
+      object-fit: cover !important; /* Fill container cleanly */
+      background: transparent !important; /* No white background card box */
       border-radius: 12px !important;
       scroll-snap-align: center !important;
       margin: 0 !important;
       flex-shrink: 0 !important;
-      border: 1px solid rgba(255,255,255,0.06) !important;
+      border: none !important; /* Remove white border */
+      box-shadow: none !important;
     }
 
     /* Stack thumbs inline with main for the mobile swipe row */
@@ -632,13 +643,14 @@
       display: flex !important;
       flex-direction: row !important;
       gap: 12px !important;
+      height: 100% !important;
     }
 
     .collection-item-3 {
       min-width: calc(100vw - 2rem) !important;
       max-width: calc(100vw - 2rem) !important;
       width: calc(100vw - 2rem) !important;
-      height: calc(100vw - 2rem) !important; /* Perfect square card */
+      height: 100% !important; /* Lock height to match container */
       flex-shrink: 0 !important;
       scroll-snap-align: center !important;
     }
@@ -646,11 +658,12 @@
     #thumb-image, .thumb-image {
       width: 100% !important;
       height: 100% !important;
-      aspect-ratio: 1 / 1 !important;
-      object-fit: contain !important;
-      background: #ffffff !important;
+      aspect-ratio: 3 / 4 !important;
+      object-fit: cover !important;
+      background: transparent !important; /* No white background card box */
       border-radius: 12px !important;
-      border: 1px solid rgba(255,255,255,0.06) !important;
+      border: none !important; /* Remove white border */
+      box-shadow: none !important;
     }
 
     .product-container {
@@ -691,17 +704,107 @@
   }
 
   /* Similar items card height & styling overrides */
+  .new-similar-items .collection-list-wrapper {
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .new-similar-items .collection-list-2.contents-of-scroll {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: flex-start !important; /* Do NOT stretch vertically */
+    height: auto !important;
+    min-height: 0 !important;
+    padding-top: 10px !important;
+    padding-bottom: 20px !important;
+    gap: 16px !important;
+  }
+  .new-similar-items .collection-item-2.product,
+  .new-similar-items .collection-item-2 {
+    flex: 0 0 170px !important; /* Width is 170px for a clean card size on mobile */
+    width: 170px !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+  }
+  .new-similar-items .collection-item-2.product .link-block-2,
+  .new-similar-items .collection-item-2 .link-block-2 {
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important; /* Let it wrap content tightly */
+    border: 1px solid #2e2e2e !important;
+    border-radius: 8px !important;
+    background-color: #0b0b0b !important; /* Dark solid card background */
+    padding: 0 0 12px 0 !important;
+    overflow: hidden !important;
+  }
   .new-similar-items .div-block-15,
   .new-similar-items .home-custom-img-wrap {
-    height: 180px !important;
+    width: 100% !important;
+    height: 170px !important; /* Perfect square image header */
+    min-height: 170px !important;
+    max-height: 170px !important;
     overflow: hidden !important;
     position: relative !important;
+    border-radius: 8px 8px 0 0 !important; /* Rounded top corners only */
+    border: none !important;
   }
   .new-similar-items .image-6,
   .new-similar-items .home-custom-img {
     width: 100% !important;
     height: 100% !important;
+    min-height: 100% !important;
+    max-height: 100% !important;
     object-fit: cover !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    border: none !important;
+  }
+  .new-similar-items .text-block-4.title {
+    font-size: 13px !important;
+    line-height: 1.2 !important;
+    margin: 8px 8px 4px 8px !important;
+    white-space: normal !important; /* Wrap title */
+    height: 32px !important; /* Two lines height */
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+  }
+  .new-similar-items .text-block-779 {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    margin: 0 8px 8px 8px !important;
+    color: #fff !important;
+  }
+  .new-similar-items .div-block-1163 {
+    margin: 0 8px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+  }
+  .new-similar-items .div-block-1163 .asd {
+    font-size: 11px !important;
+    color: #888 !important;
+    margin: 0 !important;
+  }
+  .new-similar-items .size-contents {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 4px !important;
+  }
+  .new-similar-items .sizes-variants {
+    font-size: 11px !important;
+    color: #fff !important;
+    background: #1e1e1e !important;
+    padding: 2px 4px !important;
+    border-radius: 3px !important;
+    margin: 0 !important;
   }
 
   /* Selector indicators styled as lines (hidden on desktop) */
