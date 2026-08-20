@@ -501,8 +501,8 @@
       var instockCB     = document.getElementById('jj-instock-checkbox');
       var clearBtn      = document.getElementById('jj-clear-filters-btn');
 
-      var state = { query: '', sort: 'default', inStockOnly: false, selectedVendor: '' };
-
+      var state = { query: '', sort: 'newest', inStockOnly: false, selectedVendor: '' };
+      if (sortSelect) sortSelect.value = 'newest';
       // Cache product grid and pagination element
       var grid = document.querySelector('.collection-list-2');
       var pagination = document.querySelector('.jj-pagination-container') || document.querySelector('.w-pagination-wrapper');
@@ -630,6 +630,9 @@
                 return (el.querySelector('.title.dfg')?.textContent || 
                         el.querySelector('.text-block-4.title')?.textContent || '').toLowerCase().trim();
               };
+              var getId = function(el) {
+                return parseInt(el.getAttribute('data-id')) || 0;
+              };
 
               if (state.sort === 'price-asc') {
                 return getPrice(a.element) - getPrice(b.element);
@@ -637,6 +640,8 @@
                 return getPrice(b.element) - getPrice(a.element);
               } else if (state.sort === 'title-asc') {
                 return getTitle(a.element).localeCompare(getTitle(b.element));
+              } else if (state.sort === 'newest') {
+                return getId(b.element) - getId(a.element);
               }
               return 0;
             });

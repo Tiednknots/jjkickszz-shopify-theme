@@ -2,7 +2,7 @@
 {% paginate collections.all.products by 250 %}
 {%- for item in collections.all.products %}
   {%- if item.handle == 'shipping-insurance' or item.title contains 'Insurance' -%}{%- continue -%}{%- endif -%}
-<div role="listitem" class="collection-item-2 margin w-dyn-item">
+<div role="listitem" class="collection-item-2 margin w-dyn-item" data-id="{{ item.id }}">
                     <a href="{{ item.url }}" class="link-block-2 w-inline-block">
                       <div class="div-block-15 {% unless item.available %}jj-sold-out-card{% endunless %}"><img loading="lazy" src="{{ item.featured_image | img_url: '600x' }}" alt="{{ item.featured_image.alt }}" class="image-6 one" data-commerce-type="variation-image" srcset="{{ item.featured_image | img_url: '1920x' }} 1920w,{{ item.featured_image | img_url: '1600x' }} 1600w,{{ item.featured_image | img_url: '1366x' }} 1366w,{{ item.featured_image | img_url: '1024x' }} 1024w,{{ item.featured_image | img_url: '768x' }} 768w,{{ item.featured_image | img_url: '640x' }} 640w">
                         <div class="link-overlay bs">{{ item.vendor }}</div>
