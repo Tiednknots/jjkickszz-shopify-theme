@@ -1295,7 +1295,7 @@ iframe[src*="userway"] {
   background-color: #000000 !important;
   padding: 1.5rem 1.5rem !important; /* Spacing around the video container */
   box-sizing: border-box !important;
-  margin-top: 140px !important; /* Start below sticky header navigation menu */
+  margin-top: 90px !important; /* Start below sticky header navigation menu */
 }
 
 .section-background-contents {
@@ -1337,7 +1337,7 @@ iframe[src*="userway"] {
 @media screen and (max-width: 767px) {
   .hero-section {
     padding: 0.75rem 1rem !important;
-    margin-top: 100px !important; /* Spacing below header marquee menu */
+    margin-top: 60px !important; /* Spacing below header marquee menu */
   }
   .section-background-contents {
     height: 68vh !important; /* Increased mobile video banner height */
@@ -1353,3 +1353,121 @@ iframe[src*="userway"] {
   }
 }
 
+
+/* ── FIT CURATOR WIDGET ────────────────────────────────────── */
+.jj-curator-workspace {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+.jj-canvas-container {
+  flex: 1 1 600px;
+  background: #080808 !important;
+  border: 1px solid #1a1a1a !important;
+  border-radius: 12px;
+  height: 520px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 4px 20px rgba(0,0,0,0.8);
+}
+@media (max-width: 767px) {
+  .jj-canvas-container {
+    height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 24px !important;
+    padding: 24px !important;
+    overflow: visible !important;
+  }
+}
+.jj-flat-card {
+  width: 180px;
+  background: #0f0f0f;
+  border: 1px solid #222;
+  border-radius: 8px;
+  padding: 10px;
+  box-sizing: border-box;
+  position: absolute;
+  cursor: grab;
+  user-select: none;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  transition: box-shadow 0.2s, border-color 0.2s;
+  z-index: 10;
+}
+.jj-flat-card:active {
+  cursor: grabbing;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.7);
+  border-color: #444;
+}
+@media (max-width: 767px) {
+  .jj-flat-card {
+    position: static !important;
+    width: 100% !important;
+    cursor: default !important;
+  }
+}
+.jj-flat-card-img {
+  width: 100%;
+  aspect-ratio: 1/1;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #050505;
+  position: relative;
+}
+.jj-flat-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.jj-flat-card-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  margin: 8px 0 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.jj-flat-card-price {
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 8px;
+}
+.jj-flat-card-select {
+  width: 100%;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: #fff;
+  font-size: 10px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+.jj-flat-card-refresh {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0,0,0,0.7);
+  border: 1px solid #333;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  z-index: 12;
+  transition: background 0.2s, transform 0.2s;
+}
+.jj-flat-card-refresh:hover {
+  background: #fff;
+  color: #000;
+  transform: rotate(45deg);
+}

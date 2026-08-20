@@ -104,7 +104,7 @@
         <div class="div-block-629">
           <div class="thumbnail-section">
             <div class="more-image-container">
-              <div class="more-image-wrapper"><img loading="lazy" src="{{ product.featured_image | img_url: '1024x' }}" alt="{{ product.featured_image.alt }}" id="main-image" class="main-image" data-commerce-type="variation-image" srcset="{{ product.featured_image | img_url: '1920x' }} 1920w,{{ product.featured_image | img_url: '1600x' }} 1600w,{{ product.featured_image | img_url: '1366x' }} 1366w,{{ product.featured_image | img_url: '1024x' }} 1024w,{{ product.featured_image | img_url: '768x' }} 768w,{{ product.featured_image | img_url: '640x' }} 640w">
+              <div class="more-image-wrapper"><img loading="eager" fetchpriority="high" src="{{ product.featured_image | img_url: '1024x' }}" alt="{{ product.featured_image.alt }}" id="main-image" class="main-image" data-commerce-type="variation-image" srcset="{{ product.featured_image | img_url: '1920x' }} 1920w,{{ product.featured_image | img_url: '1600x' }} 1600w,{{ product.featured_image | img_url: '1366x' }} 1366w,{{ product.featured_image | img_url: '1024x' }} 1024w,{{ product.featured_image | img_url: '768x' }} 768w,{{ product.featured_image | img_url: '640x' }} 640w">
                 {% if product.variants.size > 1 and product.selected_or_first_available_variant.metafields.udesly['more-images'].size > 0 %}{%- assign setItems = product.selected_or_first_available_variant.metafields.udesly['more-images'] -%}<div class="collection-list-wrapper-2 w-dyn-list" data-commerce-type="more-images">
                   {%- unless setItems.size == 0 -%}<div role="list" class="collection-list-3 w-dyn-items">
                     {%- for setItem in setItems offset: 1 -%}<div role="listitem" class="collection-item-3 w-dyn-item"><img loading="lazy" src="{{ setItem.more-images }}" data-large-src="{{ setItem.more-images }}" alt="" id="thumb-image" class="thumb-image"></div>{%- endfor -%}
@@ -271,6 +271,46 @@
           </div>
         </div>
       </div>
+      <!-- ── FIT CURATOR WIDGET ── -->
+      <div class="jj-fit-curator-section" style="background:#050505; border-top:1px solid #1a1a1a; padding:60px 0; font-family:'Inter', sans-serif;">
+        <div style="max-width:1200px; margin:0 auto; padding: 0 20px;">
+          <h2 style="font-size:24px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:#fff; margin-bottom:8px; text-align:center;">FIT CURATOR: COMPLETE THE LOOK</h2>
+          <p style="font-size:11px; color:#888; text-align:center; max-width:550px; margin:0 auto 40px; line-height:1.6; letter-spacing:1px; text-transform:uppercase;">Curate your custom outfit. On desktop, drag pieces to construct your look. Add the bundle to cart to automatically apply a $25 discount.</p>
+          
+          <div class="jj-curator-workspace">
+            <div class="jj-canvas-container" id="jj-canvas-container">
+              <div id="jj-curator-loading" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#fff; font-size:12px; font-weight:600; letter-spacing:1px; text-transform:uppercase; background:rgba(0,0,0,0.85); z-index:100;">
+                Curating your custom outfit...
+              </div>
+            </div>
+            
+            <div class="jj-curator-summary" style="width:380px; flex-shrink:0; background:#0b0b0b; border:1px solid #1a1a1a; border-radius:12px; padding:24px; box-sizing:border-box; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+              <div>
+                <h3 style="font-size:11px; font-weight:800; color:#fff; border-bottom:1px solid #1a1a1a; padding-bottom:12px; margin-bottom:16px; letter-spacing:1px; text-transform:uppercase;">OUTFIT SELECTIONS</h3>
+                <div id="jj-curator-items-list" style="display:flex; flex-direction:column; gap:16px; margin-bottom:24px;"></div>
+              </div>
+              
+              <div style="border-top:1px solid #1a1a1a; padding-top:16px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:11px; color:#888; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">
+                  <span>Subtotal</span>
+                  <span id="jj-bundle-subtotal">$0.00</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:11px; color:#ef4444; font-weight:800; text-transform:uppercase; letter-spacing:0.5px;">
+                  <span>Bundle Discount</span>
+                  <span>-$25.00</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:20px; font-size:15px; color:#fff; font-weight:800; text-transform:uppercase; letter-spacing:1px;">
+                  <span>Bundle Total</span>
+                  <span id="jj-bundle-total" style="color:#22c55e;">$0.00</span>
+                </div>
+                
+                <button id="jj-add-bundle-btn" style="width:100%; background:#fff; color:#000; border:none; border-radius:6px; padding:16px; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:1px; cursor:pointer; transition:background 0.2s;">Add Outfit to Cart</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="new-similar-items">
         <h1 class="title-label product">You might also like 👀</h1>
         {%- render "products_where_category_idin_currentcategory_sorted_by_created_on" -%}
@@ -394,8 +434,8 @@
   }
 
   #main-image {
-    max-height: calc(100vh - 360px) !important;
-    width: auto !important;
+    max-height: calc(100vh - 180px) !important;
+    width: 100% !important;
     max-width: 100% !important;
     aspect-ratio: 1 / 1 !important;
     object-fit: contain !important;
@@ -662,6 +702,7 @@
     }
 
     .thumbnail-section {
+      margin-top: 100px !important; /* Push gallery below sticky header menu */
       max-height: none !important;
       overflow: visible !important;
       position: static !important; /* Not sticky on mobile */
@@ -671,12 +712,12 @@
 
     /* Padded wrapper for the gallery card */
     .more-image-container {
-      margin-top: -1rem !important; /* Shifted up by 2rem from marquee */
+      margin-top: 0 !important;
       padding: 0 1rem !important;    /* exactly 1rem left/right padding */
       box-sizing: border-box !important;
       margin-bottom: 0 !important;
       padding-bottom: 0 !important;
-      height: calc((100vw - 2rem) * 4 / 3) !important; /* Lock to portrait height */
+      height: calc(100vw - 2rem) !important; /* Enforce square height constraints */
     }
 
     /* Horizontal scroll track with gaps */
@@ -704,7 +745,7 @@
       max-width: calc(100vw - 2rem) !important;
       width: calc(100vw - 2rem) !important;
       height: 100% !important; /* Lock height to match container */
-      aspect-ratio: 3 / 4 !important; /* Tall, premium aspect ratio */
+      aspect-ratio: 1 / 1 !important; /* Square aspect ratio */
       object-fit: cover !important; /* Fill container cleanly */
       background: transparent !important; /* No white background card box */
       border-radius: 12px !important;
@@ -735,7 +776,7 @@
     #thumb-image, .thumb-image {
       width: 100% !important;
       height: 100% !important;
-      aspect-ratio: 3 / 4 !important;
+      aspect-ratio: 1 / 1 !important;
       object-fit: cover !important;
       background: transparent !important; /* No white background card box */
       border-radius: 12px !important;
@@ -759,7 +800,7 @@
     .jj-swipe-dots {
       display: flex !important;
       margin-top: 0.5rem !important;    /* 0.5rem under image gallery */
-      margin-bottom: 2rem !important; /* Spaced out under indicators to product details */
+      margin-bottom: 0.75rem !important; /* Spaced out under indicators to product details */
       padding: 0 !important;
     }
   }
@@ -1574,13 +1615,18 @@
       if (drawerClose) drawerClose.addEventListener('click', closeDrawer);
       drawerOverlay.addEventListener('click', closeDrawer);
 
-      // Handle Form Submission via AJAX
+      // Handle Form Submission via AJAX (Injected into AI chat with CS disclaimer)
       if (drawerForm) {
         drawerForm.addEventListener('submit', function(e) {
           e.preventDefault();
           var submitBtn = drawerForm.querySelector('.jj-drawer-submit');
           var successMsg = document.getElementById('jj-drawer-success');
           var errorMsg = document.getElementById('jj-drawer-error');
+
+          var name = document.getElementById('drawer-name').value.trim();
+          var email = document.getElementById('drawer-email').value.trim();
+          var message = document.getElementById('drawer-message').value.trim();
+          var reason = document.getElementById('drawer-reason').value;
 
           if (submitBtn) {
             submitBtn.disabled = true;
@@ -1593,27 +1639,34 @@
           fetch('/contact', {
             method: 'POST',
             body: formData
-          })
-          .then(function(res) {
+          }).catch(function() {}); // Ignore potential AJAX redirection challenge failures
+
+          setTimeout(function() {
             if (submitBtn) {
               submitBtn.disabled = false;
               submitBtn.textContent = 'Send Message';
             }
-            if (res.ok) {
-              if (successMsg) successMsg.style.display = 'block';
+            if (successMsg) {
+              successMsg.textContent = '✓ Connecting with JJKICKSZZ AI Curator...';
+              successMsg.style.display = 'block';
+            }
+            
+            setTimeout(function() {
+              closeDrawer();
               drawerForm.reset();
-              setTimeout(closeDrawer, 2000);
-            } else {
-              if (errorMsg) errorMsg.style.display = 'block';
-            }
-          })
-          .catch(function(err) {
-            if (submitBtn) {
-              submitBtn.disabled = false;
-              submitBtn.textContent = 'Send Message';
-            }
-            if (errorMsg) errorMsg.style.display = 'block';
-          });
+              if (successMsg) successMsg.style.display = 'none';
+              
+              if (window.jjAIChat && typeof window.jjAIChat.sendMessage === 'function') {
+                var fullQuery = "I have a question about " + {{ product.title | json }} + " (" + reason + "): \"" + message + "\"";
+                window.jjAIChat.sendMessage(fullQuery);
+                
+                setTimeout(function() {
+                  var disclaimerMsg = "Customer service will also review your question and respond to your email (" + email + ") within 24 hours if needed.";
+                  window.jjAIChat.appendSystemMessage(disclaimerMsg);
+                }, 1500);
+              }
+            }, 1000);
+          }, 800);
         });
       }
     }
@@ -1654,7 +1707,8 @@
             quantity: parseInt(quantity, 10)
           };
 
-          fetch(window.Shopify.routes.root + 'cart/add.js', {
+          var rootPath = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
+          fetch(rootPath + 'cart/add.js', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -1690,11 +1744,378 @@
       }
     }
 
+    // --- Seamless background detector ---
+    function getImgBackgroundColor(img, callback) {
+      if (!img || !img.src) { callback('#ffffff', true); return; }
+      var tempImg = new Image();
+      tempImg.crossOrigin = "Anonymous";
+      tempImg.src = img.src;
+      tempImg.onload = function() {
+        try {
+          var canvas = document.createElement('canvas');
+          canvas.width = 10;
+          canvas.height = 10;
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(tempImg, 0, 0, 10, 10);
+          var imgData = ctx.getImageData(0, 0, 1, 1).data;
+          var r = imgData[0], g = imgData[1], b = imgData[2], a = imgData[3];
+          if (a < 10) { callback('#ffffff', true); return; }
+          var rgbToHex = function(r, g, b) {
+            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+          };
+          var hex = rgbToHex(r, g, b);
+          callback(hex, false);
+        } catch (e) {
+          callback('#ffffff', true);
+        }
+      };
+      tempImg.onerror = function() { callback('#ffffff', true); };
+    }
+
+    function applySeamlessBackground() {
+      var mainImg = document.getElementById('main-image');
+      var thumbSection = document.querySelector('.thumbnail-section');
+      if (!mainImg || !thumbSection) return;
+      getImgBackgroundColor(mainImg, function(color, isTransparent) {
+        if (window.innerWidth >= 992) {
+          thumbSection.style.backgroundColor = color;
+          thumbSection.style.setProperty('background-color', color, 'important');
+          mainImg.classList.add('seamless');
+        } else {
+          thumbSection.style.backgroundColor = '';
+          mainImg.classList.remove('seamless');
+        }
+      });
+    }
+
+    function applyCardBackgrounds() {
+      var cards = document.querySelectorAll('.collection-item-2, .collection-item-3, .new-similar-items .collection-item-2');
+      cards.forEach(function(card) {
+        var img = card.querySelector('img');
+        var linkBlock = card.querySelector('.link-block-2') || card.querySelector('a');
+        if (img && linkBlock) {
+          getImgBackgroundColor(img, function(color, isTransparent) {
+            if (isTransparent) {
+              linkBlock.style.backgroundColor = '#ffffff';
+              linkBlock.style.setProperty('background-color', '#ffffff', 'important');
+              card.querySelectorAll('.text-block-4, .text-block-779, .asd, .sizes-variants, .link-overlay').forEach(function(el) {
+                el.style.color = '#000000';
+                el.style.setProperty('color', '#000000', 'important');
+              });
+            }
+          });
+        }
+      });
+    }
+
+    // --- Outfit Curator logic ---
+    var currentProduct = {
+      id: {{ product.id | json }},
+      title: {{ product.title | json }},
+      type: {{ product.type | json }},
+      price: {{ product.price | json }},
+      featured_image: {{ product.featured_image | img_url: '600x' | json }},
+      variants: {{ product.variants | json }},
+      selectedVariantId: {{ product.selected_or_first_available_variant.id | json }}
+    };
+
+    function initFitCurator() {
+      var container = document.getElementById('jj-canvas-container');
+      var listContainer = document.getElementById('jj-curator-items-list');
+      var subtotalEl = document.getElementById('jj-bundle-subtotal');
+      var totalEl = document.getElementById('jj-bundle-total');
+      var addBtn = document.getElementById('jj-add-bundle-btn');
+      var loadingEl = document.getElementById('jj-curator-loading');
+      
+      if (!container || !listContainer) return;
+
+      var typeLower = (currentProduct.type || '').toLowerCase();
+      var titleLower = currentProduct.title.toLowerCase();
+      var isTop = typeLower.includes('hoodie') || typeLower.includes('jacket') || typeLower.includes('sweater') || typeLower.includes('tee') || typeLower.includes('shirt') || typeLower.includes('top') || titleLower.includes('hoodie') || titleLower.includes('tee') || titleLower.includes('shirt');
+      var isBottom = typeLower.includes('pant') || typeLower.includes('jean') || typeLower.includes('short') || typeLower.includes('sweatpant') || typeLower.includes('bottom') || titleLower.includes('pant') || titleLower.includes('jean') || titleLower.includes('short');
+      
+      var currentCat = 'shoes';
+      if (isTop) currentCat = 'top';
+      else if (isBottom) currentCat = 'bottom';
+
+      fetch('/collections/all/products.json?limit=250')
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          var products = data.products || [];
+          
+          var tops = [], bottoms = [], shoes = [];
+          products.forEach(function(p) {
+            if (p.id === currentProduct.id) return;
+            var hasStock = p.variants && p.variants.some(function(v) { return v.available; });
+            if (!hasStock) return;
+            if (p.handle.indexOf('insurance') !== -1 || p.title.indexOf('Insurance') !== -1) return;
+
+            var t = (p.product_type || '').toLowerCase();
+            var tit = p.title.toLowerCase();
+            
+            if (t.includes('hoodie') || t.includes('jacket') || t.includes('sweater') || t.includes('tee') || t.includes('shirt') || t.includes('top') || tit.includes('hoodie') || tit.includes('tee') || tit.includes('shirt')) {
+              tops.push(p);
+            } else if (t.includes('pant') || t.includes('jean') || t.includes('short') || t.includes('sweatpant') || t.includes('bottom') || tit.includes('pant') || tit.includes('jean') || tit.includes('short')) {
+              bottoms.push(p);
+            } else if (t.includes('sneaker') || t.includes('shoe') || t.includes('boot') || tit.includes('sneaker') || tit.includes('shoe')) {
+              shoes.push(p);
+            }
+          });
+
+          if (tops.length === 0) tops = products.slice(0, 10);
+          if (bottoms.length === 0) bottoms = products.slice(10, 20);
+          if (shoes.length === 0) shoes = products.slice(20, 30);
+
+          var outfit = [];
+          outfit.push({
+            product: currentProduct,
+            isCurrent: true,
+            selectedVariantId: currentProduct.selectedVariantId,
+            price: currentProduct.price / 100
+          });
+
+          if (currentCat === 'top') {
+            outfit.push({ catalog: bottoms, index: 0, price: 0 });
+            outfit.push({ catalog: shoes, index: 0, price: 0 });
+          } else if (currentCat === 'bottom') {
+            outfit.push({ catalog: tops, index: 0, price: 0 });
+            outfit.push({ catalog: shoes, index: 0, price: 0 });
+          } else {
+            outfit.push({ catalog: tops, index: 0, price: 0 });
+            outfit.push({ catalog: bottoms, index: 0, price: 0 });
+          }
+
+          if (loadingEl) loadingEl.remove();
+
+          renderOutfit();
+
+          function renderOutfit() {
+            container.innerHTML = '';
+            listContainer.innerHTML = '';
+            var subtotal = 0;
+
+            outfit.forEach(function(item, idx) {
+              var p = item.isCurrent ? item.product : item.catalog[item.index];
+              var priceVal = item.isCurrent ? item.price : parseFloat(p.variants[0].price);
+              item.price = priceVal;
+              subtotal += priceVal;
+
+              var imgUrl = item.isCurrent ? p.featured_image : (p.images && p.images.length > 0 ? p.images[0].src : '');
+              var title = p.title;
+              var isAvailable = item.isCurrent ? true : p.variants.some(function(v) { return v.available; });
+
+              var card = document.createElement('div');
+              card.className = 'jj-flat-card';
+              card.style.left = (40 + idx * 185) + 'px';
+              card.style.top = (110 + (idx % 2) * 50) + 'px';
+              
+              var selectHtml = '';
+              if (!item.isCurrent) {
+                selectHtml = '<select class="jj-flat-card-select">';
+                p.variants.forEach(function(v) {
+                  if (v.available) {
+                    selectHtml += '<option value="' + v.id + '" data-price="' + v.price + '">' + v.title + '</option>';
+                  }
+                });
+                selectHtml += '</select>';
+              } else {
+                selectHtml = '<div style="font-size:10px; color:#aaa; font-weight:700; text-align:center; padding-top:4px;">CURRENT PIECE</div>';
+              }
+
+              var refreshHtml = '';
+              if (!item.isCurrent) {
+                refreshHtml = '<div class="jj-flat-card-refresh" title="Cycle Item">↻</div>';
+              }
+
+              card.innerHTML = 
+                refreshHtml +
+                '<div class="jj-flat-card-img"><img src="' + imgUrl + '" alt="' + title + '" draggable="false"></div>' +
+                '<div class="jj-flat-card-title">' + title + '</div>' +
+                '<div class="jj-flat-card-price">$' + priceVal.toFixed(2).replace('.00','') + '</div>' +
+                selectHtml;
+
+              container.appendChild(card);
+              makeDraggable(card, container);
+
+              if (!item.isCurrent) {
+                var selectEl = card.querySelector('.jj-flat-card-select');
+                if (selectEl) {
+                  item.selectedVariantId = selectEl.value;
+                  selectEl.addEventListener('change', function() {
+                    item.selectedVariantId = selectEl.value;
+                    var opt = selectEl.options[selectEl.selectedIndex];
+                    var pr = parseFloat(opt.getAttribute('data-price'));
+                    item.price = pr;
+                    updateSummary();
+                  });
+                }
+
+                var refreshEl = card.querySelector('.jj-flat-card-refresh');
+                if (refreshEl) {
+                  refreshEl.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    item.index = (item.index + 1) % item.catalog.length;
+                    renderOutfit();
+                  });
+                }
+              }
+
+              var itemRow = document.createElement('div');
+              itemRow.style.display = 'flex';
+              itemRow.style.justifyContent = 'space-between';
+              itemRow.style.fontSize = '12px';
+              itemRow.style.color = '#ccc';
+              itemRow.innerHTML = '<span>' + title + '</span><strong>$' + priceVal.toFixed(2).replace('.00','') + '</strong>';
+              listContainer.appendChild(itemRow);
+            });
+
+            function updateSummary() {
+              var newSub = 0;
+              listContainer.innerHTML = '';
+              outfit.forEach(function(item) {
+                var p = item.isCurrent ? item.product : item.catalog[item.index];
+                newSub += item.price;
+                var title = p.title;
+                var itemRow = document.createElement('div');
+                itemRow.style.display = 'flex';
+                itemRow.style.justifyContent = 'space-between';
+                itemRow.style.fontSize = '12px';
+                itemRow.style.color = '#ccc';
+                itemRow.innerHTML = '<span>' + title + '</span><strong>$' + item.price.toFixed(2).replace('.00','') + '</strong>';
+                listContainer.appendChild(itemRow);
+              });
+              subtotal = newSub;
+              subtotalEl.textContent = '$' + subtotal.toFixed(2);
+              var total = Math.max(0, subtotal - 25);
+              totalEl.textContent = '$' + total.toFixed(2);
+            }
+
+            updateSummary();
+          }
+
+          function makeDraggable(el, container) {
+            var isDragging = false;
+            var offsetX = 0, offsetY = 0;
+            
+            el.addEventListener('mousedown', function(e) {
+              if (e.target.closest('select') || e.target.closest('.jj-flat-card-refresh')) return;
+              isDragging = true;
+              offsetX = e.clientX - el.offsetLeft;
+              offsetY = e.clientY - el.offsetTop;
+              el.style.zIndex = 100;
+              container.querySelectorAll('.jj-flat-card').forEach(function(c) {
+                if (c !== el) c.style.zIndex = 10;
+              });
+            });
+            
+            document.addEventListener('mousemove', function(e) {
+              if (!isDragging) return;
+              var x = e.clientX - offsetX;
+              var y = e.clientY - offsetY;
+              x = Math.max(0, Math.min(x, container.clientWidth - el.clientWidth));
+              y = Math.max(0, Math.min(y, container.clientHeight - el.clientHeight));
+              el.style.left = x + 'px';
+              el.style.top = y + 'px';
+            });
+            
+            document.addEventListener('mouseup', function() {
+              isDragging = false;
+            });
+            
+            el.addEventListener('touchstart', function(e) {
+              if (e.target.closest('select') || e.target.closest('.jj-flat-card-refresh')) return;
+              isDragging = true;
+              var touch = e.touches[0];
+              offsetX = touch.clientX - el.offsetLeft;
+              offsetY = touch.clientY - el.offsetTop;
+              el.style.zIndex = 100;
+            });
+            
+            el.addEventListener('touchmove', function(e) {
+              if (!isDragging) return;
+              var touch = e.touches[0];
+              var x = touch.clientX - offsetX;
+              var y = touch.clientY - offsetY;
+              x = Math.max(0, Math.min(x, container.clientWidth - el.clientWidth));
+              y = Math.max(0, Math.min(y, container.clientHeight - el.clientHeight));
+              el.style.left = x + 'px';
+              el.style.top = y + 'px';
+            });
+            
+            el.addEventListener('touchend', function() {
+              isDragging = false;
+            });
+          }
+
+          if (addBtn) {
+            addBtn.addEventListener('click', function() {
+              addBtn.disabled = true;
+              addBtn.textContent = 'Adding Bundle...';
+
+              var mainIdInput = document.querySelector('form[action^="/cart/add"] [name="id"]');
+              if (mainIdInput && mainIdInput.value) {
+                outfit[0].selectedVariantId = mainIdInput.value;
+              }
+
+              var items = outfit.map(function(item) {
+                return {
+                  id: parseInt(item.selectedVariantId, 10),
+                  quantity: 1
+                };
+              });
+
+              fetch('/discount/OUTFIT25')
+                .catch(function() {})
+                .then(function() {
+                  return fetch('/cart/add.js', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ items: items })
+                  });
+                })
+                .then(function(res) { return res.json(); })
+                .then(function(data) {
+                  addBtn.disabled = false;
+                  addBtn.textContent = 'Added Bundle!';
+                  setTimeout(function() { addBtn.textContent = 'Add Outfit to Cart'; }, 2000);
+                  
+                  if (typeof window.Udesly !== 'undefined') {
+                    window.Udesly.dispatch('product-added', true);
+                  } else {
+                    window.location.href = '/cart';
+                  }
+                })
+                .catch(function(err) {
+                  addBtn.disabled = false;
+                  addBtn.textContent = 'Add Outfit to Cart';
+                  console.error('Failed to add bundle to cart:', err);
+                });
+            });
+          }
+
+        })
+        .catch(function(err) {
+          console.error('[FitCurator] Failed to fetch catalog:', err);
+          if (loadingEl) loadingEl.textContent = 'Could not load outfit curator.';
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
       setupAddToCart();
       initDots();
       initCursor();
       initCartObserver();
+      applySeamlessBackground();
+      applyCardBackgrounds();
+      initFitCurator();
+      
+      document.addEventListener('click', function(e) {
+        var target = e.target;
+        if (target.classList.contains('thumb-image') || target.closest('.collection-item-3')) {
+          setTimeout(applySeamlessBackground, 100);
+          setTimeout(applySeamlessBackground, 400);
+        }
+      });
     });
   })();
 </script>

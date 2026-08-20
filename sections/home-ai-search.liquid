@@ -448,7 +448,7 @@
         return;
       }
 
-      var searchUrl = window.Shopify.routes.root + 'search/suggest.json' +
+      var searchUrl = ((window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/') + 'search/suggest.json' +
         '?q=' + encodeURIComponent(cleanQuery) +
         '&resources[type]=product' +
         '&resources[limit]=24';
@@ -480,7 +480,7 @@
 
     // Fallback: queries the Shopify collections/all JSON endpoint (always active and resolves all items)
     function fetchAllProductsFallback(maxPrice, filterSize) {
-      var allProductsUrl = window.Shopify.routes.root + 'collections/all/products.json?limit=50';
+      var allProductsUrl = ((window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/') + 'collections/all/products.json?limit=50';
       
       fetch(allProductsUrl)
         .then(function(res) { return res.json(); })
@@ -620,7 +620,8 @@
             quantity: 1
           };
 
-          fetch(window.Shopify.routes.root + 'cart/add.js', {
+          var rootPath = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
+          fetch(rootPath + 'cart/add.js', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)

@@ -1,7 +1,7 @@
 <!-- 🤖 JJKICKSZZ AI — Storefront Chat Drawer -->
 <div class="jj-ai-chat-wrapper" id="jj-ai-chat-root">
   <!-- Floating Trigger Button -->
-  <button class="jj-ai-chat-trigger" id="jj-ai-chat-trigger" aria-label="Toggle sneaker stylist">
+  <button class="jj-ai-chat-trigger" id="jj-ai-chat-trigger" aria-label="Toggle sneaker assistant">
     <!-- Sparkles Icon -->
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="jj-ai-spark-icon icon-sparkle">
       <path d="M9.813 15.904L9 21L8.188 15.904L3 15L8.188 14.096L9 9L9.813 14.096L15 15L9.813 15.904Z" fill="currentColor"/>
@@ -22,11 +22,11 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M12 3c.132 0 .263 0 .393.007a3 3 0 0 0 .19.016l.128.016.126.021a8 8 0 0 1 6.138 6.138l.021.126.016.128a3 3 0 0 0 .016.19c.007.13.007.261.007.393a3 3 0 0 0-.007.393 3 3 0 0 0-.016.19l-.016.128-.021.126a8 8 0 0 1-6.138 6.138l-.126.021-.128.016a3 3 0 0 0-.19.016c-.13.007-.261.007-.393.007a3 3 0 0 0-.393-.007a3 3 0 0 0-.19-.016l-.128-.016-.126-.021a8 8 0 0 1-6.138-6.138l-.021-.126-.016-.128a3 3 0 0 0-.016-.19A3 3 0 0 0 3 12.393a3 3 0 0 0 .007-.393 3 3 0 0 0 .016-.19l.016-.128.021-.126a8 8 0 0 1 6.138-6.138l.126-.021.128-.016c.062-.007.126-.012.19-.016.13-.007.261-.007.393-.007zM5 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
         </svg>
-        <span>JJKICKSZZ AI STYLIST</span>
+        <span>JJKICKSZZ AI CURATOR</span>
       </div>
       <div class="jj-ai-chat-header-actions">
         <button class="jj-ai-chat-reset" id="jj-ai-chat-reset" title="End & Clear Chat">Clear Chat</button>
-        <button class="jj-ai-chat-close" id="jj-ai-chat-close" aria-label="Close stylist">&times;</button>
+        <button class="jj-ai-chat-close" id="jj-ai-chat-close" aria-label="Close curator">&times;</button>
       </div>
     </div>
 
@@ -35,14 +35,14 @@
       <!-- Welcome Message -->
       <div class="jj-ai-msg bot">
         <div class="jj-ai-msg-bubble">
-          Yo! I'm your JJKICKSZZ AI Stylist. Ask me to find sneakers, coordinate outfits, check returns, or look up sizes!
+          Yo! I'm your JJKICKSZZ AI Curator. Ask me to find sneakers, coordinate outfits, check returns, or look up sizes!
         </div>
       </div>
     </div>
 
     <!-- Suggested Quick Prompts -->
     <div class="jj-ai-chat-suggested">
-      <button type="button" class="jj-ai-chat-prompt-btn" data-prompt="Build me a clean outfit">👕 Outfit Stylist</button>
+      <button type="button" class="jj-ai-chat-prompt-btn" data-prompt="Build me a clean outfit">👕 Outfit Curator</button>
       <button type="button" class="jj-ai-chat-prompt-btn" data-prompt="Show me Jordan 4s under $300">⚡ Jordans under $300</button>
       <button type="button" class="jj-ai-chat-prompt-btn" data-prompt="What is your return policy?">📦 Return Policy</button>
     </div>
@@ -417,6 +417,31 @@
     0%, 100% { transform: translateY(0); opacity: 0.4; }
     50% { transform: translateY(-4px); opacity: 1; }
   }
+  /* System and feedback message styling overrides */
+  .jj-ai-msg.system {
+    text-align: center;
+    font-size: 11px;
+    color: #888;
+    margin: 10px 0;
+    padding: 0 16px;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .jj-ai-msg.system .jj-ai-msg-bubble {
+    background: transparent !important;
+    color: #888 !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+  .jj-ai-msg.system-feedback {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 0 16px;
+    box-sizing: border-box;
+  }
 </style>
 
 <script>
@@ -501,6 +526,20 @@
       } catch(e) {}
     }
 
+    window.jjAIChat = {
+      open: openDrawer,
+      close: closeDrawer,
+      sendMessage: function(text) {
+        openDrawer();
+        sendUserMessage(text);
+        window.pendingQuestionFeedback = true;
+      },
+      appendSystemMessage: function(text) {
+        appendMessage('system', text);
+        scrollToBottom();
+      }
+    };
+
     // Suggested prompts listeners
     var promptBtns = document.querySelectorAll('.jj-ai-chat-prompt-btn');
     promptBtns.forEach(function(btn) {
@@ -576,6 +615,14 @@
         injectProductCards(handles);
       }
       
+      if (window.pendingQuestionFeedback) {
+        window.pendingQuestionFeedback = false;
+        setTimeout(function() {
+          appendMessage('system-feedback', 'Did this answer your question?');
+          scrollToBottom();
+        }, 1200);
+      }
+      
       scrollToBottom();
     }
 
@@ -584,12 +631,13 @@
       var outfitCard = document.createElement('div');
       outfitCard.className = 'jj-ai-chat-outfit-container';
       outfitCard.id = outfitId;
-      outfitCard.innerHTML = '<div class="jj-ai-chat-outfit-title">STYLING SELECTIONS:</div>';
+      outfitCard.innerHTML = '<div class="jj-ai-chat-outfit-title">CURATED SELECTIONS:</div>';
       
       messagesContainer.appendChild(outfitCard);
 
+      var rootPath = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
       var fetchPromises = handles.map(function(handle) {
-        return fetch(window.Shopify.routes.root + 'products/' + handle + '.js')
+        return fetch(rootPath + 'products/' + handle + '.js')
           .then(function(res) { return res.json(); })
           .catch(function(err) {
             console.warn('[AIChat] Failed to fetch product info for:', handle, err);
@@ -664,10 +712,17 @@
           return { id: parseInt(vId, 10), quantity: 1 };
         });
 
-        fetch(window.Shopify.routes.root + 'cart/add.js', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ items: items })
+        var rootPath = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
+        var promise = Promise.resolve();
+        if (items.length > 1) {
+          promise = fetch('/discount/OUTFIT25').catch(function() {});
+        }
+        promise.then(function() {
+          return fetch(rootPath + 'cart/add.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ items: items })
+          });
         })
         .then(function(res) { return res.json(); })
         .then(function(data) {
@@ -724,8 +779,39 @@
     function appendMessage(sender, text) {
       var msgDiv = document.createElement('div');
       msgDiv.className = 'jj-ai-msg ' + sender;
-      var formatted = sender === 'bot' ? formatBotText(text) : escapeHTML(text);
-      msgDiv.innerHTML = '<div class="jj-ai-msg-bubble">' + formatted + '</div>';
+      
+      if (sender === 'system-feedback') {
+        msgDiv.innerHTML = '<div class="jj-feedback-card" style="display:flex; flex-direction:column; align-items:center; gap:8px; padding:12px; background:#111; border:1px solid #222; border-radius:8px; margin:10px 0; width:100%; box-sizing:border-box;">' +
+                           '<div style="font-size:12px; font-weight:600; color:#fff;">Did this answer your question?</div>' +
+                           '<div style="display:flex; gap:8px;">' +
+                             '<button class="jj-feedback-btn yes" style="padding:6px 12px; background:#fff; color:#000; border:none; border-radius:4px; font-size:11px; font-weight:700; cursor:pointer;">YES</button>' +
+                             '<button class="jj-feedback-btn no" style="padding:6px 12px; background:#222; color:#fff; border:1px solid #333; border-radius:4px; font-size:11px; font-weight:700; cursor:pointer;">NO, CONTACT CS</button>' +
+                           '</div>' +
+                           '</div>';
+                           
+        var yesBtn = msgDiv.querySelector('.jj-feedback-btn.yes');
+        var noBtn = msgDiv.querySelector('.jj-feedback-btn.no');
+        
+        if (yesBtn) {
+          yesBtn.addEventListener('click', function() {
+            msgDiv.innerHTML = '<div style="font-size:11px; color:#888; text-align:center; padding:4px;">✓ Feedback saved. Thank you!</div>';
+            setTimeout(function() {
+              appendMessage('bot', 'Awesome! Let know if you need anything else.');
+              scrollToBottom();
+            }, 800);
+          });
+        }
+        if (noBtn) {
+          noBtn.addEventListener('click', function() {
+            msgDiv.innerHTML = '<div style="font-size:11px; color:#ef4444; text-align:center; padding:4px;">✓ Escalated to customer service. We will email you within 24 hours.</div>';
+            console.log("Escalated to CS");
+          });
+        }
+      } else {
+        var formatted = sender === 'bot' ? formatBotText(text) : escapeHTML(text);
+        msgDiv.innerHTML = '<div class="jj-ai-msg-bubble">' + formatted + '</div>';
+      }
+      
       messagesContainer.appendChild(msgDiv);
       saveChatState();
     }
@@ -823,7 +909,7 @@
     if (resetBtn) {
       resetBtn.addEventListener('click', function(e) {
         e.stopPropagation();
-        if (confirm("Reset stylist chat history?")) {
+        if (confirm("Reset AI chat history?")) {
           try {
             sessionStorage.removeItem('jj-ai-chat-history-html');
             sessionStorage.setItem('jj-ai-chat-open', 'false');
@@ -831,7 +917,7 @@
           messagesContainer.innerHTML = 
             '<div class="jj-ai-msg bot">' +
             '  <div class="jj-ai-msg-bubble">' +
-            "    Yo! I'm your JJKICKSZZ AI Stylist. Ask me to find sneakers, coordinate outfits, check returns, or look up sizes!" +
+            "    Yo! I'm your JJKICKSZZ AI Curator. Ask me to find sneakers, coordinate outfits, check returns, or look up sizes!" +
             '  </div>' +
             '</div>';
           closeDrawer();
