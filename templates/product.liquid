@@ -107,7 +107,7 @@
               <div class="more-image-wrapper"><img loading="lazy" src="{{ product.featured_image | img_url: '1024x' }}" alt="{{ product.featured_image.alt }}" id="main-image" class="main-image" data-commerce-type="variation-image" srcset="{{ product.featured_image | img_url: '1920x' }} 1920w,{{ product.featured_image | img_url: '1600x' }} 1600w,{{ product.featured_image | img_url: '1366x' }} 1366w,{{ product.featured_image | img_url: '1024x' }} 1024w,{{ product.featured_image | img_url: '768x' }} 768w,{{ product.featured_image | img_url: '640x' }} 640w">
                 {% if product.variants.size > 1 and product.selected_or_first_available_variant.metafields.udesly['more-images'].size > 0 %}{%- assign setItems = product.selected_or_first_available_variant.metafields.udesly['more-images'] -%}<div class="collection-list-wrapper-2 w-dyn-list" data-commerce-type="more-images">
                   {%- unless setItems.size == 0 -%}<div role="list" class="collection-list-3 w-dyn-items">
-                    {%- for setItem in setItems offset: 1 -%}<div role="listitem" class="collection-item-3 w-dyn-item"><img loading="lazy" src="{{ setItem.more-images }}" alt="" id="thumb-image" class="thumb-image"></div>{%- endfor -%}
+                    {%- for setItem in setItems offset: 1 -%}<div role="listitem" class="collection-item-3 w-dyn-item"><img loading="lazy" src="{{ setItem.more-images }}" data-large-src="{{ setItem.more-images }}" alt="" id="thumb-image" class="thumb-image"></div>{%- endfor -%}
                   </div>{%- endunless -%}
                   {%- if setItems.size == 0 -%}<div class="empty-state-5 w-dyn-empty"></div>{%- endif -%}
                 <template><div class="collection-list-wrapper-2 w-dyn-list" udesly-repeater="true" data-commerce-type="more-images">
@@ -117,7 +117,7 @@
                   <div class="empty-state-5 w-dyn-empty"></div>
                 </div></template></div>{% else %}{%- assign setItems = product.images -%}<div class="collection-list-wrapper-2 w-dyn-list" data-commerce-type="more-images">
                   {%- unless setItems.size == 0 -%}<div role="list" class="collection-list-3 w-dyn-items">
-                    {%- for setItem in setItems offset: 1 -%}<div role="listitem" class="collection-item-3 w-dyn-item"><img loading="lazy" src="{{ setItem | product_img_url: '1024x' }}" alt="" id="thumb-image" class="thumb-image"></div>{%- endfor -%}
+                    {%- for setItem in setItems offset: 1 -%}<div role="listitem" class="collection-item-3 w-dyn-item"><img loading="lazy" src="{{ setItem | product_img_url: '1024x' }}" data-large-src="{{ setItem | product_img_url: '1024x' }}" alt="" id="thumb-image" class="thumb-image"></div>{%- endfor -%}
                   </div>{%- endunless -%}
                   {%- if setItems.size == 0 -%}<div class="empty-state-5 w-dyn-empty"></div>{%- endif -%}
                 </div>{%- endif -%}
@@ -354,41 +354,43 @@
   .w-commerce-commerceaddtocarterrorstate { display: none !important; }
 
   /* ── PRODUCT PAGE LAYOUT — DESKTOP STICKY ───────────────────── */
-  .div-block-629 {
-    display: grid !important;
-    grid-template-columns: 1.15fr 0.85fr !important; /* Slightly wider left column for a dominant gallery */
-    gap: 4rem !important;
-    align-items: start !important;
-    padding: 0 4rem !important; /* Removed vertical padding from parent to extend vertical border */
-    box-sizing: border-box !important;
-    max-width: 100% !important;
-  }
+  @media screen and (min-width: 992px) {
+    .div-block-629 {
+      display: grid !important;
+      grid-template-columns: 0.9fr 1.1fr !important; /* Option B: Balanced columns width */
+      gap: 4rem !important;
+      align-items: start !important;
+      padding: 0 4rem !important; /* Removed vertical padding from parent to extend vertical border */
+      box-sizing: border-box !important;
+      max-width: 100% !important;
+    }
 
-  /* LEFT: Sticky image column */
-  .thumbnail-section {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 16px !important;
-    overflow-y: visible !important;
-    position: sticky !important;
-    top: 220px !important; /* Clears sticky marquee/menu on scroll */
-    max-height: calc(100vh - 240px) !important;
-    scrollbar-width: none !important;
-    -ms-overflow-style: none !important;
-    width: 100% !important;
-    padding-top: 1rem !important;   
-    padding-bottom: 1rem !important;
-    align-items: center !important;
-  }
-  .thumbnail-section::-webkit-scrollbar { display: none !important; }
+    /* LEFT: Sticky image column */
+    .thumbnail-section {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 16px !important;
+      overflow-y: visible !important;
+      position: sticky !important;
+      top: 220px !important; /* Clears sticky marquee/menu on scroll */
+      max-height: calc(100vh - 240px) !important;
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+      width: 100% !important;
+      padding-top: 1rem !important;   
+      padding-bottom: 1rem !important;
+      align-items: center !important;
+    }
+    .thumbnail-section::-webkit-scrollbar { display: none !important; }
 
-  /* Main + each thumb as a stacked image in the scroll column */
-  .more-image-wrapper {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 16px !important;
-    width: 100% !important;
-    align-items: center !important;
+    /* Main + each thumb as a stacked image in the scroll column */
+    .more-image-wrapper {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 16px !important;
+      width: 100% !important;
+      align-items: center !important;
+    }
   }
 
   #main-image {
@@ -1393,24 +1395,27 @@
       var target = e.target;
       if (!target) return;
       
-      // If thumbnail is clicked on desktop, swap main image source instead of launching lightbox
-      if (target.classList.contains('thumb-image') && window.innerWidth >= 992) {
+      // Check if clicked item is a thumbnail or wrapper
+      var thumbItem = target.classList.contains('thumb-image') ? target : (target.closest('.collection-item-3') ? target.closest('.collection-item-3').querySelector('img') : null);
+      
+      if (thumbItem && window.innerWidth >= 992) {
         e.preventDefault();
         var mainImg = document.getElementById('main-image');
         if (mainImg) {
-          mainImg.src = target.src;
+          mainImg.src = thumbItem.getAttribute('data-large-src') || thumbItem.src;
           // Set active thumbnail highlight border
           document.querySelectorAll('.thumb-image').forEach(function(img) {
             img.classList.remove('active-thumb');
           });
-          target.classList.add('active-thumb');
+          thumbItem.classList.add('active-thumb');
         }
         return;
       }
       
       // Clicking the main image (or any thumbnail on mobile) launches the lightbox
-      if (target.id === 'main-image' || target.classList.contains('thumb-image') || target.closest('.collection-item-3')) {
+      if (target.id === 'main-image' || (thumbItem && window.innerWidth < 992)) {
         var img = target.tagName === 'IMG' ? target : target.querySelector('img');
+        if (!img && thumbItem) img = thumbItem;
         if (img) {
           e.preventDefault();
           openLightbox(img.src);
