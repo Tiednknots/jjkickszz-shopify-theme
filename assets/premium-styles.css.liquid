@@ -1540,3 +1540,77 @@ iframe[src*="userway"] {
     justify-content: flex-start !important;
   }
 }
+
+/* ── PRODUCT GALLERY LAYOUT ───────────────────────────────── */
+@media screen and (min-width: 992px) {
+  .more-image-wrapper {
+    display: flex !important;
+    flex-direction: row-reverse !important; /* Stack thumbnails left, main right */
+    gap: 20px !important;
+    width: 100% !important;
+    align-items: flex-start !important;
+  }
+  .collection-list-wrapper-2 {
+    order: 1 !important;
+    width: 80px !important;
+    flex-shrink: 0 !important;
+    margin-bottom: 0 !important;
+  }
+  #main-image {
+    order: 2 !important;
+    flex-grow: 1 !important;
+    width: calc(100% - 100px) !important;
+    max-height: calc(100vh - 240px) !important;
+    object-fit: contain !important;
+  }
+  .collection-list-3 {
+    display: flex !important;
+    flex-direction: column !important; /* Vertical stack */
+    gap: 12px !important;
+    width: 100% !important;
+    max-height: calc(100vh - 240px) !important;
+    overflow-y: auto !important; /* Scrollable thumbnails */
+    scrollbar-width: none !important;
+    margin-top: 0 !important;
+  }
+  .collection-list-3::-webkit-scrollbar {
+    display: none !important;
+  }
+}
+
+@media (max-width: 991px) {
+  /* Horizontal swipe row for mobile */
+  .collection-list-wrapper-2 {
+    display: contents !important; /* Let children bubble up to flex row */
+  }
+  .collection-list-3 {
+    display: contents !important; /* Let children bubble up to flex row */
+  }
+  .more-image-wrapper {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    gap: 12px !important;
+    padding: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    height: auto !important;
+  }
+  .more-image-wrapper::-webkit-scrollbar {
+    display: none !important;
+  }
+  #main-image,
+  .collection-item-3 {
+    min-width: calc(100vw - 2rem) !important;
+    max-width: calc(100vw - 2rem) !important;
+    width: calc(100vw - 2rem) !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1 !important;
+    flex-shrink: 0 !important;
+    scroll-snap-align: center !important;
+  }
+}

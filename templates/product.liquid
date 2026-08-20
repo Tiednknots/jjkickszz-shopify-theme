@@ -67,7 +67,81 @@
     .jj-content-group { padding-right: 3rem; }
     .jj-text-item { margin-right: 2rem; }
   }
-</style>
+
+/* ── PRODUCT GALLERY LAYOUT ───────────────────────────────── */
+@media screen and (min-width: 992px) {
+  .more-image-wrapper {
+    display: flex !important;
+    flex-direction: row-reverse !important; /* Stack thumbnails left, main right */
+    gap: 20px !important;
+    width: 100% !important;
+    align-items: flex-start !important;
+  }
+  .collection-list-wrapper-2 {
+    order: 1 !important;
+    width: 80px !important;
+    flex-shrink: 0 !important;
+    margin-bottom: 0 !important;
+  }
+  #main-image {
+    order: 2 !important;
+    flex-grow: 1 !important;
+    width: calc(100% - 100px) !important;
+    max-height: calc(100vh - 240px) !important;
+    object-fit: contain !important;
+  }
+  .collection-list-3 {
+    display: flex !important;
+    flex-direction: column !important; /* Vertical stack */
+    gap: 12px !important;
+    width: 100% !important;
+    max-height: calc(100vh - 240px) !important;
+    overflow-y: auto !important; /* Scrollable thumbnails */
+    scrollbar-width: none !important;
+    margin-top: 0 !important;
+  }
+  .collection-list-3::-webkit-scrollbar {
+    display: none !important;
+  }
+}
+
+@media (max-width: 991px) {
+  /* Horizontal swipe row for mobile */
+  .collection-list-wrapper-2 {
+    display: contents !important; /* Let children bubble up to flex row */
+  }
+  .collection-list-3 {
+    display: contents !important; /* Let children bubble up to flex row */
+  }
+  .more-image-wrapper {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    gap: 12px !important;
+    padding: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    height: auto !important;
+  }
+  .more-image-wrapper::-webkit-scrollbar {
+    display: none !important;
+  }
+  #main-image,
+  .collection-item-3 {
+    min-width: calc(100vw - 2rem) !important;
+    max-width: calc(100vw - 2rem) !important;
+    width: calc(100vw - 2rem) !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1 !important;
+    flex-shrink: 0 !important;
+    scroll-snap-align: center !important;
+  }
+}
+\n</style>
         <div class="jj-marquee-wrapper">
           <div class="jj-centered-mask">
             <div class="jj-marquee-track">
@@ -1671,79 +1745,6 @@
       }
     }
 
-    function setupAddToCart() {
-      var form = document.querySelector('form[action^="/cart/add"]');
-      if (form) {
-        if (!form.getAttribute('data-node-type')) {
-          form.setAttribute('data-node-type', 'commerce-add-to-cart-form');
-        }
-        
-        form.addEventListener('submit', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-
-          var submitBtn = form.querySelector('[type="submit"]');
-          var originalText = submitBtn ? (submitBtn.value || submitBtn.textContent) : 'Add to Cart';
-          if (submitBtn) {
-            submitBtn.disabled = true;
-            submitBtn.value = 'Adding...';
-          }
-
-          var idInput = form.querySelector('[name="id"]');
-          var variantId = idInput ? idInput.value : '';
-          var quantity = form.querySelector('[name="quantity"]') ? form.querySelector('[name="quantity"]').value : 1;
-
-          if (!variantId) {
-            if (submitBtn) {
-              submitBtn.disabled = false;
-              submitBtn.value = originalText;
-            }
-            alert('Please select a variant option.');
-            return;
-          }
-
-          var payload = {
-            id: parseInt(variantId, 10),
-            quantity: parseInt(quantity, 10)
-          };
-
-          var rootPath = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
-          fetch(rootPath + 'cart/add.js', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-          })
-          .then(function(response) {
-            return response.json();
-          })
-          .then(function(data) {
-            if (submitBtn) {
-              submitBtn.disabled = false;
-              submitBtn.value = originalText;
-            }
-            if (data.status && data.status === 422) {
-              alert(data.description || 'Could not add to cart.');
-            } else {
-              if (typeof window.Udesly !== 'undefined') {
-                window.Udesly.dispatch('product-added', true);
-              } else {
-                window.location.href = '/cart';
-              }
-            }
-          })
-          .catch(function(err) {
-            if (submitBtn) {
-              submitBtn.disabled = false;
-              submitBtn.value = originalText;
-            }
-            console.error('Add to cart failed:', err);
-          });
-        }, true);
-      }
-    }
-
     // --- Seamless background detector ---
     function getImgBackgroundColor(img, callback) {
       if (!img || !img.src) { callback('#ffffff', true); return; }
@@ -1770,22 +1771,6 @@
         }
       };
       tempImg.onerror = function() { callback('#ffffff', true); };
-    }
-
-    function applySeamlessBackground() {
-      var mainImg = document.getElementById('main-image');
-      var thumbSection = document.querySelector('.thumbnail-section');
-      if (!mainImg || !thumbSection) return;
-      getImgBackgroundColor(mainImg, function(color, isTransparent) {
-        if (window.innerWidth >= 992) {
-          thumbSection.style.backgroundColor = color;
-          thumbSection.style.setProperty('background-color', color, 'important');
-          mainImg.classList.add('seamless');
-        } else {
-          thumbSection.style.backgroundColor = '';
-          mainImg.classList.remove('seamless');
-        }
-      });
     }
 
     function applyCardBackgrounds() {
@@ -2253,20 +2238,14 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-      setupAddToCart();
+      
       initDots();
       initCursor();
       initCartObserver();
-      applySeamlessBackground();
+      
       initFitCurator();
       
-      document.addEventListener('click', function(e) {
-        var target = e.target;
-        if (target.classList.contains('thumb-image') || target.closest('.collection-item-3')) {
-          setTimeout(applySeamlessBackground, 100);
-          setTimeout(applySeamlessBackground, 400);
-        }
-      });
+
 
       // Fallback click listener to trigger Webflow's native cart drawer opener
       document.addEventListener('click', function(e) {
