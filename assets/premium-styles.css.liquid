@@ -1641,3 +1641,30 @@ iframe[src*="userway"] {
     flex-shrink: 0 !important;
   }
 }
+
+
+/* ── CART DRAWER FAILSAFE DISPLAY OVERRIDES ─────────────────────── */
+.w-commerce-commercecartcontainerwrapper.is-open,
+.w-commerce-commercecartwrapper[data-cart-open] .w-commerce-commercecartcontainerwrapper {
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  z-index: 99999 !important;
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  background-color: rgba(0, 0, 0, 0.7) !important;
+}
+
+.w-commerce-commercecartcontainerwrapper.is-open .w-commerce-commercecartcontainer,
+.w-commerce-commercecartwrapper[data-cart-open] .w-commerce-commercecartcontainer {
+  display: flex !important;
+  flex-direction: column !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateX(0) !important;
+  transition: transform 0.3s ease, opacity 0.3s ease !important;
+  z-index: 100000 !important;
+}
