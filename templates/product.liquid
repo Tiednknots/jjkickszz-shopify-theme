@@ -273,7 +273,7 @@
       </div>
       <div class="new-similar-items">
         <h1 class="title-label product">You might also like 👀</h1>
-        {%- if settings.home_collection != blank -%}{%- render "markup_for_home_collection" -%}{%- else -%}{%- render "products_where_category_idin_currentcategory_sorted_by_created_on" -%}{%- endif -%}
+        {%- render "products_where_category_idin_currentcategory_sorted_by_created_on" -%}
       </div>
       {%- section 'footer' -%}
 
@@ -356,7 +356,7 @@
   /* ── PRODUCT PAGE LAYOUT — DESKTOP STICKY ───────────────────── */
   .div-block-629 {
     display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
+    grid-template-columns: 1.15fr 0.85fr !important; /* Slightly wider left column for a dominant gallery */
     gap: 4rem !important;
     align-items: start !important;
     padding: 0 4rem !important; /* Removed vertical padding from parent to extend vertical border */
@@ -364,16 +364,15 @@
     max-width: 100% !important;
   }
 
-  /* LEFT: Scrollable image column */
+  /* LEFT: Sticky image column */
   .thumbnail-section {
     display: flex !important;
     flex-direction: column !important;
-    gap: 12px !important;
-    overflow-y: auto !important;
+    gap: 16px !important;
+    overflow-y: visible !important;
     position: sticky !important;
-    top: 160px !important; /* Clears sticky marquee on scroll */
-    max-height: calc(100vh - 180px) !important;
-    scroll-snap-type: y mandatory !important;
+    top: 220px !important; /* Clears sticky marquee/menu on scroll */
+    max-height: calc(100vh - 240px) !important;
     scrollbar-width: none !important;
     -ms-overflow-style: none !important;
     width: 100% !important;
@@ -386,7 +385,7 @@
   .more-image-wrapper {
     display: flex !important;
     flex-direction: column !important;
-    gap: 12px !important;
+    gap: 16px !important;
     width: 100% !important;
   }
 
@@ -395,40 +394,56 @@
     height: auto !important;
     aspect-ratio: 1 / 1 !important;
     object-fit: cover !important;
-    scroll-snap-align: start !important;
+    border-radius: 12px !important;
     cursor: zoom-in !important;
     display: block !important;
   }
 
+  /* Compact grid of thumbnails underneath the main image on desktop */
   .collection-list-3 {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 12px !important;
+    display: grid !important;
+    grid-template-columns: repeat(6, 1fr) !important;
+    gap: 10px !important;
+    width: 100% !important;
+    margin-top: 4px !important;
   }
 
   .collection-item-3 {
     width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1 !important;
     flex-shrink: 0 !important;
-    scroll-snap-align: start !important;
   }
 
   #thumb-image, .thumb-image {
     width: 100% !important;
-    height: auto !important;
+    height: 100% !important;
     aspect-ratio: 1 / 1 !important;
     object-fit: cover !important;
-    cursor: zoom-in !important;
+    cursor: pointer !important;
     display: block !important;
-    transition: opacity 0.2s ease !important;
+    transition: all 0.2s ease !important;
+    border-radius: 8px !important;
+    border: 2px solid transparent !important;
+    background: #0f0f0f !important;
+    opacity: 0.6 !important;
   }
 
-  #thumb-image:hover, .thumb-image:hover { opacity: 0.8 !important; }
+  #thumb-image:hover, .thumb-image:hover {
+    opacity: 0.9 !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+  }
+
+  #thumb-image.active-thumb, .thumb-image.active-thumb {
+    opacity: 1 !important;
+    border-color: #ffffff !important;
+  }
 
   /* RIGHT: Sticky product info */
   .product-container {
     position: sticky !important;
-    top: 160px !important; /* Clears sticky marquee on scroll */
-    max-height: calc(100vh - 180px) !important;
+    top: 220px !important; /* Clears sticky marquee/menu on scroll */
+    max-height: calc(100vh - 240px) !important;
     overflow-y: auto !important;
     scrollbar-width: none !important;
     -ms-overflow-style: none !important;
@@ -447,6 +462,60 @@
     overflow-wrap: break-word;
     max-width: 100%;
     line-height: 1.2;
+  }
+
+  /* Compact variant selection pills layout */
+  .button-group.w-commerce-commerceaddtocartoptionpillgroup {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(65px, 1fr)) !important;
+    gap: 6px !important;
+    margin: 8px 0 16px 0 !important;
+    max-height: 180px !important; /* Limit vertical height of huge variant lists */
+    overflow-y: auto !important; /* Scroll vertically if there are too many sizes! */
+    padding-right: 4px !important;
+    scrollbar-width: thin !important;
+  }
+  
+  .button-group.w-commerce-commerceaddtocartoptionpillgroup::-webkit-scrollbar {
+    width: 4px !important;
+  }
+  .button-group.w-commerce-commerceaddtocartoptionpillgroup::-webkit-scrollbar-thumb {
+    background: #444 !important;
+    border-radius: 2px !important;
+  }
+
+  .button-2.w-commerce-commerceaddtocartoptionpill {
+    padding: 6px 8px !important;
+    background-color: #161616 !important;
+    border: 1px solid #2e2e2e !important;
+    border-radius: 6px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 36px !important;
+    cursor: pointer !important;
+    margin: 0 !important; /* Clear default margins */
+    transition: all 0.2s ease !important;
+  }
+  
+  .button-2.w-commerce-commerceaddtocartoptionpill:hover {
+    border-color: #555 !important;
+    background-color: #1e1e1e !important;
+  }
+  
+  .button-2.w-commerce-commerceaddtocartoptionpill.w--selected {
+    border-color: #fff !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+  .button-2.w-commerce-commerceaddtocartoptionpill.w--selected .text-block-9 {
+    color: #000000 !important;
+    font-weight: 700 !important;
+  }
+
+  .button-2.w-commerce-commerceaddtocartoptionpill.jj-pill-sold-out {
+    opacity: 0.35 !important;
+    text-decoration: line-through !important;
   }
 
   /* ── ASK A QUESTION BUTTON ───────────────────────────────────── */
@@ -594,7 +663,7 @@
 
     /* Padded wrapper for the gallery card */
     .more-image-container {
-      margin-top: 1rem !important; /* exactly 1rem from marquee to gallery */
+      margin-top: -1rem !important; /* Shifted up by 2rem from marquee */
       padding: 0 1rem !important;    /* exactly 1rem left/right padding */
       box-sizing: border-box !important;
       margin-bottom: 0 !important;
@@ -682,7 +751,7 @@
     .jj-swipe-dots {
       display: flex !important;
       margin-top: 0.5rem !important;    /* 0.5rem under image gallery */
-      margin-bottom: 0.5rem !important; /* 0.5rem under indicators to product details */
+      margin-bottom: 2rem !important; /* Spaced out under indicators to product details */
       padding: 0 !important;
     }
   }
@@ -750,6 +819,35 @@
     position: relative !important;
     border-radius: 8px 8px 0 0 !important; /* Rounded top corners only */
     border: none !important;
+  }
+
+  /* Desktop specific similar items cards: 65vh unified height */
+  @media screen and (min-width: 992px) {
+    .new-similar-items .collection-list-2.contents-of-scroll {
+      display: grid !important;
+      grid-template-columns: repeat(4, 1fr) !important;
+      gap: 20px !important;
+      height: 65vh !important; /* Unified height */
+      align-items: stretch !important;
+      padding-bottom: 0 !important;
+    }
+    .new-similar-items .collection-item-2.product,
+    .new-similar-items .collection-item-2 {
+      width: 100% !important;
+      flex: none !important;
+      height: 100% !important;
+    }
+    .new-similar-items .collection-item-2.product .link-block-2,
+    .new-similar-items .collection-item-2 .link-block-2 {
+      height: 100% !important;
+      padding: 0 0 16px 0 !important;
+    }
+    .new-similar-items .div-block-15,
+    .new-similar-items .home-custom-img-wrap {
+      height: calc(65vh - 120px) !important; /* Dynamic image height */
+      min-height: auto !important;
+      max-height: none !important;
+    }
   }
   .new-similar-items .image-6,
   .new-similar-items .home-custom-img {
@@ -1280,10 +1378,31 @@
       });
     }
 
-    // Trigger lightbox from clicking any product image
+    // Highlight first thumbnail on start
+    var firstThumb = document.querySelector('.thumb-image');
+    if (firstThumb) firstThumb.classList.add('active-thumb');
+
+    // Trigger lightbox or swap main image on desktop/mobile
     document.addEventListener('click', function(e) {
       var target = e.target;
       if (!target) return;
+      
+      // If thumbnail is clicked on desktop, swap main image source instead of launching lightbox
+      if (target.classList.contains('thumb-image') && window.innerWidth >= 992) {
+        e.preventDefault();
+        var mainImg = document.getElementById('main-image');
+        if (mainImg) {
+          mainImg.src = target.src;
+          // Set active thumbnail highlight border
+          document.querySelectorAll('.thumb-image').forEach(function(img) {
+            img.classList.remove('active-thumb');
+          });
+          target.classList.add('active-thumb');
+        }
+        return;
+      }
+      
+      // Clicking the main image (or any thumbnail on mobile) launches the lightbox
       if (target.id === 'main-image' || target.classList.contains('thumb-image') || target.closest('.collection-item-3')) {
         var img = target.tagName === 'IMG' ? target : target.querySelector('img');
         if (img) {
