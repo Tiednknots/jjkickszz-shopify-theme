@@ -2242,11 +2242,20 @@
               addBtn.textContent = 'Adding Bundle...';
 
               var items = activeItems.map(function(item) {
+                var vId = item.selectedVariantId;
+                if (!vId && item.product && item.product.variants && item.product.variants.length > 0) {
+                  var avail = item.product.variants.find(function(v) { return v.available; }) || item.product.variants[0];
+                  vId = avail.id;
+                } else if (!vId && item.catalog && item.catalog[item.index]) {
+                  var catProd = item.catalog[item.index];
+                  var avail = catProd.variants.find(function(v) { return v.available; }) || catProd.variants[0];
+                  vId = avail.id;
+                }
                 return {
-                  id: parseInt(item.selectedVariantId, 10),
+                  id: parseInt(vId, 10),
                   quantity: 1
                 };
-              });
+              }).filter(function(item) { return !isNaN(item.id) && item.id > 0; });
 
               var applyDiscount = activeItems.length >= 2;
               var promise = Promise.resolve();
@@ -2301,6 +2310,75 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+
+      // Intercept single add-to-cart form submit to prevent HTML POST redirect
+      document.addEventListener('submit', function(e) {
+        var form = e.target.closest('form[action^="/cart/add"], .w-commerce-commerceaddtocartform');
+        if (!form) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        var variantIdInput = form.querySelector('[name="id"]');
+        var variantId = variantIdInput ? variantIdInput.value : null;
+
+        if (!variantId && typeof currentProduct !== 'undefined' && currentProduct.selectedVariantId) {
+          variantId = currentProduct.selectedVariantId;
+        }
+
+        if (!variantId) {
+          var selectField = form.querySelector('select[name="id"], select.select-field');
+          if (selectField) variantId = selectField.value;
+        }
+
+        if (!variantId) {
+          alert('Please select a size / variant option.');
+          return;
+        }
+
+        var submitBtn = form.querySelector('[type="submit"], .add-to-cart-button');
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          if (submitBtn.value) submitBtn.value = 'Adding...';
+          else submitBtn.textContent = 'Adding...';
+        }
+
+        fetch('/cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ items: [{ id: parseInt(variantId, 10), quantity: 1 }] })
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            if (submitBtn.value) submitBtn.value = 'Added!';
+            else submitBtn.textContent = 'Added!';
+            setTimeout(function() {
+              if (submitBtn.value) submitBtn.value = 'Add to Cart';
+              else submitBtn.textContent = 'Add to Cart';
+            }, 2000);
+          }
+          fetch('/cart.js')
+            .then(function(r) { return r.json(); })
+            .then(function(cartData) {
+              var countEl = document.querySelector('.w-commerce-commercecartopenlinkcount, .cart-quantity');
+              if (countEl) countEl.textContent = cartData.item_count;
+              var flashDot = document.querySelector('.cart-flash-dot');
+              if (flashDot) flashDot.style.display = cartData.item_count > 0 ? 'block' : 'none';
+            });
+          if (window.openCartDrawer) window.openCartDrawer();
+        })
+        .catch(function(err) {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            if (submitBtn.value) submitBtn.value = 'Add to Cart';
+            else submitBtn.textContent = 'Add to Cart';
+          }
+          console.error('Failed to add single item:', err);
+        });
+      }, true);
+
       // Automatically open cart if returning from redirect
       var urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('open_cart') === 'true') {
