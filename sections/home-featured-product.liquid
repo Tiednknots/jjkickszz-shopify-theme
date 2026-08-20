@@ -1,4 +1,27 @@
-{%- assign featured_product = all_products[section.settings.product] -%}
+{%- paginate collections.all.products by 1000 -%}
+  {%- assign in_stock_handles_str = "" -%}
+  {%- for prod in collections.all.products -%}
+    {%- if prod.available -%}
+      {%- if prod.handle == 'shipping-insurance' or prod.title contains 'Insurance' -%}{%- continue -%}{%- endif -%}
+      {%- if in_stock_handles_str != blank -%}
+        {%- assign in_stock_handles_str = in_stock_handles_str | append: "," | append: prod.handle -%}
+      {%- else -%}
+        {%- assign in_stock_handles_str = prod.handle -%}
+      {%- endif -%}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- assign in_stock_handles = in_stock_handles_str | split: "," -%}
+{%- endpaginate -%}
+
+{%- assign in_stock_count = in_stock_handles.size -%}
+{%- if in_stock_count > 0 -%}
+  {%- assign date_seed = "now" | date: "%d%m%Y" | plus: 0 -%}
+  {%- assign random_index = date_seed | modulo: in_stock_count -%}
+  {%- assign featured_handle = in_stock_handles[random_index] -%}
+  {%- assign featured_product = all_products[featured_handle] -%}
+{%- else -%}
+  {%- assign featured_product = all_products[section.settings.product] -%}
+{%- endif -%}
 
 <style>
   #feat-prod-{{ section.id }} {

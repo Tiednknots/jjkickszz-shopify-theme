@@ -1285,4 +1285,69 @@ iframe[src*="userway"] {
   }
 }
 
+/* ── HERO VIDEO SECTION OVERRIDES ─────────────────────────── */
+.hero-section {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  background-color: #000000 !important;
+  padding: 1.5rem 1.5rem !important; /* Spacing around the video container */
+  box-sizing: border-box !important;
+}
+
+.section-background-contents {
+  width: 100% !important;
+  height: 80vh !important; /* Premium height scale */
+  border-radius: 28px !important;
+  overflow: hidden !important;
+  position: relative !important;
+  box-shadow: 0 12px 36px rgba(0,0,0,0.6) !important;
+}
+
+/* Make video elements and overlay inherit the container rounded corners */
+.jj-hero-video-wrapper,
+.jj-hero-video-fallback,
+.jj-hero-video,
+.background-overlay,
+.section-background-contents .div-block-4,
+.section-background-contents .image-3 {
+  border-radius: 28px !important;
+  overflow: hidden !important;
+}
+
+/* Adjust text and button overlay centering inside the rounded card */
+.section-background-contents .div-block-14 {
+  z-index: 10 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 100% !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  position: absolute !important;
+  padding-top: 0 !important; /* Reset layout offset to center perfectly inside video */
+}
+
+@media screen and (max-width: 767px) {
+  .hero-section {
+    padding: 0.75rem 1rem !important;
+  }
+  .section-background-contents {
+    height: 55vh !important; /* Mobile video banner height */
+    border-radius: 18px !important;
+  }
+  .jj-hero-video-wrapper,
+  .jj-hero-video-fallback,
+  .jj-hero-video,
+  .background-overlay,
+  .section-background-contents .div-block-4,
+  .section-background-contents .image-3 {
+    border-radius: 18px !important;
+  }
+}
 
