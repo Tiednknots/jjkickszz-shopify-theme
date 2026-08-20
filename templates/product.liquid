@@ -1943,12 +1943,15 @@
                 if (!item.isCurrent) {
                   var refreshEl = card.querySelector('.jj-flat-card-refresh');
                   if (refreshEl) {
-                    refreshEl.addEventListener('click', function(e) {
+                    var handleRefresh = function(e) {
+                      e.preventDefault();
                       e.stopPropagation();
                       item.index = (item.index + 1) % item.catalog.length;
                       item.selectedVariantId = null;
                       renderOutfit();
-                    });
+                    };
+                    refreshEl.addEventListener('click', handleRefresh);
+                    refreshEl.addEventListener('touchstart', handleRefresh, { passive: false });
                   }
                 }
               }
@@ -2074,12 +2077,9 @@
                             if (flashDot) flashDot.style.display = cartData.item_count > 0 ? 'block' : 'none';
                           });
 
-                        var cartWrapper = document.querySelector('.w-commerce-commercecartcontainerwrapper');
-                        if (cartWrapper) {
-                          cartWrapper.style.display = 'block';
-                          cartWrapper.style.setProperty('display', 'block', 'important');
-                          var container = cartWrapper.querySelector('.w-commerce-commercecartcontainer');
-                          if (container) container.style.transform = 'translateX(0)';
+                        var nativeCartOpen = document.querySelector('.w-commerce-commercecartopenlink');
+                        if (nativeCartOpen) {
+                          nativeCartOpen.click();
                         }
 
                         if (typeof window.Udesly !== 'undefined') {
@@ -2228,12 +2228,9 @@
                     if (flashDot) flashDot.style.display = cartData.item_count > 0 ? 'block' : 'none';
                   });
 
-                var cartWrapper = document.querySelector('.w-commerce-commercecartcontainerwrapper');
-                if (cartWrapper) {
-                  cartWrapper.style.display = 'block';
-                  cartWrapper.style.setProperty('display', 'block', 'important');
-                  var container = cartWrapper.querySelector('.w-commerce-commercecartcontainer');
-                  if (container) container.style.transform = 'translateX(0)';
+                var nativeCartOpen = document.querySelector('.w-commerce-commercecartopenlink');
+                if (nativeCartOpen) {
+                  nativeCartOpen.click();
                 }
 
                 if (typeof window.Udesly !== 'undefined') {
@@ -2271,31 +2268,15 @@
         }
       });
 
-      // Fallback click listener to show Webflow cart sidebar programmatically
+      // Fallback click listener to trigger Webflow's native cart drawer opener
       document.addEventListener('click', function(e) {
         var cartBtn = e.target.closest('.w-commerce-commercecartopenlink, .cart-button');
         if (cartBtn) {
-          e.preventDefault();
-          e.stopPropagation();
-          var cartWrapper = document.querySelector('.w-commerce-commercecartcontainerwrapper');
-          if (cartWrapper) {
-            cartWrapper.style.display = 'block';
-            cartWrapper.style.setProperty('display', 'block', 'important');
-            var container = cartWrapper.querySelector('.w-commerce-commercecartcontainer');
-            if (container) {
-              container.style.transform = 'translateX(0)';
-              container.style.transition = 'transform 0.3s ease';
-            }
-          }
-        }
-        
-        var closeBtn = e.target.closest('.w-commerce-commercecartcloselink, .w-commerce-commercecartcontainerwrapper');
-        if (closeBtn && !e.target.closest('.w-commerce-commercecartcontainer')) {
-          e.preventDefault();
-          var cartWrapper = document.querySelector('.w-commerce-commercecartcontainerwrapper');
-          if (cartWrapper) {
-            cartWrapper.style.display = 'none';
-            cartWrapper.style.setProperty('display', 'none', 'important');
+          var nativeCartOpen = document.querySelector('.w-commerce-commercecartopenlink');
+          if (nativeCartOpen && nativeCartOpen !== cartBtn) {
+            e.preventDefault();
+            e.stopPropagation();
+            nativeCartOpen.click();
           }
         }
       });

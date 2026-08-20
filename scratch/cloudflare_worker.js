@@ -191,7 +191,7 @@ async function enrichProduct(product, geminiKey, shopifyToken) {
   if (imgB64) parts.push({ inline_data: { mime_type: "image/jpeg", data: imgB64 } });
 
   const geminiRes = await fetch(
-    `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${geminiKey}`,
+    `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${geminiKey}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -262,7 +262,7 @@ export default {
       if (searchParams.get("test") && geminiKey) {
         const prompt = searchParams.get("test");
         const res = await fetch(
-          `https://generativelanguage.googleapis.com/v1/models/gemini-3.5-flash:generateContent?key=${geminiKey}`,
+          `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${geminiKey}`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -433,7 +433,7 @@ Order ${orderName} was not found in the shop database. Suggest they verify the o
       }
 
       const geminiRes = await fetch(
-        `https://generativelanguage.googleapis.com/v1/models/gemini-3.5-flash:generateContent?key=${geminiKey}`,
+        `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${geminiKey}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
