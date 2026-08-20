@@ -1670,7 +1670,8 @@ iframe[src*="userway"] {
 }
 
 
-/* ── PRODUCT GALLERY DESKTOP ZOOM & MOBILE FLAT CARDS OVERRIDES ─────────────────────── */
+
+/* ── PRODUCT GALLERY COVER IMAGE & CONTAINED ZOOM ─────────────────────── */
 @media screen and (min-width: 992px) {
   div.more-image-container div.more-image-wrapper,
   .more-image-wrapper {
@@ -1679,9 +1680,11 @@ iframe[src*="userway"] {
     align-items: center !important;
     justify-content: flex-start !important;
     width: 100% !important;
-    max-width: 100% !important;
+    height: 100% !important;
+    min-height: 550px !important;
+    max-height: 85vh !important;
     position: relative !important;
-    overflow: hidden !important;
+    overflow: hidden !important; /* Zoom stays contained inside left column! */
     border-radius: 12px !important;
     box-sizing: border-box !important;
   }
@@ -1691,9 +1694,10 @@ iframe[src*="userway"] {
   .main-image {
     order: 1 !important;
     width: 100% !important;
+    height: 100% !important;
     max-width: 100% !important;
-    max-height: 85vh !important;
-    object-fit: contain !important;
+    max-height: 100% !important;
+    object-fit: cover !important; /* Cover parent container completely */
     border-radius: 12px !important;
     transition: transform 0.15s ease-out !important;
     cursor: zoom-in !important;
@@ -1707,7 +1711,8 @@ iframe[src*="userway"] {
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
-    background-color: transparent !important;
+    background-color: rgba(0, 0, 0, 0.4) !important;
+    backdrop-filter: blur(8px) !important;
     z-index: 10 !important;
     padding: 10px 0 !important;
     margin: 0 !important;
@@ -1739,12 +1744,16 @@ iframe[src*="userway"] {
   div.thumbnail-section {
     margin-top: 2rem !important;
   }
-  /* Mobile flat card +25% size (100px -> 125px) and enable dragging */
   .jj-flat-card {
     position: absolute !important;
     width: 125px !important;
     height: 125px !important;
     cursor: grab !important;
     touch-action: none !important;
+  }
+  .more-image-wrapper {
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
   }
 }

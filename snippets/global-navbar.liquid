@@ -358,7 +358,20 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: key, quantity: 0 })
-              }).then(function() { window.refreshCartDrawer(); });
+              }).then(function() { window.refreshCartDrawer();
+
+  // Redirect to checkout with discount code if outfit bundle was added
+  document.addEventListener('click', function(e) {
+    var checkoutBtn = e.target.closest('a[href*="/checkout"], .w-commerce-commercecartcheckoutbutton');
+    if (checkoutBtn) {
+      if (sessionStorage.getItem('jj_outfit_discount') === 'true') {
+        e.preventDefault();
+        e.stopPropagation();
+        window.location.href = '/discount/OUTFIT25?redirect=/checkout';
+      }
+    }
+  }, true);
+ });
             });
           });
 

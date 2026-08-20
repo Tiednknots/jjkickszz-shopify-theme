@@ -1759,11 +1759,8 @@
           if (successMsg) successMsg.style.display = 'none';
           if (errorMsg) errorMsg.style.display = 'none';
 
-          var formData = new FormData(drawerForm);
-          fetch('/contact', {
-            method: 'POST',
-            body: formData
-          }).catch(function() {}); // Ignore potential AJAX redirection challenge failures
+          // Direct AJAX processing to prevent 302 page redirect to homepage
+          var formData = new FormData(drawerForm); // Ignore potential AJAX redirection challenge failures
 
           setTimeout(function() {
             if (submitBtn) {
@@ -1972,8 +1969,24 @@
               if (!item.removed) {
                 var card = document.createElement('div');
                 card.className = 'jj-flat-card';
-                card.style.left = (40 + idx * 185) + 'px';
-                card.style.top = (110 + (idx % 2) * 50) + 'px';
+                var isMobile = window.innerWidth < 768;
+                if (isMobile) {
+                  var cW = container.clientWidth || 340;
+                  var centerX = cW / 2;
+                  if (idx === 0) {
+                    card.style.left = Math.max(10, centerX - 120) + 'px';
+                    card.style.top = '15px';
+                  } else if (idx === 1) {
+                    card.style.left = Math.max(10, centerX - 35) + 'px';
+                    card.style.top = '115px';
+                  } else {
+                    card.style.left = Math.min(cW - 135, centerX + 15) + 'px';
+                    card.style.top = '30px';
+                  }
+                } else {
+                  card.style.left = (30 + idx * 210) + 'px';
+                  card.style.top = (80 + (idx % 2) * 40) + 'px';
+                }
                 
                 var refreshHtml = '<div class="jj-flat-card-refresh" data-index="' + idx + '" title="Cycle Item">↻</div>';
 
@@ -2264,7 +2277,7 @@
               var applyDiscount = activeItems.length >= 2;
               var promise = Promise.resolve();
               if (applyDiscount) {
-                promise = fetch('/discount/OUTFIT25').catch(function() {});
+                promise = sessionStorage.setItem('jj_outfit_discount', 'true'); fetch('/discount/OUTFIT25').catch(function() {});
               }
 
               promise.then(function() {
@@ -2314,6 +2327,45 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+
+      // Mobile Image Gallery Touch Swiping
+      (function initMobileGallerySwipe() {
+        var wrapper = document.querySelector('.more-image-wrapper');
+        if (!wrapper) return;
+
+        var startX = 0, startY = 0;
+        wrapper.addEventListener('touchstart', function(e) {
+          if (window.innerWidth >= 992) return;
+          var touch = e.touches[0];
+          startX = touch.clientX;
+          startY = touch.clientY;
+        }, { passive: true });
+
+        wrapper.addEventListener('touchend', function(e) {
+          if (window.innerWidth >= 992) return;
+          var touch = e.changedTouches[0];
+          var diffX = touch.clientX - startX;
+          var diffY = touch.clientY - startY;
+
+          if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY)) {
+            var thumbs = Array.from(document.querySelectorAll('.thumb-image, .collection-item-3 img'));
+            if (thumbs.length <= 1) return;
+            var currentIdx = thumbs.findIndex(function(t) { return t.classList.contains('w--current') || t.classList.contains('active'); });
+            if (currentIdx === -1) currentIdx = 0;
+
+            var nextIdx = currentIdx;
+            if (diffX < 0) {
+              nextIdx = (currentIdx + 1) % thumbs.length;
+            } else {
+              nextIdx = (currentIdx - 1 + thumbs.length) % thumbs.length;
+            }
+
+            var targetThumb = thumbs[nextIdx];
+            if (targetThumb) targetThumb.click();
+          }
+        }, { passive: true });
+      })();
+
 
       // Interactive 1.5x Cursor Zoom for Main Image
       (function initImageZoom() {
