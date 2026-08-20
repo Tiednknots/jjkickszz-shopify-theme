@@ -40,15 +40,29 @@ function getCategory(title) {
 }
 
 // Fetch all available products from Shopify public REST API
-async function getLiveCatalog() {
+async function getLiveCatalog(env) {
   try {
-    const url = `https://${SHOPIFY_DOMAIN}/collections/all/products.json?limit=250`;
+    const shopifyToken = env ? (env.SHOPIFY_ADMIN_TOKEN || env.SHOPIFY_TOKEN) : null;
+    let url = `https://${SHOPIFY_DOMAIN}/collections/all/products.json?limit=250`;
+    let headers = {
+      "Accept": "application/json",
+      "User-Agent": "JJKICKSZZ-AI-Bot/1.0"
+    };
+
+    if (shopifyToken) {
+      url = `https://${SHOPIFY_DOMAIN}/admin/api/2024-01/products.json?limit=250`;
+      headers["X-Shopify-Access-Token"] = shopifyToken;
+    }
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 6000);
+
     const res = await fetch(url, {
-      headers: {
-        "Accept": "application/json",
-        "User-Agent": "JJKICKSZZ-AI-Bot/1.0"
-      }
+      headers,
+      signal: controller.signal
     });
+    clearTimeout(timeoutId);
+
     if (!res.ok) return { error: `HTTP ${res.status} from Shopify`, products: null };
     const json = await res.json();
     const products = json.products || [];
@@ -59,7 +73,11 @@ async function getLiveCatalog() {
       p.images && 
       p.images.length > 0 && 
       p.variants && 
-      p.variants.some(v => v.available)
+      p.variants.some(v => {
+        if (typeof v.available !== 'undefined') return v.available;
+        if (v.inventory_management === null || v.inventory_management === '') return true;
+        return (v.inventory_quantity !== undefined && v.inventory_quantity > 0) || v.inventory_policy === 'continue';
+      })
     );
 
     // Sort by ID descending (newest first)
@@ -191,7 +209,7 @@ async function enrichProduct(product, geminiKey, shopifyToken) {
   if (imgB64) parts.push({ inline_data: { mime_type: "image/jpeg", data: imgB64 } });
 
   const geminiRes = await fetch(
-    `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${geminiKey}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -249,7 +267,7 @@ export default {
 
       // ?action=catalog — see what Gemini receives
       if (searchParams.get("action") === "catalog") {
-        const result = await getLiveCatalog();
+        const result = await getLiveCatalog(env);
         const body = result.error
           ? `❌ Catalog fetch failed: ${result.error}`
           : `✅ ${result.count} products loaded:\n\n${result.products}`;
@@ -262,7 +280,7 @@ export default {
       if (searchParams.get("test") && geminiKey) {
         const prompt = searchParams.get("test");
         const res = await fetch(
-          `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${geminiKey}`,
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -404,7 +422,7 @@ Order ${orderName} was not found in the shop database. Suggest they verify the o
       }
 
       // Fetch live catalog (cached 5 min via Cloudflare CDN)
-      const catalogResult = await getLiveCatalog();
+      const catalogResult = await getLiveCatalog(env);
       let systemPrompt = buildSystemPrompt(catalogResult ? catalogResult.products : null);
       if (trackingContext) {
         systemPrompt += trackingContext;
@@ -433,7 +451,7 @@ Order ${orderName} was not found in the shop database. Suggest they verify the o
       }
 
       const geminiRes = await fetch(
-        `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${geminiKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

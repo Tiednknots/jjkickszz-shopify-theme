@@ -1591,3 +1591,53 @@ iframe[src*="userway"] {
     flex-shrink: 0 !important;
   }
 }
+
+/* ── PRODUCT GALLERY DESKTOP OVERRIDES ─────────────────────── */
+@media screen and (min-width: 992px) {
+  div.more-image-container div.more-image-wrapper {
+    display: flex !important;
+    flex-direction: row-reverse !important; /* Thumbnails on left, main image on right */
+    gap: 24px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    align-items: flex-start !important;
+    justify-content: flex-end !important;
+    box-sizing: border-box !important;
+  }
+  div.more-image-container div.more-image-wrapper .collection-list-wrapper-2 {
+    order: 1 !important;
+    width: 80px !important;
+    min-width: 80px !important;
+    flex-shrink: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+  div.more-image-container div.more-image-wrapper #main-image {
+    order: 2 !important;
+    flex-grow: 1 !important;
+    width: calc(100% - 104px) !important;
+    max-width: calc(100% - 104px) !important;
+    max-height: calc(100vh - 220px) !important;
+    object-fit: contain !important;
+    margin: 0 !important;
+  }
+  div.more-image-container div.more-image-wrapper .collection-list-3 {
+    display: flex !important;
+    flex-direction: column !important; /* Vertical thumbnails stack */
+    gap: 12px !important;
+    width: 100% !important;
+    max-height: calc(100vh - 220px) !important;
+    overflow-y: auto !important; /* Scrollable thumbnails */
+    scrollbar-width: none !important;
+    margin-top: 0 !important;
+  }
+  div.more-image-container div.more-image-wrapper .collection-list-3::-webkit-scrollbar {
+    display: none !important;
+  }
+  div.more-image-container div.more-image-wrapper .collection-item-3 {
+    width: 80px !important;
+    height: 80px !important;
+    flex-shrink: 0 !important;
+  }
+}
