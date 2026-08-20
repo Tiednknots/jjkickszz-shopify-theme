@@ -1669,29 +1669,36 @@ iframe[src*="userway"] {
   z-index: 100000 !important;
 }
 
-/* ── PRODUCT GALLERY DESKTOP & MOBILE OVERRIDES ─────────────────────── */
+
+/* ── PRODUCT GALLERY DESKTOP ZOOM & MOBILE FLAT CARDS OVERRIDES ─────────────────────── */
 @media screen and (min-width: 992px) {
-  div.more-image-container div.more-image-wrapper {
+  div.more-image-container div.more-image-wrapper,
+  .more-image-wrapper {
     display: flex !important;
-    flex-direction: column !important; /* Main image top (order 1), thumbnails bottom (order 2) */
+    flex-direction: column !important;
     align-items: center !important;
     justify-content: flex-start !important;
     width: 100% !important;
     max-width: 100% !important;
     position: relative !important;
+    overflow: hidden !important;
+    border-radius: 12px !important;
     box-sizing: border-box !important;
   }
-  /* Main image / focused image 25% larger, order 1 */
   div.more-image-container div.more-image-wrapper #main-image,
-  div.more-image-container div.more-image-wrapper .main-image {
+  div.more-image-container div.more-image-wrapper .main-image,
+  #main-image,
+  .main-image {
     order: 1 !important;
     width: 100% !important;
     max-width: 100% !important;
     max-height: 85vh !important;
     object-fit: contain !important;
+    border-radius: 12px !important;
+    transition: transform 0.15s ease-out !important;
+    cursor: zoom-in !important;
     margin: 0 0 20px 0 !important;
   }
-  /* Thumbnails wrapper: position sticky to bottom of left column, centered & horizontal in flex */
   div.more-image-container div.more-image-wrapper .collection-list-wrapper-2 {
     order: 2 !important;
     position: sticky !important;
@@ -1707,8 +1714,8 @@ iframe[src*="userway"] {
   }
   div.more-image-container div.more-image-wrapper .collection-list-3 {
     display: flex !important;
-    flex-direction: row !important; /* Horizontal flex */
-    justify-content: center !important; /* Centered */
+    flex-direction: row !important;
+    justify-content: center !important;
     align-items: center !important;
     gap: 12px !important;
     width: auto !important;
@@ -1722,16 +1729,22 @@ iframe[src*="userway"] {
     height: 70px !important;
     flex-shrink: 0 !important;
   }
-  /* Increase desktop .jj-flat-card size to 200px */
   .jj-flat-card {
     width: 200px !important;
   }
 }
 
 @media screen and (max-width: 991px) {
-  /* Mobile thumbnail-section margin-top 2rem */
   .thumbnail-section,
   div.thumbnail-section {
     margin-top: 2rem !important;
+  }
+  /* Mobile flat card +25% size (100px -> 125px) and enable dragging */
+  .jj-flat-card {
+    position: absolute !important;
+    width: 125px !important;
+    height: 125px !important;
+    cursor: grab !important;
+    touch-action: none !important;
   }
 }

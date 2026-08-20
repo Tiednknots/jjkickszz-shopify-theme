@@ -1975,10 +1975,7 @@
                 card.style.left = (40 + idx * 185) + 'px';
                 card.style.top = (110 + (idx % 2) * 50) + 'px';
                 
-                var refreshHtml = '';
-                if (!item.isCurrent) {
-                  refreshHtml = '<div class="jj-flat-card-refresh" data-index="' + idx + '" title="Cycle Item">↻</div>';
-                }
+                var refreshHtml = '<div class="jj-flat-card-refresh" data-index="' + idx + '" title="Cycle Item">↻</div>';
 
                 card.innerHTML = 
                   refreshHtml +
@@ -1988,19 +1985,26 @@
                 container.appendChild(card);
                 makeDraggable(card, container);
 
-                if (!item.isCurrent) {
-                  var refreshEl = card.querySelector('.jj-flat-card-refresh');
-                  if (refreshEl) {
-                    var handleRefresh = function(e) {
-                      e.preventDefault();
-                      e.stopPropagation();
+                var refreshEl = card.querySelector('.jj-flat-card-refresh');
+                if (refreshEl) {
+                  var handleRefresh = function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (item.isCurrent) {
+                      if (item.product && item.product.variants && item.product.variants.length > 1) {
+                        var currIdx = item.product.variants.findIndex(function(v) { return v.id == item.selectedVariantId; });
+                        var nextV = item.product.variants[(currIdx + 1) % item.product.variants.length];
+                        item.selectedVariantId = nextV.id;
+                        item.price = nextV.price / 100;
+                      }
+                    } else if (item.catalog && item.catalog.length > 0) {
                       item.index = (item.index + 1) % item.catalog.length;
                       item.selectedVariantId = null;
-                      renderOutfit();
-                    };
-                    refreshEl.addEventListener('click', handleRefresh);
-                    refreshEl.addEventListener('touchstart', handleRefresh, { passive: false });
-                  }
+                    }
+                    renderOutfit();
+                  };
+                  refreshEl.addEventListener('click', handleRefresh);
+                  refreshEl.addEventListener('touchstart', handleRefresh, { passive: false });
                 }
               }
 
@@ -2310,6 +2314,53 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
+
+      // Interactive 1.5x Cursor Zoom for Main Image
+      (function initImageZoom() {
+        var mainImg = document.getElementById('main-image') || document.querySelector('.main-image');
+        if (!mainImg) return;
+        var wrapper = mainImg.closest('.more-image-wrapper') || mainImg.parentElement;
+        if (!wrapper) return;
+
+        wrapper.style.overflow = 'hidden';
+        wrapper.style.borderRadius = '12px';
+        mainImg.style.borderRadius = '12px';
+        mainImg.style.transition = 'transform 0.15s ease-out';
+
+        wrapper.addEventListener('mousemove', function(e) {
+          if (window.innerWidth < 992) return;
+          var rect = wrapper.getBoundingClientRect();
+          var x = ((e.clientX - rect.left) / rect.width) * 100;
+          var y = ((e.clientY - rect.top) / rect.height) * 100;
+
+          mainImg.style.transformOrigin = x + '% ' + y + '%';
+          mainImg.style.transform = 'scale(1.5)';
+        });
+
+        wrapper.addEventListener('mouseleave', function() {
+          if (window.innerWidth < 992) return;
+          mainImg.style.transform = 'scale(1)';
+          mainImg.style.transformOrigin = 'center center';
+        });
+      })();
+
+      // Responsive Thumbnail Click Handler
+      document.addEventListener('click', function(e) {
+        var thumb = e.target.closest('.thumb-image, .collection-item-3 img');
+        if (thumb) {
+          var newSrc = thumb.getAttribute('data-large-src') || thumb.getAttribute('src');
+          var mainImg = document.getElementById('main-image') || document.querySelector('.main-image');
+          if (mainImg && newSrc) {
+            mainImg.src = newSrc;
+            mainImg.removeAttribute('srcset');
+          }
+          document.querySelectorAll('.thumb-image, .collection-item-3 img').forEach(function(t) {
+            t.classList.remove('w--current', 'active');
+          });
+          thumb.classList.add('w--current', 'active');
+        }
+      });
+
 
       // Intercept single add-to-cart form submit to prevent HTML POST redirect
       document.addEventListener('submit', function(e) {
