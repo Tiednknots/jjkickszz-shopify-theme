@@ -1881,17 +1881,18 @@
 
             var t = (p.product_type || '').toLowerCase();
             var tit = p.title.toLowerCase();
-            
-            if (t.includes('pant') || t.includes('jean') || t.includes('short') || t.includes('sweatpant') || t.includes('bottom') || tit.includes('pant') || tit.includes('jean') || tit.includes('short')) {
+            var combo = t + ' ' + tit;
+
+            if (/pant|jean|short|sweat|bottom|trouser|camo|cargo|denim|trackpant|boxer|tight/i.test(combo)) {
               bottoms.push(p);
-            } else if (t.includes('sneaker') || t.includes('shoe') || t.includes('boot') || tit.includes('sneaker') || tit.includes('shoe')) {
+            } else if (/sneaker|shoe|boot|slide|runner|foam|kicks|dunk|jordan|yeezy|forum|og|low|high|mid|550|990|trainer|clog|sandal/i.test(combo)) {
               shoes.push(p);
-            } else if (t.includes('hoodie') || t.includes('jacket') || t.includes('sweater') || t.includes('longsleeve') || t.includes('long sleeve') || tit.includes('hoodie') || tit.includes('jacket') || tit.includes('sweater') || tit.includes('longsleeve') || tit.includes('long sleeve')) {
-              if (!isCurrentProductShirt) {
+            } else {
+              if (isCurrentProductShirt && /hoodie|jacket|coat|parka|windbreaker/i.test(combo)) {
+                // Skip outerwear if main product is a t-shirt
+              } else {
                 tops.push(p);
               }
-            } else if (t.includes('tee') || t.includes('shirt') || t.includes('top') || tit.includes('tee') || tit.includes('shirt')) {
-              tops.push(p);
             }
           });
 
