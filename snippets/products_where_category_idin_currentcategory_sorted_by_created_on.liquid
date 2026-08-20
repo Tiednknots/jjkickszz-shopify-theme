@@ -1,5 +1,14 @@
 {% capture listItems %}
-{%- assign _all_sorted = collections.all.products | sort: 'created_at' | reverse -%}
+{%- assign _prod_seed = product.id | modulo: 7 -%}
+{%- if _prod_seed == 1 -%}
+  {%- assign _all_sorted = collections.all.products | sort: 'title' -%}
+{%- elif _prod_seed == 2 -%}
+  {%- assign _all_sorted = collections.all.products | sort: 'price' | reverse -%}
+{%- elif _prod_seed == 3 -%}
+  {%- assign _all_sorted = collections.all.products | sort: 'vendor' -%}
+{%- else -%}
+  {%- assign _all_sorted = collections.all.products | sort: 'created_at' | reverse -%}
+{%- endif -%}
 {%- assign _similar_count = 0 -%}
 {%- unless globalRefs -%}{%- assign globalRefs = product.collections | map: "handle" -%}{%- endunless -%}
 {%- assign matched_ids = "" -%}

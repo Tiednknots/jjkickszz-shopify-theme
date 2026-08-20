@@ -461,7 +461,7 @@ Order ${orderName} was not found in the shop database. Suggest they verify the o
             generationConfig: {
               temperature: 0.7,
               maxOutputTokens: 600,
-              thinkingConfig: { thinkingBudget: 0 }
+              
             }
           })
         }

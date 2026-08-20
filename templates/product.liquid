@@ -1921,15 +1921,19 @@
             removed: false
           });
 
+          var randB = bottoms.length > 0 ? Math.floor(Math.random() * bottoms.length) : 0;
+          var randS = shoes.length > 0 ? Math.floor(Math.random() * shoes.length) : 0;
+          var randT = tops.length > 0 ? Math.floor(Math.random() * tops.length) : 0;
+
           if (currentCat === 'top') {
-            outfit.push({ catalog: bottoms, index: 0, price: 0, removed: false });
-            outfit.push({ catalog: shoes, index: 0, price: 0, removed: false });
+            outfit.push({ catalog: bottoms, index: randB, price: 0, removed: false });
+            outfit.push({ catalog: shoes, index: randS, price: 0, removed: false });
           } else if (currentCat === 'bottom') {
-            outfit.push({ catalog: tops, index: 0, price: 0, removed: false });
-            outfit.push({ catalog: shoes, index: 0, price: 0, removed: false });
+            outfit.push({ catalog: tops, index: randT, price: 0, removed: false });
+            outfit.push({ catalog: shoes, index: randS, price: 0, removed: false });
           } else {
-            outfit.push({ catalog: tops, index: 0, price: 0, removed: false });
-            outfit.push({ catalog: bottoms, index: 0, price: 0, removed: false });
+            outfit.push({ catalog: tops, index: randT, price: 0, removed: false });
+            outfit.push({ catalog: bottoms, index: randB, price: 0, removed: false });
           }
 
           if (loadingEl) loadingEl.remove();

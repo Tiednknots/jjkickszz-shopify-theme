@@ -9,9 +9,9 @@
               <div class="w-form-done  {% if form_success %}form-posted-successfully{% endif %}">
                 <div>{{ 't5a0ea5a1' | t }}</div>
               </div>
-              {%- unless form_success -%}<div class="w-form-fail  {% if form.errors %}form-has-errors{% endif %}">
+              {%- if form.errors and form.posted_successfully? == false -%}<div class="w-form-fail form-has-errors" style="display:block;">
                 <div>{%- render "form-errors", form_errors: form_errors -%}</div>
-              </div>{%- endunless -%}
+              </div>{%- endif -%}
             </div>
             <div class="footer-wrapper-three">
               <div class="footer-block-three">
