@@ -228,16 +228,18 @@
         <div class="div-block-629">
           <div class="thumbnail-section">
             <div class="more-image-container">
-              <div class="more-image-wrapper"><img loading="eager" fetchpriority="high" src="{{ product.featured_image | img_url: '1024x' }}" alt="{{ product.featured_image.alt }}" id="main-image" class="main-image" data-commerce-type="variation-image" srcset="{{ product.featured_image | img_url: '1920x' }} 1920w,{{ product.featured_image | img_url: '1600x' }} 1600w,{{ product.featured_image | img_url: '1366x' }} 1366w,{{ product.featured_image | img_url: '1024x' }} 1024w,{{ product.featured_image | img_url: '768x' }} 768w,{{ product.featured_image | img_url: '640x' }} 640w">
-{% assign total_imgs = product.images.size %}{% if total_imgs > 1 %}{% if product.variants.size > 1 and product.selected_or_first_available_variant.metafields.udesly['more-images'].size > 0 %}{%- assign setItems = product.selected_or_first_available_variant.metafields.udesly['more-images'] -%}<div class="collection-list-wrapper-2 w-dyn-list" data-commerce-type="more-images">
-                  <div role="list" class="collection-list-3 w-dyn-items">
-                    {%- for setItem in setItems  -%}<div role="listitem" class="collection-item-3 w-dyn-item"><img loading="lazy" src="{{ setItem.more-images }}" data-large-src="{{ setItem.more-images }}" alt="" id="thumb-image" class="thumb-image{% if forloop.first %} w--current active{% endif %}"></div>{%- endfor -%}
+              <div class="more-image-wrapper">
+                {% for image in product.images %}
+                  <div class="gallery-image-item">
+                    <img loading="{% if forloop.first %}eager{% else %}lazy{% endif %}" 
+                         {% if forloop.first %}fetchpriority="high"{% endif %} 
+                         src="{{ image | product_img_url: '1024x' }}" 
+                         alt="{{ image.alt | default: product.title }}" 
+                         id="{% if forloop.first %}main-image{% else %}gallery-image-{{ forloop.index }}{% endif %}" 
+                         class="main-image gallery-image-img" 
+                         data-index="{{ forloop.index0 }}">
                   </div>
-                </div>{% else %}{%- assign setItems = product.images -%}<div class="collection-list-wrapper-2 w-dyn-list" data-commerce-type="more-images">
-                  <div role="list" class="collection-list-3 w-dyn-items">
-                    {%- for setItem in setItems  -%}<div role="listitem" class="collection-item-3 w-dyn-item"><img loading="lazy" src="{{ setItem | product_img_url: '1024x' }}" data-large-src="{{ setItem | product_img_url: '1024x' }}" alt="" id="thumb-image" class="thumb-image{% if forloop.first %} w--current active{% endif %}"></div>{%- endfor -%}
-                  </div>
-                </div>{% endif %}{% endif %}
+                {% endfor %}
               </div>
             </div>
           </div>
@@ -2393,32 +2395,35 @@
       })();
 
 
-      // Interactive 1.5x Cursor Zoom for Main Image
+      // Interactive 1.5x Cursor Zoom for All Gallery Images
       (function initImageZoom() {
-        var mainImg = document.getElementById('main-image') || document.querySelector('.main-image');
-        if (!mainImg) return;
-        var wrapper = mainImg.closest('.more-image-wrapper') || mainImg.parentElement;
-        if (!wrapper) return;
-
-        wrapper.style.overflow = 'hidden';
-        wrapper.style.borderRadius = '12px';
-        mainImg.style.borderRadius = '12px';
-        mainImg.style.transition = 'transform 0.15s ease-out';
-
-        wrapper.addEventListener('mousemove', function(e) {
+        document.addEventListener('mousemove', function(e) {
           if (window.innerWidth < 992) return;
+          var targetImg = e.target.closest('.gallery-image-img, .main-image, #main-image');
+          if (!targetImg) return;
+          var wrapper = targetImg.closest('.gallery-image-item') || targetImg.parentElement;
+          if (!wrapper) return;
+
+          wrapper.style.overflow = 'hidden';
+          wrapper.style.borderRadius = '12px';
+          targetImg.style.borderRadius = '12px';
+          targetImg.style.transition = 'transform 0.15s ease-out';
+
           var rect = wrapper.getBoundingClientRect();
           var x = ((e.clientX - rect.left) / rect.width) * 100;
           var y = ((e.clientY - rect.top) / rect.height) * 100;
 
-          mainImg.style.transformOrigin = x + '% ' + y + '%';
-          mainImg.style.transform = 'scale(1.5)';
+          targetImg.style.transformOrigin = x + '% ' + y + '%';
+          targetImg.style.transform = 'scale(1.5)';
         });
 
-        wrapper.addEventListener('mouseleave', function() {
+        document.addEventListener('mouseout', function(e) {
           if (window.innerWidth < 992) return;
-          mainImg.style.transform = 'scale(1)';
-          mainImg.style.transformOrigin = 'center center';
+          var targetImg = e.target.closest('.gallery-image-img, .main-image, #main-image');
+          if (targetImg) {
+            targetImg.style.transform = 'scale(1)';
+            targetImg.style.transformOrigin = 'center center';
+          }
         });
       })();
 
