@@ -1738,6 +1738,8 @@
       if (drawerForm) {
         drawerForm.addEventListener('submit', function(e) {
           e.preventDefault();
+          e.stopPropagation();
+          if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
           var submitBtn = drawerForm.querySelector('.jj-drawer-submit');
           var successMsg = document.getElementById('jj-drawer-success');
           var errorMsg = document.getElementById('jj-drawer-error');

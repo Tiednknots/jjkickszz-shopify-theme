@@ -1951,117 +1951,48 @@ div.div-block-629 {
   }
 }
 
-/* ── FLUSH DOCUMENT FLOW POSITIONING (NO OVERLAP / NO COVERED CONTENT) ── */
+
+/* ── FIXED MENU & MARQUEE HEADER STACK ── */
 .navbar,
 .navbar.desktop,
 .nav-wrapper {
-  position: relative !important;
-  top: auto !important;
-  left: auto !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
   width: 100% !important;
   z-index: 9999 !important;
+  height: 80px !important;
+  background-color: #000000 !important;
 }
 
 .white-section.menu,
 .white-section,
 .section-3 {
-  position: relative !important;
-  top: auto !important;
+  position: fixed !important;
+  top: 80px !important;
+  left: 0 !important;
+  width: 100% !important;
   z-index: 9900 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  border-bottom: 1px solid #222 !important;
+  height: 45px !important;
+  background-color: #000000 !important;
+  border-bottom: 1px solid #222222 !important;
 }
 
-.barba-wrapper,
-.page-content,
-.product-template-container {
-  position: relative !important;
-  margin-top: 0 !important;
-  padding-top: 0 !important;
-}
-
-div.div-block-629 {
-  position: relative !important;
-  margin-top: 0 !important;
-  padding-top: 0 !important;
-  top: 0 !important;
-}
-
-div.div-block-629 .thumbnail-section,
-div.div-block-629 .product-container {
-  margin-top: 0 !important;
-  padding-top: 0 !important;
-  top: 0 !important;
-}
-
-/* ── PRODUCT PAGE TWO-COLUMN DESKTOP LAYOUT (NATURAL HEIGHT & 2REM MARGIN) ── */
+/* Offset page content so it sits 100% FLUSH directly below the fixed marquee bar */
 @media screen and (min-width: 992px) {
-  div.div-block-629 {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: stretch !important;
-    justify-content: space-between !important;
-    width: 100% !important;
-    height: auto !important;
-    min-height: auto !important;
-    max-height: none !important;
-    margin-top: 0 !important;
+  .barba-wrapper,
+  .page-content,
+  .product-template-container {
+    margin-top: 125px !important;
     padding-top: 0 !important;
-    padding-bottom: 1rem !important;
-    box-sizing: border-box !important;
   }
+}
 
-  /* Left column: Image gallery container with 2rem top & bottom margin */
-  div.div-block-629 .thumbnail-section {
-    width: 50% !important;
-    max-width: 50% !important;
-    flex: 0 0 50% !important;
-    height: auto !important;
-    margin-top: 2rem !important;
-    margin-bottom: 2rem !important;
-    position: relative !important;
-    box-sizing: border-box !important;
-  }
-
-  /* Right column: Product details container */
-  div.div-block-629 .product-container {
-    width: 50% !important;
-    max-width: 50% !important;
-    flex: 0 0 50% !important;
-    height: auto !important;
-    box-sizing: border-box !important;
-    border-left: 1px solid #252525 !important;
-    padding-left: 3rem !important;
-    padding-right: 2rem !important;
-    margin-top: 2rem !important;
-    margin-bottom: 2rem !important;
-  }
-
-  div.more-image-container,
-  div.more-image-wrapper {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 20px !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-  }
-
-  .gallery-image-item,
-  div.more-image-wrapper .gallery-image-item {
-    width: 100% !important;
-    border-radius: 12px !important;
-    overflow: hidden !important;
-  }
-
-  .gallery-image-img,
-  div.more-image-wrapper img {
-    width: 100% !important;
-    height: auto !important;
-    object-fit: cover !important;
-    border-radius: 12px !important;
-    display: block !important;
-    transition: transform 0.15s ease-out !important;
-    cursor: zoom-in !important;
+@media screen and (max-width: 991px) {
+  .barba-wrapper,
+  .page-content,
+  .product-template-container {
+    margin-top: 120px !important;
+    padding-top: 0 !important;
   }
 }
