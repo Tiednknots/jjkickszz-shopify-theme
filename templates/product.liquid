@@ -87,7 +87,7 @@
     order: 2 !important;
     flex-grow: 1 !important;
     width: calc(100% - 100px) !important;
-    max-height: calc(100vh - 240px) !important;
+    max-height: calc(100vh - 140px) !important;
     object-fit: contain !important;
   }
   .collection-list-3 {
@@ -95,7 +95,7 @@
     flex-direction: column !important; /* Vertical stack */
     gap: 12px !important;
     width: 100% !important;
-    max-height: calc(100vh - 240px) !important;
+    max-height: calc(100vh - 140px) !important;
     overflow-y: auto !important; /* Scrollable thumbnails */
     scrollbar-width: none !important;
     margin-top: 0 !important;
@@ -531,8 +531,8 @@
       gap: 16px !important;
       overflow-y: visible !important;
       position: sticky !important;
-      top: 220px !important; /* Clears sticky marquee/menu on scroll */
-      max-height: calc(100vh - 240px) !important;
+      top: 120px !important; /* Clears sticky marquee/menu at 120px */
+      max-height: calc(100vh - 140px) !important;
       scrollbar-width: none !important;
       -ms-overflow-style: none !important;
       width: 100% !important;
@@ -609,8 +609,8 @@
   /* RIGHT: Sticky product info */
   .product-container {
     position: sticky !important;
-    top: 220px !important; /* Clears sticky marquee/menu on scroll */
-    max-height: calc(100vh - 240px) !important;
+    top: 120px !important; /* Clears sticky marquee/menu at 120px */
+    max-height: calc(100vh - 140px) !important;
     overflow-y: auto !important;
     scrollbar-width: none !important;
     -ms-overflow-style: none !important;
@@ -821,7 +821,7 @@
     }
 
     .thumbnail-section {
-      margin-top: 65px !important; /* Push gallery below sticky header menu */
+      margin-top: 0 !important;
       max-height: none !important;
       overflow: visible !important;
       position: static !important; /* Not sticky on mobile */

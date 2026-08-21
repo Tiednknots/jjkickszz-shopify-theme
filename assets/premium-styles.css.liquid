@@ -1956,8 +1956,9 @@ div.div-block-629 {
 
 
 
+
 /* ==========================================================================
-   MASTER FIXED HEADER STACK & FLUSH CONTENT REBUILD
+   FIXED HEADERS (MENU, MARQUEE, SHOP FILTER) & FLUSH CONTENT OFFSETS
    ========================================================================== */
 
 /* ── 1. FIXED MENU NAVBAR (TOP: 0, HEIGHT: 80PX) ── */
@@ -2015,7 +2016,7 @@ body.template-page-shop .jj-filter-wrap,
   box-sizing: border-box !important;
 }
 
-/* ── 4. FLUSH CONTENT OFFSETS (ZERO GAPS, ZERO OVERLAP) ── */
+/* ── 4. FLUSH CONTENT OFFSETS ── */
 
 /* Product Page Container (Offset = 80px Navbar + 40px Marquee = 120px) */
 body.template-product .barba-wrapper,
@@ -2026,7 +2027,6 @@ body.template-product .product-template-container,
 .template-product .product-template-container {
   margin-top: 120px !important;
   padding-top: 0 !important;
-  top: 0 !important;
   position: relative !important;
 }
 
@@ -2034,9 +2034,18 @@ body.template-product div.div-block-629,
 .template-product div.div-block-629 {
   margin-top: 0 !important;
   padding-top: 0 !important;
-  top: 0 !important;
   position: relative !important;
   border-top: none !important;
+}
+
+@media screen and (min-width: 992px) {
+  body.template-product .thumbnail-section,
+  body.template-product .product-container,
+  .template-product .thumbnail-section,
+  .template-product .product-container {
+    top: 120px !important;
+    max-height: calc(100vh - 140px) !important;
+  }
 }
 
 /* Shop Page Container (Offset = 80px Navbar + 40px Marquee + 46px Filter = 166px) */
@@ -2052,11 +2061,10 @@ body.template-page-shop .page-content,
 .template-page-shop .collection-list-wrapper {
   margin-top: 166px !important;
   padding-top: 0 !important;
-  top: 0 !important;
   position: relative !important;
 }
 
-/* Home & All Other Pages Container (Offset = 80px Navbar + 40px Marquee = 120px) */
+/* Home & Other Pages Container (Offset = 80px Navbar + 40px Marquee = 120px) */
 body:not(.template-product):not(.template-collection):not(.template-page-shop) .barba-wrapper,
 body:not(.template-product):not(.template-collection):not(.template-page-shop) .page-content,
 body:not(.template-product):not(.template-collection):not(.template-page-shop) .section-5,
@@ -2064,11 +2072,10 @@ body:not(.template-product):not(.template-collection):not(.template-page-shop) .
 body:not(.template-product):not(.template-collection):not(.template-page-shop) .hero-section {
   margin-top: 120px !important;
   padding-top: 0 !important;
-  top: 0 !important;
   position: relative !important;
 }
 
-/* Remove Spacer Block */
+/* Hide Spacer Block */
 .div-block-631,
 div.div-block-631 {
   display: none !important;
