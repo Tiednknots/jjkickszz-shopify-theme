@@ -2023,3 +2023,69 @@ div.div-block-631 {
   margin: 0 !important;
   padding: 0 !important;
 }
+
+/* ── SHOP PAGE: FIXED MENU, MARQUEE & FILTER BAR STACK ── */
+body.template-collection .navbar,
+body.template-page-shop .navbar,
+.template-collection .navbar,
+.template-page-shop .navbar {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 80px !important;
+  z-index: 99999 !important;
+  background-color: #000000 !important;
+}
+
+body.template-collection .white-section.menu,
+body.template-page-shop .white-section.menu,
+.template-collection .white-section.menu,
+.template-page-shop .white-section.menu {
+  position: fixed !important;
+  top: 80px !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 45px !important;
+  z-index: 99990 !important;
+  background-color: #000000 !important;
+  border-bottom: 1px solid #222222 !important;
+}
+
+body.template-collection .filter-contents,
+body.template-collection .jj-filter-wrap,
+body.template-page-shop .filter-contents,
+body.template-page-shop .jj-filter-wrap,
+.template-collection .filter-contents,
+.template-collection .jj-filter-wrap,
+.template-page-shop .filter-contents,
+.template-page-shop .jj-filter-wrap {
+  position: fixed !important;
+  top: 125px !important;
+  left: 0 !important;
+  width: 100% !important;
+  z-index: 99980 !important;
+  background-color: #0b0b0b !important;
+}
+
+/* Offset shop product grid below fixed header stack */
+body.template-collection .page-content,
+body.template-page-shop .page-content,
+.template-collection .page-content,
+.template-page-shop .page-content,
+.template-collection .collection-list-wrapper.similar-items,
+.template-page-shop .collection-list-wrapper {
+  padding-top: 190px !important;
+  margin-top: 0 !important;
+}
+
+/* ── PRODUCT PAGE DESKTOP: 15VH TOP PADDING ON 2-COLUMN CONTAINER ── */
+@media screen and (min-width: 992px) {
+  body.template-product div.div-block-629,
+  .template-product div.div-block-629 {
+    position: relative !important;
+    top: 0 !important;
+    padding-top: 15vh !important;
+    margin-top: 0 !important;
+  }
+}
