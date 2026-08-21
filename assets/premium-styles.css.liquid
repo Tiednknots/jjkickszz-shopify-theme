@@ -1955,80 +1955,16 @@ div.div-block-629 {
 
 
 
-/* ── MASTER STICKY MENU & ZERO-GAP COLUMN LAYOUT ── */
+
+/* ==========================================================================
+   MASTER FIXED HEADER STACK & FLUSH CONTENT REBUILD
+   ========================================================================== */
+
+/* ── 1. FIXED MENU NAVBAR (TOP: 0, HEIGHT: 80PX) ── */
 .navbar,
 .navbar.desktop,
 .navbar.mobile,
 .nav-wrapper {
-  position: sticky !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  z-index: 99999 !important;
-  background-color: #000000 !important;
-  margin: 0 !important;
-}
-
-header.jj-site-header,
-.jj-site-header,
-.white-section.menu,
-.white-section,
-.section-3,
-.filter-contents,
-.jj-filter-wrap {
-  position: relative !important;
-  top: auto !important;
-  left: auto !important;
-  width: 100% !important;
-  margin: 0 !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  background-color: #000000 !important;
-  z-index: 9900 !important;
-}
-
-.barba-wrapper,
-.page-content,
-.product-template-container,
-.section-5,
-.section-5.iframe,
-.section-5.mobile,
-.section-5.mobile.shop,
-.section-hero,
-.hero,
-.hero-section,
-.new-similar-items,
-.main-content,
-#main-content,
-main {
-  position: relative !important;
-  margin-top: 0 !important;
-  padding-top: 0 !important;
-}
-
-div.div-block-629,
-div.div-block-629 .thumbnail-section,
-div.div-block-629 .product-container {
-  position: relative !important;
-  top: auto !important;
-  margin-top: 0 !important;
-  padding-top: 0 !important;
-  border-top: none !important;
-}
-
-.div-block-631,
-div.div-block-631 {
-  display: none !important;
-  height: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-/* ── SHOP PAGE: FIXED MENU, MARQUEE & FILTER BAR STACK ── */
-body.template-collection .navbar,
-body.template-page-shop .navbar,
-.template-collection .navbar,
-.template-page-shop .navbar {
   position: fixed !important;
   top: 0 !important;
   left: 0 !important;
@@ -2036,22 +1972,28 @@ body.template-page-shop .navbar,
   height: 80px !important;
   z-index: 99999 !important;
   background-color: #000000 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
 }
 
-body.template-collection .white-section.menu,
-body.template-page-shop .white-section.menu,
-.template-collection .white-section.menu,
-.template-page-shop .white-section.menu {
+/* ── 2. FIXED MARQUEE ANNOUNCEMENT BAR (TOP: 80PX, HEIGHT: 40PX) ── */
+.white-section.menu,
+.white-section,
+.section-3 {
   position: fixed !important;
   top: 80px !important;
   left: 0 !important;
   width: 100% !important;
-  height: 45px !important;
+  height: 40px !important;
   z-index: 99990 !important;
   background-color: #000000 !important;
   border-bottom: 1px solid #222222 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
 }
 
+/* ── 3. FIXED SHOP FILTER BAR (TOP: 120PX, HEIGHT: 46PX — SHOP PAGES ONLY) ── */
 body.template-collection .filter-contents,
 body.template-collection .jj-filter-wrap,
 body.template-page-shop .filter-contents,
@@ -2061,31 +2003,76 @@ body.template-page-shop .jj-filter-wrap,
 .template-page-shop .filter-contents,
 .template-page-shop .jj-filter-wrap {
   position: fixed !important;
-  top: 125px !important;
+  top: 120px !important;
   left: 0 !important;
   width: 100% !important;
+  height: 46px !important;
   z-index: 99980 !important;
   background-color: #0b0b0b !important;
+  border-bottom: 1px solid #222222 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
 }
 
-/* Offset shop product grid below fixed header stack */
-body.template-collection .page-content,
-body.template-page-shop .page-content,
-.template-collection .page-content,
-.template-page-shop .page-content,
-.template-collection .collection-list-wrapper.similar-items,
-.template-page-shop .collection-list-wrapper {
-  padding-top: 190px !important;
+/* ── 4. FLUSH CONTENT OFFSETS (ZERO GAPS, ZERO OVERLAP) ── */
+
+/* Product Page Container (Offset = 80px Navbar + 40px Marquee = 120px) */
+body.template-product .barba-wrapper,
+body.template-product .page-content,
+body.template-product .product-template-container,
+.template-product .barba-wrapper,
+.template-product .page-content,
+.template-product .product-template-container {
+  margin-top: 120px !important;
+  padding-top: 0 !important;
+  top: 0 !important;
+  position: relative !important;
+}
+
+body.template-product div.div-block-629,
+.template-product div.div-block-629 {
   margin-top: 0 !important;
+  padding-top: 0 !important;
+  top: 0 !important;
+  position: relative !important;
+  border-top: none !important;
 }
 
-/* ── PRODUCT PAGE DESKTOP: 15VH TOP PADDING ON 2-COLUMN CONTAINER ── */
-@media screen and (min-width: 992px) {
-  body.template-product div.div-block-629,
-  .template-product div.div-block-629 {
-    position: relative !important;
-    top: 0 !important;
-    padding-top: 15vh !important;
-    margin-top: 0 !important;
-  }
+/* Shop Page Container (Offset = 80px Navbar + 40px Marquee + 46px Filter = 166px) */
+body.template-collection .barba-wrapper,
+body.template-collection .page-content,
+body.template-page-shop .barba-wrapper,
+body.template-page-shop .page-content,
+.template-collection .barba-wrapper,
+.template-collection .page-content,
+.template-page-shop .barba-wrapper,
+.template-page-shop .page-content,
+.template-collection .collection-list-wrapper,
+.template-page-shop .collection-list-wrapper {
+  margin-top: 166px !important;
+  padding-top: 0 !important;
+  top: 0 !important;
+  position: relative !important;
+}
+
+/* Home & All Other Pages Container (Offset = 80px Navbar + 40px Marquee = 120px) */
+body:not(.template-product):not(.template-collection):not(.template-page-shop) .barba-wrapper,
+body:not(.template-product):not(.template-collection):not(.template-page-shop) .page-content,
+body:not(.template-product):not(.template-collection):not(.template-page-shop) .section-5,
+body:not(.template-product):not(.template-collection):not(.template-page-shop) .hero,
+body:not(.template-product):not(.template-collection):not(.template-page-shop) .hero-section {
+  margin-top: 120px !important;
+  padding-top: 0 !important;
+  top: 0 !important;
+  position: relative !important;
+}
+
+/* Remove Spacer Block */
+.div-block-631,
+div.div-block-631 {
+  display: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
