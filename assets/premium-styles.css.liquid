@@ -1829,13 +1829,14 @@ iframe[src*="userway"] {
   }
 }
 
-/* ── 2. GLOBAL MARQUEE FADE MASK & FIXED BAR (SOLID BLACK, 48px / 46px) ─ */
+/* ── 2. GLOBAL MARQUEE (PARENT DIV: BLACK BG, HEIGHT=5vh) ─────────────── */
 .white-section.menu,
 .white-section.menu .section-3,
 .jj-marquee-wrapper,
 .jj-marquee-container,
 .section-3 {
   background-color: #000000 !important;
+  background: #000000 !important;
   mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%) !important;
   -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%) !important;
 }
@@ -1845,22 +1846,26 @@ body.template-page-shop .white-section.menu,
 body.template-product .white-section.menu,
 .template-collection .white-section.menu,
 .template-page-shop .white-section.menu,
-.template-product .white-section.menu {
+.template-product .white-section.menu,
+div.white-section.menu {
   position: fixed !important;
   top: 80px !important;
   left: 0 !important;
   width: 100% !important;
-  height: 48px !important;
-  min-height: 48px !important;
-  max-height: 48px !important;
+  height: 5vh !important;
+  min-height: 5vh !important;
+  max-height: 5vh !important;
   z-index: 990 !important;
   background-color: #000000 !important;
+  background: #000000 !important;
   border-top: none !important;
   border-bottom: 1px solid #1a1a1a !important;
   margin: 0 !important;
   padding: 0 !important;
   box-sizing: border-box !important;
   overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
 }
 
 .white-section.menu .section-3 {
@@ -1872,6 +1877,7 @@ body.template-product .white-section.menu,
   display: flex !important;
   align-items: center !important;
   background-color: #000000 !important;
+  background: #000000 !important;
   border: none !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -1884,26 +1890,28 @@ body.template-product .white-section.menu,
   body.template-product .white-section.menu,
   .template-collection .white-section.menu,
   .template-page-shop .white-section.menu,
-  .template-product .white-section.menu {
-    top: 70px !important; /* Never hidden behind 70px navbar on mobile/tablets */
-    height: 46px !important;
-    min-height: 46px !important;
-    max-height: 46px !important;
+  .template-product .white-section.menu,
+  div.white-section.menu {
+    top: 70px !important;
+    height: 5vh !important;
+    min-height: 5vh !important;
+    max-height: 5vh !important;
   }
 }
 
-/* ── 3. FIXED SHOP FILTER BAR (TOP=128px DESKTOP, TOP=116px MOBILE) ───── */
+/* ── 3. FIXED SHOP FILTER BAR (PARENT DIV: HEIGHT=5vh, FLUSH UNDER MARQUEE) */
 body.template-collection .filter-contents,
 body.template-page-shop .filter-contents,
 .template-collection .filter-contents,
-.template-page-shop .filter-contents {
+.template-page-shop .filter-contents,
+div.filter-contents {
   position: fixed !important;
-  top: 128px !important;
+  top: calc(80px + 5vh) !important; /* Sits flush directly under 80px nav + 5vh marquee */
   left: 0 !important;
   width: 100% !important;
-  height: 48px !important;
-  min-height: 48px !important;
-  max-height: 48px !important;
+  height: 5vh !important;
+  min-height: 5vh !important;
+  max-height: 5vh !important;
   z-index: 980 !important;
   background-color: #0b0b0b !important;
   border-top: none !important;
@@ -1934,25 +1942,26 @@ body.template-page-shop .filter-contents .jj-filter-wrap,
   body.template-collection .filter-contents,
   body.template-page-shop .filter-contents,
   .template-collection .filter-contents,
-  .template-page-shop .filter-contents {
-    top: 116px !important;
-    height: 44px !important;
-    min-height: 44px !important;
-    max-height: 44px !important;
+  .template-page-shop .filter-contents,
+  div.filter-contents {
+    top: calc(70px + 5vh) !important; /* Sits flush directly under 70px nav + 5vh marquee */
+    height: 5vh !important;
+    min-height: 5vh !important;
+    max-height: 5vh !important;
     padding: 0 16px !important;
   }
 }
 
 /* ── 4. CONTENT OFFSETS & BREATHING ROOM PADDING ───────────────────────── */
 
-/* Product Page: 128px desktop offset (80px nav + 48px marquee) */
+/* Product Page: calc(80px + 5vh) offset */
 body.template-product .barba-wrapper,
 body.template-product .page-content,
 body.template-product .product-template-container,
 .template-product .barba-wrapper,
 .template-product .page-content,
 .template-product .product-template-container {
-  margin-top: 128px !important;
+  margin-top: calc(80px + 5vh) !important;
   padding-top: 0 !important;
   position: relative !important;
 }
@@ -1965,7 +1974,7 @@ body.template-product div.div-block-629,
   border-top: none !important;
 }
 
-/* Shop Page: 176px offset (80px nav + 48px marquee + 48px filter) */
+/* Shop Page: calc(80px + 10vh) offset (80px nav + 5vh marquee + 5vh filter) */
 body.template-collection .barba-wrapper,
 body.template-collection .page-content,
 body.template-page-shop .barba-wrapper,
@@ -1974,7 +1983,7 @@ body.template-page-shop .page-content,
 .template-collection .page-content,
 .template-page-shop .barba-wrapper,
 .template-page-shop .page-content {
-  margin-top: 176px !important;
+  margin-top: calc(80px + 10vh) !important;
   padding-top: 2rem !important;
   position: relative !important;
 }
@@ -1994,14 +2003,14 @@ body.template-page-shop .page-content,
   body.template-product .page-content,
   .template-product .barba-wrapper,
   .template-product .page-content {
-    margin-top: 116px !important;
+    margin-top: calc(70px + 5vh) !important;
   }
 
   body.template-collection .barba-wrapper,
   body.template-collection .page-content,
   body.template-page-shop .barba-wrapper,
   body.template-page-shop .page-content {
-    margin-top: 160px !important;
+    margin-top: calc(70px + 10vh) !important;
     padding-top: 1.5rem !important;
   }
 }
