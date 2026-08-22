@@ -2020,12 +2020,11 @@ body.template-page-shop .jj-filter-wrap {
 }
 
 
-
 /* ==========================================================================
-   HOMEPAGE HERO MARQUEE & PRODUCT PAGE DESKTOP 85% RIGHT COLUMN
+   HOMEPAGE HERO MARQUEE, PRODUCT PILL PADDING & DESKTOP ALIGNMENT
    ========================================================================== */
 
-/* ── 1. HOMEPAGE MARQUEE (STICKY UNDER NAVBAR AT TOP: 80PX ON SCROLL) ── */
+/* ── 1. HOMEPAGE HERO MARQUEE (BELOW HERO, STICKY AT TOP: 80PX ON SCROLL) ── */
 body.template-index .navbar,
 .template-index .navbar {
   position: fixed !important;
@@ -2040,95 +2039,100 @@ body.template-index .navbar,
 body.template-index .barba-wrapper,
 .template-index .barba-wrapper,
 .template-index .page-content {
-  margin-top: 80px !important;
+  margin-top: 80px !important; /* Offset homepage hero directly under 80px navbar */
   padding-top: 0 !important;
 }
 
-/* Marquee sits below hero section and becomes sticky at top: 80px on scroll */
 body.template-index .white-section.menu.sticky-on-scroll,
 .template-index .white-section.menu.sticky-on-scroll {
   position: -webkit-sticky !important;
   position: sticky !important;
-  top: 80px !important;
+  top: 80px !important; /* Sticks right under navbar on scroll */
   z-index: 9990 !important;
   width: 100% !important;
   height: 40px !important;
   background-color: #000000 !important;
   border-bottom: 1px solid #222222 !important;
   margin: 0 !important;
-  box-sizing: border-box !important;
 }
 
-/* ── 2. PRODUCT PAGE DESKTOP LAYOUT (NO STICKY RIGHT COL, 85% DETAILS WIDTH) ── */
+/* ── 2. PRODUCT PAGE DESKTOP ALIGNMENT & TITLE VISIBILITY ── */
 @media screen and (min-width: 992px) {
   body.template-product .div-block-629,
   .template-product .div-block-629 {
     display: grid !important;
-    grid-template-columns: 1fr 1fr !important; /* 50/50 Balanced Split */
-    gap: 3rem !important;
+    grid-template-columns: 0.9fr 1.1fr !important;
+    gap: 4rem !important;
     align-items: start !important;
     margin-top: 120px !important;
-    padding: 2rem 3rem 4rem 3rem !important;
+    padding: 2rem 4rem 4rem 4rem !important; /* 2rem top padding ensures product details top is 100% visible */
     box-sizing: border-box !important;
-    width: 100% !important;
     max-width: 100% !important;
   }
 
-  /* Left Image Column */
   body.template-product .thumbnail-section,
   .template-product .thumbnail-section {
     display: flex !important;
     flex-direction: column !important;
-    gap: 16px !important;
+    justify-content: center !important;
+    align-items: center !important;
     width: 100% !important;
-    position: static !important;
     padding-top: 0 !important;
   }
 
-  /* Main Image Fills 100% of Left Column */
   .gallery-image-img,
   #main-image {
     width: 100% !important;
-    max-width: 100% !important;
-    height: auto !important;
+    max-width: 520px !important;
     aspect-ratio: 1 / 1 !important;
     object-fit: cover !important;
     border-radius: 12px !important;
-    display: block !important;
-    margin: 0 !important;
+    margin: 0 auto !important;
   }
 
-  /* Right Column Details (NO STICKY) */
   body.template-product .product-container,
   .template-product .product-container {
-    position: relative !important; /* STICKY REMOVED */
-    top: auto !important;
-    max-height: none !important;
-    overflow: visible !important;
-    width: 100% !important;
-    padding: 0 0 2.5rem 2rem !important;
+    position: relative !important;
+    top: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 2.5rem !important;
+    padding-left: 2rem !important;
     border-left: 1px solid #252525 !important;
-    box-sizing: border-box !important;
+    width: 100% !important;
   }
+}
 
-  /* Product details take 85% of right column width */
-  .product-container .product-descriptions,
-  .product-container > div,
-  .product-container form {
-    width: 85% !important;
-    max-width: 85% !important;
-    margin-left: 0 !important;
-    margin-right: auto !important;
-  }
+/* ── 3. VARIANT PILL BUTTONS LEFT/RIGHT PADDING & AUTO WIDTH ── */
+.button-group.w-commerce-commerceaddtocartoptionpillgroup {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  margin: 10px 0 18px 0 !important;
+  max-height: 220px !important;
+  overflow-y: auto !important;
+  padding-right: 4px !important;
+  width: 100% !important;
+}
 
-  /* Title formatting prevents weird letter wraps */
-  .title-label.producc,
-  .title-label {
-    white-space: normal !important;
-    word-break: break-word !important;
-    overflow-wrap: break-word !important;
-    line-height: 1.2 !important;
-    font-size: 2.2rem !important;
-    max-width: 100% !important;
+.button-2.w-commerce-commerceaddtocartoptionpill {
+  padding: 8px 16px !important; /* Generous left and right padding */
+  background-color: #161616 !important;
+  border: 1px solid #2e2e2e !important;
+  border-radius: 6px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 38px !important;
+  min-width: 52px !important;
+  width: auto !important; /* Auto width based on text length */
+  white-space: nowrap !important;
+  cursor: pointer !important;
+  box-sizing: border-box !important;
+}
+
+/* ── 4. TABLET & MEDIUM DEVICES 5REM MARGIN ON MORE-IMAGE-CONTAINER ── */
+@media (max-width: 991px) {
+  .more-image-container {
+    margin-top: 5rem !important;
   }
 }
