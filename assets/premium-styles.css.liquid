@@ -1286,21 +1286,22 @@ iframe[src*="userway"] {
 }
 
 /* ── HERO VIDEO SECTION OVERRIDES ─────────────────────────── */
-.hero-section {
+.hero-section,
+#shopify-section-main_section .hero-section {
   width: 100% !important;
   height: auto !important;
   min-height: 0 !important;
   display: flex !important;
   flex-direction: column !important;
   background-color: #000000 !important;
-  padding: 1.5rem 1.5rem !important; /* Spacing around the video container */
+  padding: 1.5rem 1.5rem !important;
   box-sizing: border-box !important;
-  margin-top: 90px !important; /* Start below sticky header navigation menu */
+  margin-top: 0 !important; /* Removed 90px margin-top */
 }
 
 .section-background-contents {
   width: 100% !important;
-  height: 80vh !important; /* Premium height scale */
+  height: 80vh !important;
   border-radius: 28px !important;
   overflow: hidden !important;
   position: relative !important;
@@ -1331,17 +1332,19 @@ iframe[src*="userway"] {
   right: 0 !important;
   bottom: 0 !important;
   position: absolute !important;
-  padding-top: 0 !important; /* Reset layout offset to center perfectly inside video */
+  padding-top: 0 !important;
 }
 
-@media screen and (max-width: 767px) {
-  .hero-section {
-    padding: 0.75rem 1rem !important;
-    margin-top: 60px !important; /* Spacing below header marquee menu */
+@media screen and (max-width: 991px) {
+  .hero-section,
+  #shopify-section-main_section .hero-section {
+    padding: 1rem 1rem !important;
+    margin-top: 0 !important;
   }
   .section-background-contents {
-    height: 68vh !important; /* Increased mobile video banner height */
-    border-radius: 18px !important;
+    height: 85vh !important; /* Increased height on smaller devices */
+    min-height: 520px !important;
+    border-radius: 20px !important;
   }
   .jj-hero-video-wrapper,
   .jj-hero-video-fallback,
@@ -1349,7 +1352,28 @@ iframe[src*="userway"] {
   .background-overlay,
   .section-background-contents .div-block-4,
   .section-background-contents .image-3 {
-    border-radius: 18px !important;
+    border-radius: 20px !important;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .hero-section,
+  #shopify-section-main_section .hero-section {
+    padding: 0.5rem 0.75rem !important;
+    margin-top: 0 !important;
+  }
+  .section-background-contents {
+    height: 85vh !important; /* Increased height on mobile */
+    min-height: 480px !important;
+    border-radius: 16px !important;
+  }
+  .jj-hero-video-wrapper,
+  .jj-hero-video-fallback,
+  .jj-hero-video,
+  .background-overlay,
+  .section-background-contents .div-block-4,
+  .section-background-contents .image-3 {
+    border-radius: 16px !important;
   }
 }
 
@@ -2139,4 +2163,44 @@ body.template-index .collection-list-2.contents-of-scroll,
 .template-index .collection-list-2.contents-of-scroll {
   padding-top: 0 !important;
   margin-top: 0 !important;
+}
+
+/* ── NEW DROPS COLLECTION CARDS MOBILE SIZING (65vh image, increased width) ── */
+@media screen and (max-width: 991px) {
+  .hero-main-collection .home-custom-img-wrap,
+  .home-section .home-custom-img-wrap,
+  .home-custom-grid .home-custom-img-wrap {
+    height: 65vh !important;
+    max-height: 65vh !important;
+  }
+  .hero-main-collection .collection-item-2,
+  .home-section .collection-item-2,
+  .home-custom-grid .collection-item-2 {
+    width: 88vw !important;
+    max-width: 88vw !important;
+    flex: 0 0 88vw !important;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .hero-main-collection .home-custom-img-wrap,
+  .home-section .home-custom-img-wrap,
+  .home-custom-grid .home-custom-img-wrap {
+    height: 65vh !important;
+    max-height: 65vh !important;
+  }
+  .hero-main-collection .home-custom-img,
+  .home-section .home-custom-img,
+  .home-custom-grid .home-custom-img {
+    height: 100% !important;
+    max-height: 65vh !important;
+    object-fit: cover !important;
+  }
+  .hero-main-collection .collection-item-2,
+  .home-section .collection-item-2,
+  .home-custom-grid .collection-item-2 {
+    width: 90vw !important;
+    max-width: 90vw !important;
+    flex: 0 0 90vw !important;
+  }
 }

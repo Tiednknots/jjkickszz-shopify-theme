@@ -1,10 +1,7 @@
 <style>
   /* --- Editable Sizing for Home Collection --- */
-  .home-custom-grid {
-    /* Add grid styles here if needed */
-  }
   .home-custom-img-wrap {
-    height: 350px; /* Increase Desktop Height Here */
+    height: 380px;
   }
   .home-custom-img {
     width: 100% !important;
@@ -13,9 +10,21 @@
     max-height: 100% !important;
     object-fit: cover !important;
   }
+  @media (max-width: 991px) {
+    .home-custom-img-wrap {
+      height: 65vh !important;
+      max-height: 65vh !important;
+    }
+  }
   @media (max-width: 767px) {
     .home-custom-img-wrap {
-      height: 250px; /* Increase Mobile Height Here */
+      height: 65vh !important;
+      max-height: 65vh !important;
+    }
+    .home-custom-grid .collection-item-2 {
+      width: 90vw !important;
+      max-width: 90vw !important;
+      flex: 0 0 90vw !important;
     }
   }
 </style>
