@@ -335,7 +335,7 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-    margin-top: 16px;
+    margin-top: 14px;
     padding: 8px 16px;
     background: transparent;
     border: 1px solid rgba(255,255,255,0.2);
@@ -354,6 +354,278 @@
     color: #ffffff;
     border-color: rgba(255,255,255,0.6);
     background: rgba(255,255,255,0.06);
+  }
+
+  /* ── PRODUCT SPECS GRID & COLLAPSIBLE ACCORDIONS ──────────────── */
+  .jj-product-specs-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px 16px !important;
+    margin: 24px 0 !important;
+    padding: 16px !important;
+    background: #0d0d0d !important;
+    border: 1px solid #1f1f1f !important;
+    border-radius: 8px !important;
+  }
+  .jj-spec-item {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2px !important;
+  }
+  .jj-spec-label {
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    color: rgba(255,255,255,0.45) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+    margin: 0 !important;
+  }
+  .jj-spec-value {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    color: #ffffff !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.04em !important;
+    margin: 0 !important;
+  }
+
+  .jj-accordion-wrap {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    margin: 20px 0 30px !important;
+  }
+  .jj-accordion-item {
+    border: 1px solid #1f1f1f !important;
+    border-radius: 8px !important;
+    background: #0d0d0d !important;
+    overflow: hidden !important;
+    transition: border-color 0.2s ease !important;
+  }
+  .jj-accordion-item.open {
+    border-color: #333333 !important;
+  }
+  .jj-accordion-trigger {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 14px 16px !important;
+    cursor: pointer !important;
+    user-select: none !important;
+    transition: background 0.15s ease !important;
+  }
+  .jj-accordion-trigger:hover {
+    background: #141414 !important;
+  }
+  .jj-accordion-title {
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.06em !important;
+    color: #ffffff !important;
+    margin: 0 !important;
+  }
+  .jj-accordion-icon {
+    font-size: 14px !important;
+    color: rgba(255,255,255,0.5) !important;
+    transition: transform 0.25s ease !important;
+  }
+  .jj-accordion-item.open .jj-accordion-icon {
+    transform: rotate(180deg) !important;
+    color: #ffffff !important;
+  }
+  .jj-accordion-content {
+    display: none !important;
+    padding: 0 16px 16px !important;
+    font-size: 12px !important;
+    line-height: 1.6 !important;
+    color: rgba(255,255,255,0.7) !important;
+  }
+  .jj-accordion-item.open .jj-accordion-content {
+    display: block !important;
+    animation: jj-acc-fade 0.2s ease !important;
+  }
+  @keyframes jj-acc-fade {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── IOS-STYLE SLIDE-UP CONTACT DRAWER ─────────────────────────── */
+  #jj-drawer-overlay {
+    position: fixed !important;
+    inset: 0 !important;
+    background: rgba(0, 0, 0, 0.75) !important;
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: opacity 0.3s ease, visibility 0.3s ease !important;
+    z-index: 99999998 !important;
+  }
+  #jj-drawer-overlay.open {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  #jj-contact-drawer {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 50% !important;
+    transform: translate(-50%, 100%) !important;
+    width: 100% !important;
+    max-width: 480px !important;
+    max-height: 90vh !important;
+    background: #0e0e0e !important;
+    border: 1px solid #222222 !important;
+    border-bottom: none !important;
+    border-radius: 20px 20px 0 0 !important;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.85) !important;
+    z-index: 99999999 !important;
+    overflow-y: auto !important;
+    scrollbar-width: none !important;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    box-sizing: border-box !important;
+    padding: 16px 24px 32px !important;
+  }
+  #jj-contact-drawer::-webkit-scrollbar { display: none !important; }
+  #jj-contact-drawer.open {
+    transform: translate(-50%, 0) !important;
+  }
+
+  .jj-drawer-handle {
+    width: 40px !important;
+    height: 4px !important;
+    background: rgba(255, 255, 255, 0.25) !important;
+    border-radius: 2px !important;
+    margin: 0 auto 16px !important;
+  }
+
+  .jj-drawer-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    margin-bottom: 20px !important;
+    padding-bottom: 12px !important;
+    border-bottom: 1px solid #1a1a1a !important;
+  }
+  .jj-drawer-title {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+    color: #ffffff !important;
+    margin: 0 !important;
+  }
+  .jj-drawer-close {
+    background: transparent !important;
+    border: none !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+    font-size: 24px !important;
+    line-height: 1 !important;
+    cursor: pointer !important;
+    padding: 4px 8px !important;
+    transition: color 0.15s ease !important;
+  }
+  .jj-drawer-close:hover { color: #ffffff !important; }
+
+  .jj-drawer-product-row {
+    display: flex !important;
+    align-items: center !important;
+    gap: 14px !important;
+    padding: 12px !important;
+    background: #141414 !important;
+    border: 1px solid #222222 !important;
+    border-radius: 10px !important;
+    margin-bottom: 20px !important;
+  }
+  .jj-drawer-product-img {
+    width: 48px !important;
+    height: 48px !important;
+    object-fit: cover !important;
+    border-radius: 6px !important;
+    background: #000 !important;
+  }
+  .jj-drawer-product-info { flex: 1 !important; min-width: 0 !important; }
+  .jj-drawer-product-title {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    color: #ffffff !important;
+    margin: 0 0 4px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  .jj-drawer-product-price {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 12px !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+    margin: 0 !important;
+  }
+
+  .jj-drawer-fields {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    margin-bottom: 20px !important;
+  }
+  .jj-drawer-field input,
+  .jj-drawer-field select,
+  .jj-drawer-field textarea {
+    width: 100% !important;
+    background: #141414 !important;
+    border: 1px solid #282828 !important;
+    border-radius: 8px !important;
+    padding: 12px 14px !important;
+    color: #ffffff !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 13px !important;
+    box-sizing: border-box !important;
+    outline: none !important;
+    transition: border-color 0.2s ease !important;
+  }
+  .jj-drawer-field input:focus,
+  .jj-drawer-field select:focus,
+  .jj-drawer-field textarea:focus {
+    border-color: rgba(255, 255, 255, 0.5) !important;
+  }
+  .jj-drawer-field textarea {
+    min-height: 80px !important;
+    resize: vertical !important;
+  }
+
+  .jj-drawer-submit {
+    width: 100% !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 14px !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
+    cursor: pointer !important;
+    transition: background 0.2s ease !important;
+  }
+  .jj-drawer-submit:hover { background: #e0e0e0 !important; }
+
+  .jj-drawer-success {
+    display: none;
+    margin-top: 12px;
+    color: #22c55e;
+    font-size: 12px;
+    text-align: center;
+    font-weight: 600;
+  }
+  .jj-drawer-error {
+    display: none;
+    margin-top: 12px;
+    color: #ef4444;
+    font-size: 12px;
+    text-align: center;
   }
 
   /* ── LIGHTBOX ──────────────────────────────────────────────────── */
@@ -727,8 +999,8 @@
                     {%- render "product-variants-data" product: product -%}
                   {%- endform -%}
                   
-                  <!-- ── ASK A QUESTION (DIRECT TO AI CHAT) ── -->
-                  <div style="display: flex; justify-content: center; width: 100%; margin-top: 14px;">
+                  <!-- ── ASK A QUESTION BUTTON ── -->
+                  <div style="display: flex; justify-content: center; width: 100%;">
                     <a href="javascript:void(0)" id="jj-ask-btn" class="jj-ask-question-btn">
                       ✦ Ask a Question About This Product
                     </a>
@@ -740,6 +1012,78 @@
                     <div data-node-type="commerce-add-to-cart-error" class="w-checkout-error-msg">Please select an option in all properties.</div>
                   </div>
                 </div>
+
+                <!-- ── PRODUCT DETAILS: SPECIFICATIONS GRID ── -->
+                <div class="jj-product-specs-grid">
+                  <div class="jj-spec-item">
+                    <span class="jj-spec-label">Release Year</span>
+                    <span class="jj-spec-value">{{ product.published_at | date: "%Y" | default: "2024" }}</span>
+                  </div>
+                  <div class="jj-spec-item">
+                    <span class="jj-spec-label">SKU / Code</span>
+                    <span class="jj-spec-value">{{ product.selected_or_first_available_variant.sku | default: "Verified Authentic" }}</span>
+                  </div>
+                  <div class="jj-spec-item">
+                    <span class="jj-spec-label">Colorway</span>
+                    <span class="jj-spec-value">{{ product.options_by_name['Color'].values.first | default: "Original / Multi" }}</span>
+                  </div>
+                  <div class="jj-spec-item">
+                    <span class="jj-spec-label">Condition</span>
+                    <span class="jj-spec-value">Brand New (Deadstock)</span>
+                  </div>
+                  <div class="jj-spec-item">
+                    <span class="jj-spec-label">Verification</span>
+                    <span class="jj-spec-value">100% Hand-Inspected</span>
+                  </div>
+                  <div class="jj-spec-item">
+                    <span class="jj-spec-label">Origin</span>
+                    <span class="jj-spec-value">{{ product.vendor | default: "Archive Collection" }}</span>
+                  </div>
+                </div>
+
+                <!-- ── PRODUCT DETAILS: COLLAPSIBLE ACCORDIONS ── -->
+                <div class="jj-accordion-wrap">
+                  <div class="jj-accordion-item">
+                    <div class="jj-accordion-trigger">
+                      <h4 class="jj-accordion-title">Product Features & Details</h4>
+                      <span class="jj-accordion-icon">▼</span>
+                    </div>
+                    <div class="jj-accordion-content">
+                      <p>Premium archival materials, high-density craftsmanship, detailed verification tags, and original brand packaging included with every authentic item.</p>
+                    </div>
+                  </div>
+
+                  <div class="jj-accordion-item">
+                    <div class="jj-accordion-trigger">
+                      <h4 class="jj-accordion-title">Sizing & Fit Guide</h4>
+                      <span class="jj-accordion-icon">▼</span>
+                    </div>
+                    <div class="jj-accordion-content">
+                      <p>Fits true to size. For sneakers, if you have wider feet or prefer extra room in the toe box, we recommend ordering half a size up. For apparel, fits standard athletic silhouette.</p>
+                    </div>
+                  </div>
+
+                  <div class="jj-accordion-item">
+                    <div class="jj-accordion-trigger">
+                      <h4 class="jj-accordion-title">Shipping & Delivery</h4>
+                      <span class="jj-accordion-icon">▼</span>
+                    </div>
+                    <div class="jj-accordion-content">
+                      <p>All orders are dispatched within 1–3 business days with insured courier tracking. Orders over $400 receive complimentary express shipping. Each box is double-boxed for transit protection.</p>
+                    </div>
+                  </div>
+
+                  <div class="jj-accordion-item">
+                    <div class="jj-accordion-trigger">
+                      <h4 class="jj-accordion-title">100% Authenticity Guarantee</h4>
+                      <span class="jj-accordion-icon">▼</span>
+                    </div>
+                    <div class="jj-accordion-content">
+                      <p>Every piece in our archive is subjected to rigorous multi-point physical authentication before shipping. If an item is ever determined to be inauthentic, we provide a full, unconditional 100% refund.</p>
+                    </div>
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>
@@ -804,6 +1148,55 @@
           <button class="jj-lb-arrow" id="jj-lb-next" aria-label="Next image">&#8594;</button>
         </div>
         <div class="jj-lb-counter" id="jj-lb-counter"></div>
+      </div>
+
+      <!-- ── IOS-STYLE SLIDE-UP CONTACT DRAWER ────────────────────── -->
+      <div id="jj-drawer-overlay"></div>
+      <div id="jj-contact-drawer" role="dialog" aria-modal="true" aria-label="Ask a question drawer">
+        <div class="jj-drawer-handle"></div>
+        <div class="jj-drawer-header">
+          <h2 class="jj-drawer-title">Ask a Question</h2>
+          <button class="jj-drawer-close" id="jj-drawer-close" aria-label="Close drawer">&times;</button>
+        </div>
+        <div class="jj-drawer-content">
+          <div class="jj-drawer-product-row">
+            <img src="{{ product.featured_image | img_url: '150x' }}" class="jj-drawer-product-img" alt="{{ product.title }}">
+            <div class="jj-drawer-product-info">
+              <h3 class="jj-drawer-product-title">{{ product.title }}</h3>
+              <p class="jj-drawer-product-price">{{ product.price | money }}</p>
+            </div>
+          </div>
+
+          <form id="jj-drawer-form">
+            <div class="jj-drawer-fields">
+              <div class="jj-drawer-field">
+                <input type="text" id="drawer-name" name="name" placeholder="Your Name" required autocomplete="name">
+              </div>
+              <div class="jj-drawer-field">
+                <input type="email" id="drawer-email" name="email" placeholder="Your Email" required autocomplete="email">
+              </div>
+              <div class="jj-drawer-field">
+                <input type="tel" id="drawer-phone" name="phone" placeholder="Phone Number (Optional)" autocomplete="tel">
+              </div>
+              <div class="jj-drawer-field">
+                <select id="drawer-reason" name="reason" required>
+                  <option value="Product Question" selected>Reason: Product Question</option>
+                  <option value="Sizing Advice">Reason: Sizing Advice</option>
+                  <option value="Availability">Reason: Availability / Restocks</option>
+                  <option value="Authenticity Verification">Reason: Authenticity Verification</option>
+                </select>
+              </div>
+              <div class="jj-drawer-field">
+                <textarea id="drawer-message" name="message" placeholder="Your Message" required>Hi, I have a question about the {{ product.title }}: </textarea>
+              </div>
+            </div>
+
+            <button type="submit" class="jj-drawer-submit">Send Message</button>
+            
+            <div class="jj-drawer-success" id="jj-drawer-success">✓ Connecting with JJKICKSZZ AI Curator...</div>
+            <div class="jj-drawer-error" id="jj-drawer-error">Something went wrong. Please try again.</div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
@@ -870,7 +1263,6 @@
     var lbIndex = 0;
     var lbZoomed = false;
     var lbScale = 1;
-    var lbTouchStartX = 0;
 
     function openLightbox(clickedSrc) {
       lb = document.getElementById('jj-lightbox');
@@ -1117,17 +1509,42 @@
       });
     }
 
-    // ── ASK A QUESTION (DIRECT TO AI CHAT) ─────────────────────────
-    function openAIChatWithProduct() {
-      var title = {{ product.title | json }};
-      if (window.jjAIChat && typeof window.jjAIChat.sendMessage === 'function') {
-        window.jjAIChat.open();
-        window.jjAIChat.sendMessage("Hi, I have a question about " + title);
-      } else if (window.jjAIChat && typeof window.jjAIChat.open === 'function') {
-        window.jjAIChat.open();
-      } else {
-        var trigger = document.getElementById('jj-ai-chat-trigger');
-        if (trigger) trigger.click();
+    // ── ACCORDIONS (EXPAND / COLLAPSE) ─────────────────────────────
+    function initAccordions() {
+      var triggers = document.querySelectorAll('.jj-accordion-trigger');
+      triggers.forEach(function(trigger) {
+        trigger.addEventListener('click', function() {
+          var item = trigger.closest('.jj-accordion-item');
+          if (item) {
+            item.classList.toggle('open');
+          }
+        });
+      });
+    }
+
+    // ── IOS SLIDE-UP CONTACT DRAWER & AI CHAT CONNECTION ───────────
+    var drawer = document.getElementById('jj-contact-drawer');
+    var drawerOverlay = document.getElementById('jj-drawer-overlay');
+    var drawerClose = document.getElementById('jj-drawer-close');
+    var drawerForm = document.getElementById('jj-drawer-form');
+
+    function openContactDrawer() {
+      var dOverlay = document.getElementById('jj-drawer-overlay');
+      var dDrawer = document.getElementById('jj-contact-drawer');
+      if (dOverlay && dDrawer) {
+        dOverlay.classList.add('open');
+        dDrawer.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeContactDrawer() {
+      var dOverlay = document.getElementById('jj-drawer-overlay');
+      var dDrawer = document.getElementById('jj-contact-drawer');
+      if (dOverlay && dDrawer) {
+        dOverlay.classList.remove('open');
+        dDrawer.classList.remove('open');
+        document.body.style.overflow = '';
       }
     }
 
@@ -1135,9 +1552,61 @@
       var askBtn = e.target.closest('#jj-ask-btn, .jj-ask-question-btn');
       if (askBtn) {
         e.preventDefault();
-        openAIChatWithProduct();
+        openContactDrawer();
       }
     });
+
+    if (drawerClose) drawerClose.addEventListener('click', closeContactDrawer);
+    if (drawerOverlay) drawerOverlay.addEventListener('click', closeContactDrawer);
+
+    if (drawerForm) {
+      drawerForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        var submitBtn = drawerForm.querySelector('.jj-drawer-submit');
+        var successMsg = document.getElementById('jj-drawer-success');
+        var errorMsg = document.getElementById('jj-drawer-error');
+
+        var name = document.getElementById('drawer-name').value.trim();
+        var email = document.getElementById('drawer-email').value.trim();
+        var message = document.getElementById('drawer-message').value.trim();
+        var reason = document.getElementById('drawer-reason').value;
+
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Sending...';
+        }
+        if (successMsg) successMsg.style.display = 'none';
+        if (errorMsg) errorMsg.style.display = 'none';
+
+        setTimeout(function() {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Send Message';
+          }
+          if (successMsg) {
+            successMsg.style.display = 'block';
+          }
+          
+          setTimeout(function() {
+            closeContactDrawer();
+            drawerForm.reset();
+            if (successMsg) successMsg.style.display = 'none';
+            
+            if (window.jjAIChat && typeof window.jjAIChat.sendMessage === 'function') {
+              var fullQuery = "I have a question about " + {{ product.title | json }} + " (" + reason + "): \"" + message + "\"";
+              window.jjAIChat.sendMessage(fullQuery);
+              
+              setTimeout(function() {
+                var disclaimerMsg = "Customer service will also review your question and respond to your email (" + email + ") within 24 hours if needed.";
+                window.jjAIChat.appendSystemMessage(disclaimerMsg);
+              }, 1500);
+            }
+          }, 800);
+        }, 600);
+      });
+    }
 
     // ── ADD TO CART AJAX ENGINE (PREVENTS PAGE RELOAD & OPENS DRAWER) ──
     function initAddToCart() {
@@ -1688,6 +2157,7 @@
       initThumbnailClicks();
       initDots();
       initVariantDropdowns();
+      initAccordions();
       initDesktopHoverZoom();
       initFitCurator();
       initAddToCart();

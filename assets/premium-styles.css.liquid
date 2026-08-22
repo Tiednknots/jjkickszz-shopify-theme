@@ -1849,13 +1849,17 @@ body.template-page-shop .jj-filter-wrap,
   top: 120px !important;
   left: 0 !important;
   width: 100% !important;
-  height: 46px !important;
+  height: auto !important;
+  min-height: 52px !important;
   z-index: 99980 !important;
   background-color: #0b0b0b !important;
+  border-top: 1px solid #222222 !important;
   border-bottom: 1px solid #222222 !important;
   margin: 0 !important;
-  padding: 0 !important;
+  padding: 10px 24px !important;
   box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
 }
 
 @media (max-width: 767px) {
@@ -1868,6 +1872,7 @@ body.template-page-shop .jj-filter-wrap,
   .template-page-shop .filter-contents,
   .template-page-shop .jj-filter-wrap {
     top: 110px !important;
+    padding: 8px 16px !important;
   }
 }
 
