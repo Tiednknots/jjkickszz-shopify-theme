@@ -837,15 +837,15 @@
                 <p class="paragraph desp">{{ product.metafields.udesly['description'] }}</p>
                 <div class="rich-text-block-3 w-richtext">{{ product.description }}</div>
                 <div class="brand-label">
-                  <h1 class="field-label">{{ 't3d75b67' | t }}</h1>
+                  <h1 class="field-label">Brand</h1>
                   <a href="/collections/vendors?q={{ product.vendor }}" class="paragraph sfs">{{ product.vendor }}</a>
                 </div>
                 <div class="brand-label">
-                  <h1 class="field-label">{{ 't441b8cfb' | t }}</h1>
-                  <a href="#" class="paragraph sfs other">{{ 't486d0d47' | t }}</a>
+                  <h1 class="field-label">Condition</h1>
+                  <a href="#" class="paragraph sfs other">Brand New</a>
                 </div>
                 <div class="brand-label des">
-                  <h1 class="field-label">{{ 'tn360d424' | t }}</h1>
+                  <h1 class="field-label">Description</h1>
                   <p class="paragraph sfs">{{ product.vendor }}</p>
                 </div>
                 <div show-only-one="true">
@@ -918,24 +918,24 @@
                     <div role="listitem" class="w-dyn-item">
                       <div class="div-block-619">
                         <div class="div-block-620">
-                          <p class="paragraph-17 df">{{ 't4bf37d97' | t }}</p>
-                          <p class="paragraph-17">{{ 't6305141b' | t }}</p>
+                          <p class="paragraph-17 df">Release Date</p>
+                          <p class="paragraph-17">{{ product.published_at | date: "%Y" | default: "2024" }}</p>
                         </div>
                         <div class="div-block-620">
-                          <p class="paragraph-17 df">{{ 't3cb98a7a' | t }}</p>
-                          <p class="paragraph-17">{{ 't33aa6306' | t }}</p>
+                          <p class="paragraph-17 df">SKU</p>
+                          <p class="paragraph-17">{{ product.selected_or_first_available_variant.sku | default: "Verified Authentic" }}</p>
                         </div>
                         <div class="div-block-620">
-                          <p class="paragraph-17 df">{{ 'tn645efc51' | t }}</p>
-                          <p class="paragraph-17">{{ 'tn73d82a17' | t }}</p>
+                          <p class="paragraph-17 df">Colorway</p>
+                          <p class="paragraph-17">{{ product.options_by_name['Color'].values.first | default: "Original / Multi" }}</p>
                         </div>
                         <div class="div-block-620">
-                          <p class="paragraph-17 df">{{ 't55a7ee46' | t }}</p>
-                          <p class="paragraph-17">{{ 'tn37b8d5a2' | t }}</p>
+                          <p class="paragraph-17 df">Condition</p>
+                          <p class="paragraph-17">Brand New (DS)</p>
                         </div>
                         <div class="div-block-620">
-                          <p class="paragraph-17 df">{{ 'tn7420556e' | t }}</p>
-                          <p class="paragraph-17">{{ 't4d7a8d9b' | t }}</p>
+                          <p class="paragraph-17 df">Authenticity</p>
+                          <p class="paragraph-17">100% Guaranteed</p>
                         </div>
                       </div>
                     </div>
@@ -945,38 +945,38 @@
                   <div class="rich-text-block-4 w-richtext">{{ product.metafields.udesly['story-richtext'] }}</div>
                   <div class="accordion-item">
                     <div class="accordion-item-trigger">
-                      <p class="paragraph-19">{{ 't727bf1d2' | t }}</p>
+                      <p class="paragraph-19">Product Features & Details</p>
                       <div class="icon-accordion-wrapper">
                         <div class="icon-accordion-line-1"></div>
                         <div class="icon-accordion-line-2"></div>
                       </div>
                     </div>
                     <div class="accordion-item-content">
-                      <p class="paragraph-20">{{ 't7be1211e' | t }}</p>
+                      <p class="paragraph-20">Premium archival materials, detailed verification tags, and original brand packaging included with every pair.</p>
                     </div>
                   </div>
                   <div class="accordion-item">
                     <div class="accordion-item-trigger">
-                      <p class="paragraph-19">{{ 'tn17f0bd4' | t }}</p>
+                      <p class="paragraph-19">Sizing & Fit Guide</p>
                       <div class="icon-accordion-wrapper">
                         <div class="icon-accordion-line-1"></div>
                         <div class="icon-accordion-line-2"></div>
                       </div>
                     </div>
                     <div class="accordion-item-content">
-                      <p class="paragraph-20">{{ 'tn64f0ea5d' | t }}</p>
+                      <p class="paragraph-20">Fits true to size. For wider feet or a more relaxed fit, we recommend ordering half a size up.</p>
                     </div>
                   </div>
                   <div class="accordion-item">
                     <div class="accordion-item-trigger">
-                      <p class="paragraph-19">{{ 't6bd2c3b8' | t }}</p>
+                      <p class="paragraph-19">Shipping & Delivery</p>
                       <div class="icon-accordion-wrapper">
                         <div class="icon-accordion-line-1"></div>
                         <div class="icon-accordion-line-2"></div>
                       </div>
                     </div>
                     <div class="accordion-item-content">
-                      <p class="paragraph-20">{{ 't70444fc2' | t }}</p>
+                      <p class="paragraph-20">Ships within 1–3 business days with insured courier tracking. Free shipping on orders over $400.</p>
                     </div>
                   </div>
                 </div>
@@ -1045,37 +1045,37 @@
                     <div role="list" class="collection-list-4 w-dyn-items">
                       <div role="listitem" class="w-dyn-item">
                         {%- unless product.metafields.udesly['features-richtext'] -%}<div class="div-block-634">
-                          <p class="paragraph-19">{{ 't727bf1d2' | t }}</p>
+                          <p class="paragraph-19">Features</p>
                           <div class="div-block-635">
                             <div class="text-block-10">{{ product.metafields.udesly['features-richtext'] }}</div>
                           </div>
                         </div>{%- endunless -%}
                         {%- unless product.metafields.udesly['sizing-richtext'] -%}<div class="div-block-634">
-                          <p class="paragraph-19">{{ 'tn17f0bd4' | t }}</p>
+                          <p class="paragraph-19">Sizing</p>
                           <div class="div-block-635">
                             <div class="text-block-10">{{ product.metafields.udesly['sizing-richtext'] }}</div>
                           </div>
                         </div>{%- endunless -%}
                         {%- unless product.metafields.udesly['shipping-richtext'] -%}<div class="div-block-634">
-                          <p class="paragraph-19">{{ 't6bd2c3b8' | t }}</p>
+                          <p class="paragraph-19">Shipping</p>
                           <div class="div-block-635">
                             <div class="text-block-10">{{ product.metafields.udesly['shipping-richtext'] }}</div>
                           </div>
                         </div>{%- endunless -%}
                         {%- unless product.metafields.udesly['authenticity-richtext'] -%}<div class="div-block-634">
-                          <p class="paragraph-19">{{ 't7e9eeea1' | t }}</p>
+                          <p class="paragraph-19">Authenticity</p>
                           <div class="div-block-635">
                             <div class="text-block-10">{{ product.metafields.udesly['authenticity-richtext'] }}</div>
                           </div>
                         </div>{%- endunless -%}
                         {%- unless product.metafields.udesly['story-richtext'] -%}<div class="div-block-634">
-                          <p class="paragraph-19">{{ 't68e14cb7' | t }}</p>
+                          <p class="paragraph-19">Story</p>
                           <div class="div-block-635">
                             <div class="text-block-10">{{ product.metafields.udesly['story-richtext'] }}</div>
                           </div>
                         </div>{%- endunless -%}
                         {%- unless product.metafields.udesly['description-richtext'] -%}<div class="div-block-634">
-                          <p class="paragraph-19">{{ 't3d75b67' | t }}</p>
+                          <p class="paragraph-19">Brand</p>
                           <div class="div-block-635">
                             <div class="text-block-10">{{ product.metafields.udesly['description-richtext'] }}</div>
                           </div>
