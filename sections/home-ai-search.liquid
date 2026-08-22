@@ -392,6 +392,47 @@
 
     if (!formEl || !inputEl) return;
 
+    var cachedCatalog = null;
+    var catalogLoading = false;
+
+    function getCatalog(callback) {
+      if (cachedCatalog !== null) {
+        callback(cachedCatalog);
+        return;
+      }
+      if (catalogLoading) {
+        var wait = setInterval(function() {
+          if (cachedCatalog !== null) {
+            clearInterval(wait);
+            callback(cachedCatalog);
+          }
+        }, 50);
+        return;
+      }
+      catalogLoading = true;
+      var rootPath = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
+      fetch(rootPath + 'products.json?limit=250')
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          var products = data.products || [];
+          cachedCatalog = products.filter(function(p) {
+            if (!p.variants || p.variants.length === 0) return false;
+            if (p.handle === 'shipping-insurance' || (p.title || '').includes('Insurance')) return false;
+            return p.variants.some(function(v) { return v.available !== false; });
+          });
+          catalogLoading = false;
+          callback(cachedCatalog);
+        })
+        .catch(function(err) {
+          console.error('[AISearch] Failed to fetch catalog:', err);
+          catalogLoading = false;
+          callback([]);
+        });
+    }
+
+    // Preload catalog on page load
+    setTimeout(function() { getCatalog(function() {}); }, 300);
+
     // Click handler for suggestion query chips
     var chips = container.querySelectorAll('.jj-ai-chip');
     chips.forEach(function(chip) {
@@ -413,7 +454,6 @@
 
     // Main search controller
     function performSearch(query) {
-      // Show loading, hide old results
       loadingEl.style.display = 'flex';
       resultsWrap.style.display = 'none';
       resultsContainer.innerHTML = '';
@@ -434,128 +474,113 @@
         filterSize = sizeMatch[1];
       }
 
-      // Build clean search query for predictive search API
-      var cleanQuery = query
-        .replace(/under\s*\$?\s*\d+/gi, '')
-        .replace(/below\s*\$?\s*\d+/gi, '')
-        .replace(/size\s*\d+(?:\.5)?/gi, '')
-        .replace(/something|anything|everything|shoes|sneakers|products|items/gi, '')
-        .trim();
+      // Stopwords to ignore
+      var stopwords = ['under', 'below', 'size', 'with', 'from', 'find', 'show', 'give', 'look', 'looking', 'what', 'have', 'some', 'please', 'product', 'products', 'item', 'items'];
+      var rawWords = queryLower.replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter(function(w) {
+        return w.length >= 2 && stopwords.indexOf(w) === -1;
+      });
 
-      // If clean query is empty, we fall back directly to fetching all products
-      if (cleanQuery.length === 0) {
-        fetchAllProductsFallback(maxPrice, filterSize);
-        return;
-      }
+      getCatalog(function(catalog) {
+        loadingEl.style.display = 'none';
 
-      var searchUrl = ((window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/') + 'search/suggest.json' +
-        '?q=' + encodeURIComponent(cleanQuery) +
-        '&resources[type]=product' +
-        '&resources[limit]=24';
+        if (!catalog || catalog.length === 0) {
+          resultsWrap.style.display = 'block';
+          resultsContainer.innerHTML = '<div class="jj-ai-no-results">Catalog currently loading. Please try again in a moment!</div>';
+          return;
+        }
 
-      fetch(searchUrl)
-        .then(function(res) { return res.json(); })
-        .then(function(data) {
-          var rawProducts = [];
-          if (data.resources && data.resources.results && data.resources.results.products) {
-            rawProducts = data.resources.results.products;
+        var scored = [];
+
+        catalog.forEach(function(p) {
+          var pTitle = (p.title || '').toLowerCase();
+          var pVendor = (p.vendor || '').toLowerCase();
+          var pType = (p.product_type || '').toLowerCase();
+          var pTags = (p.tags ? p.tags.join(' ') : '').toLowerCase();
+          var combined = pTitle + ' ' + pVendor + ' ' + pType + ' ' + pTags;
+
+          // Price filter
+          var firstAvail = p.variants.find(function(v) { return v.available !== false; }) || p.variants[0];
+          var priceVal = parseFloat(firstAvail ? firstAvail.price : 0);
+          if (maxPrice !== null && priceVal > maxPrice) return;
+
+          // Size filter
+          if (filterSize !== null) {
+            var hasSize = p.variants.some(function(v) {
+              if (v.available === false) return false;
+              var vT = (v.title || '').toLowerCase().replace(/\s+/g, '');
+              var sT = filterSize.toLowerCase().replace(/\s+/g, '');
+              return vT === sT || vT === 'us' + sT || vT.indexOf(sT) !== -1;
+            });
+            if (!hasSize) return;
           }
 
-          // Apply client-side filters (Price and Size)
-          var filteredProducts = filterProducts(rawProducts, maxPrice, filterSize);
+          var score = 0;
 
-          // If no products matched the query, fall back to scanning all products in case the keyword was generic
-          if (filteredProducts.length === 0) {
-            fetchAllProductsFallback(maxPrice, filterSize);
-          } else {
-            loadingEl.style.display = 'none';
-            renderResults(filteredProducts);
-          }
-        })
-        .catch(function(err) {
-          console.error('[AISearch] Predictive search failed, falling back:', err);
-          fetchAllProductsFallback(maxPrice, filterSize);
-        });
-    }
-
-    // Fallback: queries the Shopify collections/all JSON endpoint (always active and resolves all items)
-    function fetchAllProductsFallback(maxPrice, filterSize) {
-      var allProductsUrl = ((window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/') + 'collections/all/products.json?limit=50';
-      
-      fetch(allProductsUrl)
-        .then(function(res) { return res.json(); })
-        .then(function(data) {
-          loadingEl.style.display = 'none';
-          var rawProducts = [];
-          if (data && data.products) {
-            // Map REST products to the predictive search format
-            rawProducts = data.products.map(function(p) {
-              var priceNum = 0;
-              if (p.variants && p.variants.length > 0) {
-                priceNum = parseFloat(p.variants[0].price) || 0;
+          rawWords.forEach(function(word) {
+            // Specific category / product type aliases
+            if (word === 'shirt' || word === 'shirts' || word === 'tee' || word === 'tees' || word === 'tshirt') {
+              if (/tee|t-shirt|shirt|top|jersey|flannel|longsleeve/i.test(pType) || /tee|t-shirt|shirt|jersey/i.test(pTitle)) {
+                score += 20;
+              } else if (/jean|pant|short|hoodie|jacket|sneaker|shoe/i.test(pTitle)) {
+                score -= 20; // Disqualify jeans or shoes when searching for shirt
               }
+            } else if (word === 'jean' || word === 'jeans' || word === 'denim' || word === 'pants' || word === 'pant') {
+              if (/jean|denim|pant|trouser|cargo/i.test(pTitle) || /jean|pant|bottom/i.test(pType)) {
+                score += 20;
+              } else if (/tee|shirt|sneaker|shoe|hoodie/i.test(pTitle)) {
+                score -= 20; // Disqualify shirts or shoes when searching for jeans
+              }
+            } else if (word === 'shoe' || word === 'shoes' || word === 'sneaker' || word === 'sneakers' || word === 'kicks') {
+              if (/shoe|sneaker|jordan|dunk|yeezy|runner|foam|slide|boot/i.test(pTitle) || /shoe|footwear|sneaker/i.test(pType)) {
+                score += 20;
+              } else if (/tee|shirt|jean|pant|hoodie/i.test(pTitle)) {
+                score -= 20;
+              }
+            } else if (word === 'black') {
+              if (pTitle.indexOf('black') !== -1 || pTags.indexOf('black') !== -1 || combined.indexOf('black') !== -1 || pTitle.indexOf('chrome') !== -1 || pTitle.indexOf('noir') !== -1) {
+                score += 10;
+              }
+            } else if (word === 'roughplay') {
+              if (pTitle.indexOf('roughplay') !== -1 || pVendor.indexOf('roughplay') !== -1 || combined.indexOf('roughplay') !== -1) {
+                score += 40;
+              }
+            } else {
+              // General exact / partial matches
+              if (pVendor.indexOf(word) !== -1) score += 15;
+              if (pTitle.indexOf(word) !== -1) score += 12;
+              if (pTags.indexOf(word) !== -1) score += 8;
+              if (pType.indexOf(word) !== -1) score += 6;
+            }
+          });
 
-              return {
+          if (rawWords.length === 0 || score > 0) {
+            scored.push({
+              product: {
                 id: p.id,
                 title: p.title,
                 url: '/products/' + p.handle,
                 vendor: p.vendor,
-                price: priceNum,
-                available: p.variants ? p.variants.some(function(v) { return v.available; }) : false,
-                featured_image: { src: p.images && p.images.length > 0 ? p.images[0].src : '' },
-                variants: p.variants ? p.variants.map(function(v) {
-                  return { id: v.id, title: v.title, available: v.available };
-                }) : []
-              };
+                price: priceVal,
+                available: true,
+                featured_image: { src: (p.images && p.images.length > 0 ? (p.images[0].src || p.images[0]) : '') },
+                variants: p.variants.map(function(v) {
+                  return { id: v.id, title: v.title, available: v.available !== false };
+                })
+              },
+              score: score,
+              id: parseInt(p.id, 10) || 0
             });
           }
-
-          var filtered = filterProducts(rawProducts, maxPrice, filterSize);
-          renderResults(filtered);
-        })
-        .catch(function(err) {
-          console.error('[AISearch] Fallback loop failed:', err);
-          loadingEl.style.display = 'none';
-          resultsWrap.style.display = 'block';
-          resultsContainer.innerHTML = '<div class="jj-ai-no-results">Grails lookups are currently busy. Try again soon!</div>';
         });
-    }
 
-    // Shared filter function
-    function filterProducts(products, maxPrice, filterSize) {
-      return products.filter(function(prod) {
-        // Do not show sold out products
-        if (!prod.available) {
-          return false;
-        }
+        // Sort by highest relevance score first, then newest ID
+        scored.sort(function(a, b) {
+          if (b.score !== a.score) return b.score - a.score;
+          return b.id - a.id;
+        });
 
-        // Do not show products missing an image
-        var img = prod.featured_image ? (prod.featured_image.src || prod.featured_image) : (prod.image || '');
-        if (!img || img.indexOf('placeholder') !== -1 || img === '') {
-          return false;
-        }
-
-        // 1. Price Filter
-        if (maxPrice !== null) {
-          var priceNum = parseFloat(prod.price) || 0;
-          if (priceNum > maxPrice) {
-            return false;
-          }
-        }
-
-        // 2. Size Filter
-        if (filterSize !== null) {
-          if (prod.variants && prod.variants.length > 0) {
-            var sizeFound = prod.variants.some(function(v) {
-              var vTitle = v.title.toLowerCase().replace(/\s+/g, '').trim();
-              var checkSize = filterSize.replace(/\s+/g, '').trim();
-              return vTitle === checkSize || vTitle.indexOf(checkSize) !== -1;
-            });
-            if (!sizeFound) return false;
-          }
-        }
-
-        return true;
+        var finalProducts = scored.map(function(s) { return s.product; });
+        renderResults(finalProducts);
       });
     }
 
@@ -567,11 +592,6 @@
         resultsContainer.innerHTML = '<div class="jj-ai-no-results">No matches in stock right now. Try adjusting your query or sizes!</div>';
         return;
       }
-
-      // Recommend newer items first: sort products by ID descending (newest first)
-      products.sort(function(a, b) {
-        return (parseInt(b.id, 10) || 0) - (parseInt(a.id, 10) || 0);
-      });
 
       var html = '';
       products.forEach(function(p) {
