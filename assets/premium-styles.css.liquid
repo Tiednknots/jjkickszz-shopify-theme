@@ -2018,3 +2018,83 @@ body.template-page-shop .jj-filter-wrap {
     padding-top: 2rem !important;
   }
 }
+
+/* ==========================================================================
+   HOMEPAGE, PRODUCT, & SHOP CUSTOM EDITS
+   ========================================================================== */
+
+/* ── 1. HOMEPAGE MARQUEE (BELOW HERO, STICKY UNDER MENU AT TOP: 80PX) ── */
+.white-section.menu.sticky-on-scroll,
+.white-section.menu {
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  top: 80px !important;
+  z-index: 9990 !important;
+  width: 100% !important;
+  height: 40px !important;
+  background-color: #000000 !important;
+  border-bottom: 1px solid #222222 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* ── 2. PRODUCT PAGE EDITS ── */
+@media screen and (min-width: 992px) {
+  body.template-product div.div-block-629,
+  .template-product div.div-block-629 {
+    overflow: hidden !important;
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+  }
+
+  body.template-product .thumbnail-section,
+  .template-product .thumbnail-section {
+    max-height: none !important; /* Removed max-height */
+    position: static !important;
+    padding-top: 2rem !important;
+    width: 100% !important;
+  }
+
+  /* Consistent Main Image Sizing Across Medium & Large Screens */
+  .gallery-image-img,
+  #main-image {
+    width: 100% !important;
+    max-width: 100% !important;
+    aspect-ratio: 1 / 1 !important;
+    object-fit: cover !important;
+    border-radius: 12px !important;
+  }
+}
+
+/* ── 3. SHOP PAGE DESKTOP EDITS ── */
+@media screen and (min-width: 992px) {
+  .section-5.mobile.shop {
+    padding-top: 7rem !important;
+  }
+}
+
+/* Filter Bar Styling (Matches Hero Marquee #000000 background & #222222 border) */
+.filter-contents,
+.jj-filter-wrap {
+  background-color: #000000 !important;
+  border-bottom: 1px solid #222222 !important;
+}
+
+/* ── 4. SHOP PAGE MOBILE EDITS (NO EMPTY SPACE UNDER FILTER BAR) ── */
+@media screen and (max-width: 991px) {
+  .collection-list-2.shop.w-dyn-items,
+  .template-collection .collection-list-2.shop.w-dyn-items,
+  .template-page-shop .collection-list-2.shop.w-dyn-items {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+  }
+
+  body.template-collection .page-content,
+  body.template-page-shop .page-content,
+  .template-collection .collection-list-wrapper,
+  .template-page-shop .collection-list-wrapper {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+  }
+}
