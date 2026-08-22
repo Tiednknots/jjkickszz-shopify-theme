@@ -1,3 +1,100 @@
+
+async function sendLeadEmailNotification(env, customerInfo, productContext) {
+  if (!customerInfo || !customerInfo.email) return;
+
+  const toEmail = env.ADMIN_EMAIL || "support@jjkickszz.com";
+  const resendApiKey = env.RESEND_API_KEY || env.EMAIL_API_KEY;
+  const sendgridApiKey = env.SENDGRID_API_KEY;
+
+  const customerName = customerInfo.name || "Customer";
+  const customerEmail = customerInfo.email;
+  const customerPhone = customerInfo.phone || "Not provided";
+  const reason = customerInfo.reason || "Product Question";
+  const message = customerInfo.message || "";
+  const productTitle = (productContext && productContext.title) || "Store Inquiry";
+  const productPrice = (productContext && productContext.price) || "";
+  const productUrl = (productContext && productContext.url) || "https://jjkickszz.com";
+
+  const subject = `⚡ [JJKICKSZZ Lead] ${reason} - ${productTitle} (${customerName})`;
+  const htmlContent = `
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; background: #0b0b0b; color: #ffffff; padding: 24px; border-radius: 12px; border: 1px solid #222222;">
+      <h2 style="margin-top: 0; color: #ffffff; border-bottom: 1px solid #333333; padding-bottom: 12px;">⚡ New Customer Product Inquiry</h2>
+      
+      <div style="margin: 20px 0; background: #161616; padding: 16px; border-radius: 8px;">
+        <h3 style="margin-top: 0; font-size: 14px; text-transform: uppercase; color: #888888; letter-spacing: 1px;">Customer Details</h3>
+        <p style="margin: 6px 0;"><strong>Name:</strong> ${customerName}</p>
+        <p style="margin: 6px 0;"><strong>Email:</strong> <a href="mailto:${customerEmail}" style="color: #ffffff; text-decoration: underline;">${customerEmail}</a></p>
+        <p style="margin: 6px 0;"><strong>Phone:</strong> ${customerPhone}</p>
+        <p style="margin: 6px 0;"><strong>Reason:</strong> ${reason}</p>
+      </div>
+
+      <div style="margin: 20px 0; background: #161616; padding: 16px; border-radius: 8px;">
+        <h3 style="margin-top: 0; font-size: 14px; text-transform: uppercase; color: #888888; letter-spacing: 1px;">Product Details</h3>
+        <p style="margin: 6px 0;"><strong>Item:</strong> ${productTitle} (${productPrice})</p>
+        <p style="margin: 6px 0;"><strong>Product Link:</strong> <a href="${productUrl}" style="color: #3b82f6;">${productUrl}</a></p>
+      </div>
+
+      <div style="margin: 20px 0; background: #1f1f1f; padding: 16px; border-radius: 8px; border-left: 4px solid #ffffff;">
+        <h3 style="margin-top: 0; font-size: 14px; text-transform: uppercase; color: #cccccc; letter-spacing: 1px;">Inquiry Message</h3>
+        <p style="margin: 0; line-height: 1.6; white-space: pre-wrap;">${message}</p>
+      </div>
+
+      <p style="font-size: 12px; color: #666666; margin-top: 24px; border-top: 1px solid #222222; padding-top: 12px;">
+        Sent automatically from JJKICKSZZ Storefront Concierge.
+      </p>
+    </div>
+  `;
+
+  // 1. Send via Resend if API key available
+  if (resendApiKey) {
+    try {
+      await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${resendApiKey}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          from: env.FROM_EMAIL || "JJKICKSZZ Leads <onboarding@resend.dev>",
+          to: [toEmail],
+          reply_to: customerEmail,
+          subject: subject,
+          html: htmlContent
+        })
+      });
+      return;
+    } catch (err) {
+      console.error("[EmailNotification] Resend error:", err);
+    }
+  }
+
+  // 2. Send via SendGrid if API key available
+  if (sendgridApiKey) {
+    try {
+      await fetch("https://api.sendgrid.com/v3/mail/send", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${sendgridApiKey}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          personalizations: [{ to: [{ email: toEmail }] }],
+          from: { email: env.FROM_EMAIL || "leads@jjkickszz.com", name: "JJKICKSZZ Concierge" },
+          reply_to: { email: customerEmail, name: customerName },
+          subject: subject,
+          content: [{ type: "text/html", value: htmlContent }]
+        })
+      });
+      return;
+    } catch (err) {
+      console.error("[EmailNotification] SendGrid error:", err);
+    }
+  }
+
+  // 3. Fallback: Log captured lead
+  console.log(`[LeadCaptured] ${customerName} (${customerEmail}) inquired about ${productTitle}`);
+}
+
 /**
  * JJKICKSZZ AI — Cloudflare Worker
  * Model: gemini-3.6-flash (with automatic fallback to gemini-2.5-flash / gemini-3.5-flash-lite)
@@ -235,7 +332,13 @@ export default {
         return new Response(JSON.stringify({ error: "Invalid JSON" }), { status: 400, headers: { "Content-Type": "application/json", ...CORS_HEADERS } });
       }
 
-      const { message, history = [], productContext = null } = reqBody;
+      const { message, history = [], productContext = null, customerInfo = null } = reqBody;
+
+      // Asynchronously trigger email notification if lead captured
+      const effectiveLead = customerInfo || (productContext && productContext.customerInfo) || null;
+      if (effectiveLead && effectiveLead.email) {
+        env.ctx ? env.ctx.waitUntil(sendLeadEmailNotification(env, effectiveLead, productContext)) : sendLeadEmailNotification(env, effectiveLead, productContext);
+      }
       if (!message) {
         return new Response(JSON.stringify({ error: "Missing 'message' field" }), { status: 400, headers: { "Content-Type": "application/json", ...CORS_HEADERS } });
       }

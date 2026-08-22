@@ -591,7 +591,8 @@
           message: text,
           history: getChatHistory(),
           catalog: catalog,
-          productContext: productContext || null
+          productContext: productContext || null,
+          customerInfo: (productContext && productContext.customerInfo) || null
         };
 
         var workerEndpoint = 'https://jjkickszz-ai.create-d8d.workers.dev/';

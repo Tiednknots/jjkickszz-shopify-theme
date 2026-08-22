@@ -1606,12 +1606,20 @@
             
             if (window.jjAIChat && typeof window.jjAIChat.sendMessage === 'function') {
               var fullQuery = "I have a question about " + {{ product.title | json }} + " (" + reason + "): \"" + message + "\"";
+              var phoneVal = phoneEl ? phoneEl.value.trim() : '';
               var prodContext = {
                 title: {{ product.title | json }},
                 price: {{ product.price | money | json }},
                 vendor: {{ product.vendor | json }},
                 available_sizes: [{% for v in product.variants %}{% if v.available %}{{ v.title | json }}{% unless forloop.last %},{% endunless %}{% endif %}{% endfor %}],
-                url: window.location.href
+                url: window.location.href,
+                customerInfo: {
+                  name: name,
+                  email: email,
+                  phone: phoneVal,
+                  reason: reason,
+                  message: message
+                }
               };
               window.jjCurrentProductContext = prodContext;
               window.jjAIChat.sendMessage(fullQuery, prodContext);
