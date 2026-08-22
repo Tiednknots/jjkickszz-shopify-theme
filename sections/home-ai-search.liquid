@@ -632,11 +632,25 @@
             btn.textContent = 'Added!';
             setTimeout(function() { btn.textContent = 'Add to Cart'; }, 2000);
             
+            // Update cart count
+            fetch(rootPath + 'cart.js')
+              .then(function(r) { return r.json(); })
+              .then(function(cartData) {
+                var countEls = document.querySelectorAll('.w-commerce-commercecartopenlinkcount, .cart-quantity');
+                countEls.forEach(function(el) { el.textContent = cartData.item_count; });
+                var flashDot = document.querySelector('.cart-flash-dot');
+                if (flashDot) flashDot.style.display = cartData.item_count > 0 ? 'block' : 'none';
+              });
+
             // Dispatch Udesly cart drawer event
             if (typeof window.Udesly !== 'undefined') {
-              window.Udesly.dispatch('product-added', true);
-            } else {
-              window.location.href = '/cart';
+              try {
+                window.Udesly.dispatch('cart-should-be-updated');
+                window.Udesly.dispatch('product-added', true);
+              } catch(e) {}
+            }
+            if (typeof window.openCartDrawer === 'function') {
+              window.openCartDrawer();
             }
           })
           .catch(function(err) {

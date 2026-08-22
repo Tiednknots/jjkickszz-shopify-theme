@@ -471,39 +471,41 @@
     if (!triggerBtn || !drawerEl) return;
 
     // ── Live Product Catalog ─────────────────────────────────────────
-    // Fetched once when the drawer opens. NOTE: the Worker fetches its own
-    // live catalog from Shopify directly and does not read this field —
-    // it's kept here only in case you want the Worker to trust the
-    // frontend's copy in the future. Safe to leave as-is.
     var liveCatalog = null;
+    var liveProductsArray = [];
 
     function fetchLiveCatalog(callback) {
-      if (liveCatalog !== null) { callback(liveCatalog); return; }
-      fetch('/collections/all/products.json?limit=250')
+      if (liveCatalog !== null) { callback(liveCatalog, liveProductsArray); return; }
+      var rootPath = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
+      fetch(rootPath + 'products.json?limit=250')
         .then(function(r) { return r.json(); })
         .then(function(data) {
           var products = (data && data.products) ? data.products : [];
-          var lines = products.map(function(p) {
-            var price = p.variants && p.variants[0] ? ('$' + (parseFloat(p.variants[0].price)).toFixed(0)) : '';
-            var colors = [];
-            p.options && p.options.forEach(function(opt) {
-              if (opt.name.toLowerCase() === 'color') colors = opt.values;
-            });
-            var colorStr = colors.length ? ' | Colors: ' + colors.join(', ') : '';
+          liveProductsArray = products.filter(function(p) {
+            if (!p.variants || p.variants.length === 0) return false;
+            if (p.handle === 'shipping-insurance' || (p.title || '').includes('Insurance')) return false;
+            return p.variants.some(function(v) { return v.available !== false; });
+          });
+
+          var lines = liveProductsArray.map(function(p) {
+            var firstAvail = p.variants.find(function(v) { return v.available !== false; }) || p.variants[0];
+            var price = firstAvail ? ('$' + parseFloat(firstAvail.price).toFixed(0)) : '';
+            var sizes = p.variants.map(function(v) { return v.title; }).filter(function(s) { return s && s !== 'Default Title'; }).join(', ');
             var desc = p.body_html ? p.body_html.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim().slice(0, 100) : '';
             return 'Handle: ' + p.handle +
               ' | Name: ' + p.title +
+              ' | Vendor: ' + (p.vendor || 'JJKICKSZZ') +
               ' | Type: ' + (p.product_type || 'Apparel') +
               ' | Price: ' + price +
-              colorStr +
+              (sizes ? ' | Sizes: ' + sizes : '') +
               (desc ? ' | Description: ' + desc : '');
           });
           liveCatalog = lines.join('\n');
-          callback(liveCatalog);
+          callback(liveCatalog, liveProductsArray);
         })
         .catch(function() {
-          liveCatalog = ''; // fallback — worker will use its own live catalog
-          callback(liveCatalog);
+          liveCatalog = '';
+          callback(liveCatalog, liveProductsArray);
         });
     }
     // ────────────────────────────────────────────────────────────────
@@ -756,11 +758,25 @@
           addBtn.textContent = 'Added!';
           setTimeout(function() { addBtn.textContent = btnText; }, 2000);
           
+          // Update cart count
+          fetch(rootPath + 'cart.js')
+            .then(function(r) { return r.json(); })
+            .then(function(cartData) {
+              var countEls = document.querySelectorAll('.w-commerce-commercecartopenlinkcount, .cart-quantity');
+              countEls.forEach(function(el) { el.textContent = cartData.item_count; });
+              var flashDot = document.querySelector('.cart-flash-dot');
+              if (flashDot) flashDot.style.display = cartData.item_count > 0 ? 'block' : 'none';
+            });
+
           // Trigger theme cart drawer
           if (typeof window.Udesly !== 'undefined') {
-            window.Udesly.dispatch('product-added', true);
-          } else {
-            window.location.href = '/cart';
+            try {
+              window.Udesly.dispatch('cart-should-be-updated');
+              window.Udesly.dispatch('product-added', true);
+            } catch(e) {}
+          }
+          if (typeof window.openCartDrawer === 'function') {
+            window.openCartDrawer();
           }
         })
         .catch(function(err) {
@@ -783,22 +799,64 @@
       var textLower = text.toLowerCase();
       var botResponse = '';
 
-      if (textLower.indexOf('outfit') !== -1 || textLower.indexOf('coordinate') !== -1) {
-        // Fallback Stylist match (uses active best-sellers!)
-        botResponse = "I've coordinated a clean street fit from our current catalog featuring our popular shirts and tees: [Product: 2-in-1-hybrid-tee] [Product: after-life-tee]";
-      } else if (textLower.indexOf('jordan') !== -1 || textLower.indexOf('sneaker') !== -1 || textLower.indexOf('amiri') !== -1) {
-        botResponse = "Searching the collection for premium items... Try checking these models currently in stock: [Product: amiri-ma-core-logo-tee] [Product: 2-in-1-hybrid-tee]";
-      } else if (textLower.indexOf('return') !== -1 || textLower.indexOf('refund') !== -1) {
-        botResponse = "All sales are final due to the high demand and exclusive nature of our inventory. If you have an order issue, please drop us a message on the Contact page!";
+      if (textLower.indexOf('return') !== -1 || textLower.indexOf('refund') !== -1) {
+        botResponse = "All sales are final due to the high demand and exclusive nature of our inventory. Every item is 100% verified authentic before dispatch!";
       } else if (textLower.indexOf('shipping') !== -1 || textLower.indexOf('delivery') !== -1) {
-        botResponse = "Orders are processed within 1-3 business days. Shipping takes approximately 5-8 days depending on your location. We offer free shipping on all orders over $400!";
+        botResponse = "Orders are processed within 1-3 business days. We offer Free Shipping on orders over $400, and local in-store pickup in NYC!";
+      } else if (textLower.indexOf('pickup') !== -1 || textLower.indexOf('nyc') !== -1 || textLower.indexOf('store') !== -1) {
+        botResponse = "You can select NYC In-Store Pickup directly inside the cart drawer for local pickup at checkout!";
       } else {
-        botResponse = "I'm having trouble reaching live inventory right now, one second and try again, or browse: [Product: 2-in-1-hybrid-tee]";
+        // Smart Inventory Search Engine across live products
+        var matched = [];
+        var words = textLower.replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter(function(w) { return w.length > 2; });
+
+        if (liveProductsArray && liveProductsArray.length > 0) {
+          liveProductsArray.forEach(function(p) {
+            var score = 0;
+            var searchable = ((p.title || '') + ' ' + (p.vendor || '') + ' ' + (p.product_type || '') + ' ' + (p.tags ? p.tags.join(' ') : '')).toLowerCase();
+            
+            words.forEach(function(w) {
+              if (searchable.indexOf(w) !== -1) score += 2;
+            });
+
+            // Size match
+            if (p.variants) {
+              p.variants.forEach(function(v) {
+                var vTitle = (v.title || '').toLowerCase();
+                words.forEach(function(w) {
+                  if (vTitle === w || vTitle.indexOf(w) !== -1) score += 3;
+                });
+              });
+            }
+
+            if (score > 0) {
+              matched.push({ product: p, score: score });
+            }
+          });
+
+          matched.sort(function(a, b) { return b.score - a.score; });
+        }
+
+        var topProducts = matched.slice(0, 3).map(function(m) { return m.product; });
+        if (topProducts.length === 0 && liveProductsArray && liveProductsArray.length > 0) {
+          topProducts = liveProductsArray.slice(0, 3);
+        }
+
+        if (topProducts.length > 0) {
+          var handlesStr = topProducts.map(function(p) { return '[Product: ' + p.handle + ']'; }).join(' ');
+          if (textLower.indexOf('outfit') !== -1 || textLower.indexOf('coordinate') !== -1) {
+            botResponse = "Here is a curated outfit selection from our live inventory:\n\n" + handlesStr;
+          } else {
+            botResponse = "Here are the top matches curated from our current in-stock inventory:\n\n" + handlesStr;
+          }
+        } else {
+          botResponse = "I couldn't find an exact match in stock right now. Try checking our Shop page or searching by brand/size!";
+        }
       }
 
       setTimeout(function() {
         processBotResponse(botResponse);
-      }, 800);
+      }, 500);
     }
 
     // Helper functions

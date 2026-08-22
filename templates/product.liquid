@@ -1509,6 +1509,21 @@
               });
             }
           }
+
+          // Match variant from product.variants JSON and update form variant ID
+          if (currentProduct && currentProduct.variants) {
+            var matchedVariant = currentProduct.variants.find(function(v) {
+              return (v.title === selectedVal || v.options.includes(selectedVal) || v.option1 === selectedVal || v.option2 === selectedVal || v.option3 === selectedVal);
+            });
+            if (matchedVariant) {
+              currentProduct.selectedVariantId = matchedVariant.id;
+              var form = document.querySelector('form[action^="/cart/add"], .w-commerce-commerceaddtocartform');
+              if (form) {
+                var idInput = form.querySelector('[name="id"]');
+                if (idInput) idInput.value = matchedVariant.id;
+              }
+            }
+          }
         });
       });
     }
@@ -1644,88 +1659,103 @@
 
     // ── ADD TO CART AJAX ENGINE (PREVENTS PAGE RELOAD & OPENS DRAWER) ──
     function initAddToCart() {
-      document.addEventListener('submit', function(e) {
-        var form = e.target.closest('form[action^="/cart/add"], .w-commerce-commerceaddtocartform');
-        if (!form) return;
+      var forms = document.querySelectorAll('form[action^="/cart/add"], .w-commerce-commerceaddtocartform');
+      forms.forEach(function(form) {
+        // Prevent native submit on the form
+        form.onsubmit = function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          return false;
+        };
 
-        e.preventDefault();
-        e.stopPropagation();
-        if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
-
-        var selectEl = form.querySelector('.jj-styled-select');
-        var selectedVal = selectEl ? selectEl.value : null;
-
-        var variantId = null;
-        var variantIdInput = form.querySelector('[name="id"]');
-        if (variantIdInput && variantIdInput.value) {
-          variantId = variantIdInput.value;
-        }
-
-        if (!variantId && selectedVal && currentProduct && currentProduct.variants) {
-          var match = currentProduct.variants.find(function(v) {
-            return v.options.includes(selectedVal) || v.title.includes(selectedVal);
-          });
-          if (match) variantId = match.id;
-        }
-
-        if (!variantId && currentProduct && currentProduct.selectedVariantId) {
-          variantId = currentProduct.selectedVariantId;
-        }
-
-        if (!variantId) {
-          alert('Please select a size / variant option.');
-          return;
-        }
-
-        var submitBtn = form.querySelector('[type="submit"], .add-to-cart-button');
+        var submitBtn = form.querySelector('[type="submit"], .add-to-cart-button, [data-node-type="commerce-add-to-cart-button"]');
         if (submitBtn) {
-          submitBtn.disabled = true;
-          if (submitBtn.value) submitBtn.value = 'Adding...';
-          else submitBtn.textContent = 'Adding...';
-        }
+          submitBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
 
-        fetch('/cart/add.js', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ items: [{ id: parseInt(variantId, 10), quantity: 1 }] })
-        })
-        .then(function(res) { return res.json(); })
-        .then(function(data) {
-          if (submitBtn) {
-            submitBtn.disabled = false;
-            if (submitBtn.value) submitBtn.value = 'Added!';
-            else submitBtn.textContent = 'Added!';
-            setTimeout(function() {
+            var selectEl = form.querySelector('.jj-styled-select');
+            var selectedVal = selectEl ? selectEl.value : null;
+
+            var variantId = null;
+            var variantIdInput = form.querySelector('[name="id"]');
+            if (variantIdInput && variantIdInput.value) {
+              variantId = variantIdInput.value;
+            }
+
+            if (!variantId && selectedVal && currentProduct && currentProduct.variants) {
+              var match = currentProduct.variants.find(function(v) {
+                return (v.title === selectedVal || v.options.includes(selectedVal) || v.option1 === selectedVal || v.option2 === selectedVal || v.option3 === selectedVal);
+              });
+              if (match) variantId = match.id;
+            }
+
+            if (!variantId && currentProduct && currentProduct.selectedVariantId) {
+              variantId = currentProduct.selectedVariantId;
+            }
+
+            if (!variantId && currentProduct && currentProduct.variants && currentProduct.variants.length === 1) {
+              variantId = currentProduct.variants[0].id;
+            }
+
+            if (!variantId) {
+              alert('Please select a size / variant option before adding to cart.');
+              return;
+            }
+
+            submitBtn.disabled = true;
+            if (submitBtn.value) submitBtn.value = 'Adding...';
+            else submitBtn.textContent = 'Adding...';
+
+            var rootPath = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
+            fetch(rootPath + 'cart/add.js', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ items: [{ id: parseInt(variantId, 10), quantity: 1 }] })
+            })
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+              submitBtn.disabled = false;
+              if (submitBtn.value) submitBtn.value = 'Added!';
+              else submitBtn.textContent = 'Added!';
+              setTimeout(function() {
+                if (submitBtn.value) submitBtn.value = 'Add to Cart';
+                else submitBtn.textContent = 'Add to Cart';
+              }, 2000);
+
+              // Update live cart counts
+              fetch(rootPath + 'cart.js')
+                .then(function(r) { return r.json(); })
+                .then(function(cartData) {
+                  var countEls = document.querySelectorAll('.w-commerce-commercecartopenlinkcount, .cart-quantity');
+                  countEls.forEach(function(el) { el.textContent = cartData.item_count; });
+                  var flashDot = document.querySelector('.cart-flash-dot');
+                  if (flashDot) flashDot.style.display = cartData.item_count > 0 ? 'block' : 'none';
+                });
+
+              // Dispatch Udesly cart events
+              if (typeof window.Udesly !== 'undefined') {
+                try {
+                  window.Udesly.dispatch('cart-should-be-updated');
+                  window.Udesly.dispatch('product-added', true);
+                } catch(uErr) {}
+              }
+
+              // Open cart drawer smoothly without page reload
+              if (typeof window.openCartDrawer === 'function') {
+                window.openCartDrawer();
+              }
+            })
+            .catch(function(err) {
+              submitBtn.disabled = false;
               if (submitBtn.value) submitBtn.value = 'Add to Cart';
               else submitBtn.textContent = 'Add to Cart';
-            }, 2000);
-          }
-          fetch('/cart.js')
-            .then(function(r) { return r.json(); })
-            .then(function(cartData) {
-              var countEl = document.querySelector('.w-commerce-commercecartopenlinkcount, .cart-quantity');
-              if (countEl) countEl.textContent = cartData.item_count;
-              var flashDot = document.querySelector('.cart-flash-dot');
-              if (flashDot) flashDot.style.display = cartData.item_count > 0 ? 'block' : 'none';
+              console.error('Add to Cart error:', err);
             });
-
-          var cartLink = document.querySelector('.w-commerce-commercecartopenlink, [data-node-type="commerce-cart-open-link"]');
-          if (cartLink) {
-            cartLink.click();
-          }
-          if (typeof window.Udesly !== 'undefined') {
-            window.Udesly.dispatch('product-added', true);
-          }
-        })
-        .catch(function(err) {
-          if (submitBtn) {
-            submitBtn.disabled = false;
-            if (submitBtn.value) submitBtn.value = 'Add to Cart';
-            else submitBtn.textContent = 'Add to Cart';
-          }
-          console.error('Add to Cart error:', err);
-        });
-      }, true);
+          });
+        }
+      });
     }
 
     // ── FIT CURATOR WIDGET ─────────────────────────────────────────
