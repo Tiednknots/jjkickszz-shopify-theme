@@ -1,6 +1,6 @@
 {%- assign headerSnippetPath = "header-index" -%}{%- assign wfPage = "692ec189f4f62ea5a929da5b" -%}{%- assign bodyClasses = "body-5" -%}
 <style>
-  /* ── 0. IMMEDIATE CRITICAL LAYOUT STYLES (PREVENTS FLASH OF WRONG GALLERY) ── */
+  /* ── 0. IMMEDIATE CRITICAL LAYOUT STYLES ─────────────────────── */
   .w-commerce-commerceaddtocarterrorstate { display: none !important; }
 
   /* ── PRODUCT PAGE 2-COLUMN GRID — DESKTOP ─────────────────────── */
@@ -8,7 +8,7 @@
     .div-block-629 {
       display: grid !important;
       grid-template-columns: 1fr 1fr !important;
-      gap: 3rem !important;
+      gap: 3.5rem !important;
       align-items: start !important;
       padding: 2rem 3rem 4rem !important;
       box-sizing: border-box !important;
@@ -28,9 +28,11 @@
       max-width: 100% !important;
       margin: 0 auto !important;
       overflow: visible !important;
-      max-height: none !important;
-      height: auto !important;
+      height: calc(100vh - 160px) !important;
+      max-height: calc(100vh - 160px) !important;
       box-sizing: border-box !important;
+      display: flex !important;
+      align-items: center !important;
     }
 
     /* RIGHT: Normal scroll — no sticky, NO internal scrollbar */
@@ -55,14 +57,16 @@
     .jj-gallery-mobile { display: none !important; }
     .jj-gallery-desktop { display: flex !important; }
 
-    /* ── DESKTOP: Thumbnail strip left of focal image ── */
+    /* ── DESKTOP: Thumbnail strip left + 90% height focal image right ── */
     .jj-gallery-desktop {
       display: flex !important;
       flex-direction: row !important;
-      align-items: flex-start !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
       gap: 16px !important;
       width: 100% !important;
-      max-width: 100% !important;
+      height: 100% !important;
+      max-height: 100% !important;
       box-sizing: border-box !important;
     }
 
@@ -81,10 +85,14 @@
       min-width: 72px !important;
       max-width: 72px !important;
       flex-shrink: 0 !important;
-      max-height: calc(100vh - 160px) !important;
+      height: 90% !important;
+      max-height: 90% !important;
       overflow-y: auto !important;
       scrollbar-width: none !important;
       box-sizing: border-box !important;
+      position: relative !important;
+      z-index: 20 !important;
+      pointer-events: auto !important;
     }
     .jj-thumb-strip::-webkit-scrollbar { display: none !important; }
 
@@ -100,6 +108,10 @@
       flex-shrink: 0 !important;
       transition: opacity 0.2s ease, border-color 0.2s ease !important;
       background: #111 !important;
+      pointer-events: auto !important;
+      position: relative !important;
+      z-index: 21 !important;
+      user-select: none !important;
     }
     .jj-thumb:hover { opacity: 0.85 !important; }
     .jj-thumb.jj-thumb-active {
@@ -107,36 +119,39 @@
       border-color: #ffffff !important;
     }
 
-    /* Focal image container: hover zoom ready */
+    /* Focal image container: Covers 90% height of the left side column */
     .jj-focal-wrap {
       flex: 1 !important;
       min-width: 0 !important;
-      max-width: calc(100% - 88px) !important;
+      height: 90% !important;
+      max-height: 90% !important;
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
-      background: #090909 !important;
+      background: #000000 !important;
       border: 1px solid #1c1c1c !important;
       border-radius: 12px !important;
       overflow: hidden !important;
       box-sizing: border-box !important;
       cursor: zoom-in !important;
       position: relative !important;
+      z-index: 10 !important;
     }
     .jj-gallery-single .jj-focal-wrap {
       max-width: 100% !important;
     }
     .jj-focal-image {
       width: 100% !important;
+      height: 100% !important;
+      max-height: 100% !important;
       max-width: 100% !important;
-      max-height: calc(100vh - 160px) !important;
-      aspect-ratio: 1 / 1 !important;
       object-fit: contain !important;
       border-radius: 12px !important;
       display: block !important;
       background: transparent !important;
       transition: transform 0.15s ease-out !important;
       user-select: none !important;
+      pointer-events: auto !important;
     }
   }
 
@@ -321,197 +336,24 @@
     justify-content: center;
     gap: 6px;
     margin-top: 16px;
-    padding: 6px 0;
+    padding: 8px 16px;
     background: transparent;
-    border: none;
-    color: rgba(255,255,255,0.45);
-    font-family: 'Inter', sans-serif;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    text-transform: none;
-    text-decoration: underline;
-    cursor: pointer;
-    transition: color 0.2s ease;
-  }
-  .jj-ask-question-btn:hover { color: rgba(255,255,255,0.9); }
-
-  /* ── IOS-STYLE SLIDE-UP CONTACT DRAWER ─────────────────────────── */
-  #jj-drawer-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.75);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-    z-index: 999998;
-  }
-  #jj-drawer-overlay.open {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  #jj-contact-drawer {
-    position: fixed;
-    bottom: 0;
-    left: 50%;
-    transform: translate(-50%, 100%);
-    width: 100%;
-    max-width: 480px;
-    max-height: 90vh;
-    background: #0e0e0e;
-    border: 1px solid #222222;
-    border-bottom: none;
-    border-radius: 20px 20px 0 0;
-    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.8);
-    z-index: 999999;
-    overflow-y: auto;
-    scrollbar-width: none;
-    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    box-sizing: border-box;
-    padding: 16px 24px 32px;
-  }
-  #jj-contact-drawer::-webkit-scrollbar { display: none; }
-  #jj-contact-drawer.open {
-    transform: translate(-50%, 0);
-  }
-
-  .jj-drawer-handle {
-    width: 40px;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.25);
-    border-radius: 2px;
-    margin: 0 auto 16px;
-  }
-
-  .jj-drawer-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid #1a1a1a;
-  }
-  .jj-drawer-title {
-    font-family: 'Inter', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: #ffffff;
-    margin: 0;
-  }
-  .jj-drawer-close {
-    background: transparent;
-    border: none;
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 24px;
-    line-height: 1;
-    cursor: pointer;
-    padding: 4px 8px;
-    transition: color 0.15s ease;
-  }
-  .jj-drawer-close:hover { color: #ffffff; }
-
-  .jj-drawer-product-row {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 12px;
-    background: #141414;
-    border: 1px solid #222222;
-    border-radius: 10px;
-    margin-bottom: 20px;
-  }
-  .jj-drawer-product-img {
-    width: 48px;
-    height: 48px;
-    object-fit: cover;
+    border: 1px solid rgba(255,255,255,0.2);
     border-radius: 6px;
-    background: #000;
-  }
-  .jj-drawer-product-info { flex: 1; min-width: 0; }
-  .jj-drawer-product-title {
+    color: rgba(255,255,255,0.7);
     font-family: 'Inter', sans-serif;
     font-size: 12px;
     font-weight: 600;
-    color: #ffffff;
-    margin: 0 0 4px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .jj-drawer-product-price {
-    font-family: 'Inter', sans-serif;
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.6);
-    margin: 0;
-  }
-
-  .jj-drawer-fields {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 20px;
-  }
-  .jj-drawer-field input,
-  .jj-drawer-field select,
-  .jj-drawer-field textarea {
-    width: 100%;
-    background: #141414;
-    border: 1px solid #282828;
-    border-radius: 8px;
-    padding: 12px 14px;
-    color: #ffffff;
-    font-family: 'Inter', sans-serif;
-    font-size: 13px;
-    box-sizing: border-box;
-    outline: none;
-    transition: border-color 0.2s ease;
-  }
-  .jj-drawer-field input:focus,
-  .jj-drawer-field select:focus,
-  .jj-drawer-field textarea:focus {
-    border-color: rgba(255, 255, 255, 0.5);
-  }
-  .jj-drawer-field textarea {
-    min-height: 80px;
-    resize: vertical;
-  }
-
-  .jj-drawer-submit {
-    width: 100%;
-    background: #ffffff;
-    color: #000000;
-    border: none;
-    border-radius: 8px;
-    padding: 14px;
-    font-family: 'Inter', sans-serif;
-    font-size: 12px;
-    font-weight: 700;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    text-decoration: none;
     cursor: pointer;
-    transition: background 0.2s ease;
+    transition: all 0.2s ease;
   }
-  .jj-drawer-submit:hover { background: #e0e0e0; }
-
-  .jj-drawer-success {
-    display: none;
-    margin-top: 12px;
-    color: #22c55e;
-    font-size: 12px;
-    text-align: center;
-    font-weight: 600;
-  }
-  .jj-drawer-error {
-    display: none;
-    margin-top: 12px;
-    color: #ef4444;
-    font-size: 12px;
-    text-align: center;
+  .jj-ask-question-btn:hover {
+    color: #ffffff;
+    border-color: rgba(255,255,255,0.6);
+    background: rgba(255,255,255,0.06);
   }
 
   /* ── LIGHTBOX ──────────────────────────────────────────────────── */
@@ -519,7 +361,7 @@
     display: none;
     position: fixed;
     inset: 0;
-    z-index: 999999;
+    z-index: 9999999;
     background: rgba(0,0,0,0.97);
     align-items: center;
     justify-content: center;
@@ -732,9 +574,9 @@
       <div class="product-template-container">
         <div class="div-block-631"></div>
         <div class="div-block-629">
+          <!-- ── LEFT COLUMN: 90% HEIGHT FOCAL IMAGE + THUMBNAILS ── -->
           <div class="thumbnail-section">
             {%- if product.images.size > 1 -%}
-              <!-- ── DESKTOP: Thumbnail strip left + focal image right ── -->
               <div class="jj-gallery-desktop">
                 <div class="jj-thumb-strip">
                   {%- for image in product.images -%}
@@ -761,7 +603,7 @@
                 </div>
               </div>
 
-              <!-- ── MOBILE/TABLET: Horizontal swipe carousel ── -->
+              <!-- Mobile/Tablet swipe carousel -->
               <div class="jj-gallery-mobile">
                 <div class="jj-mobile-swipe" id="jj-mobile-swipe">
                   {%- for image in product.images -%}
@@ -775,7 +617,6 @@
                     >
                   {%- endfor -%}
                 </div>
-                <!-- Mobile indicator lines -->
                 <div class="jj-swipe-dots" id="jj-swipe-dots">
                   {%- for image in product.images -%}
                     <div class="jj-swipe-dot{% if forloop.first %} active{% endif %}" data-index="{{ forloop.index0 }}"></div>
@@ -783,7 +624,7 @@
                 </div>
               </div>
             {%- else -%}
-              <!-- ── SINGLE IMAGE: Full width focal ── -->
+              <!-- Single image -->
               <div class="jj-gallery-desktop jj-gallery-single">
                 <div class="jj-focal-wrap" id="jj-focal-wrap">
                   <img
@@ -797,7 +638,6 @@
                   >
                 </div>
               </div>
-              <!-- Mobile single image -->
               <div class="jj-gallery-mobile">
                 <div class="jj-mobile-swipe" id="jj-mobile-swipe">
                   <img
@@ -812,9 +652,9 @@
             {%- endif -%}
           </div>
 
+          <!-- ── RIGHT COLUMN: CLEAN PRODUCT DETAILS & ACTIONS ── -->
           <div class="product-container">
             <div class="product-descriptions">
-              {%- comment -%} — STATUS BADGE — {%- endcomment -%}
               <div class="jj-product-status{% unless product.available %} jj-status-sold-out{% endunless %}">
                 <span class="jj-status-dot"></span>
                 <span class="jj-status-text">
@@ -836,29 +676,16 @@
               <div class="product-selection-coninr">
                 <p class="paragraph desp">{{ product.metafields.udesly['description'] }}</p>
                 <div class="rich-text-block-3 w-richtext">{{ product.description }}</div>
-                <div class="brand-label">
-                  <h1 class="field-label">Brand</h1>
-                  <a href="/collections/vendors?q={{ product.vendor }}" class="paragraph sfs">{{ product.vendor }}</a>
-                </div>
-                <div class="brand-label">
-                  <h1 class="field-label">Condition</h1>
-                  <a href="#" class="paragraph sfs other">Brand New</a>
-                </div>
-                <div class="brand-label des">
-                  <h1 class="field-label">Description</h1>
-                  <p class="paragraph sfs">{{ product.vendor }}</p>
-                </div>
+                
                 <div show-only-one="true">
                   {%- form "product", product, data-node-type: "commerce-add-to-cart-form", class: "w-commerce-commerceaddtocartform default-state" -%}
-                    <div data-node-type="add-to-cart-option-list" class="option-list" position-id="2e9f1bc9-32d9-1788-4c9a-6b3a5ce4b912">
+                    <div data-node-type="add-to-cart-option-list" class="option-list">
                       {%- for option in product.options_with_values -%}
                         <fieldset data-node-type="add-to-cart-option" class="option jj-option-fieldset">
                           <label class="field-label asd jj-option-label" for="jj-option-{{ forloop.index }}">{{ option.name | upcase }}</label>
-                          <!-- Native Webflow hidden select (keep for Webflow cart logic) -->
                           <select data-node-type="add-to-cart-option-select" class="select-field w-select" style="display: none;" name="{{ "option" | append: forloop.index }}" id="jj-native-select-{{ forloop.index }}">
                             {%- render "product-options", option: option -%}
                           </select>
-                          <!-- Hidden pill group (keep for Webflow cart logic, hidden visually) -->
                           <div data-node-type="add-to-cart-option-pill-group" class="button-group w-commerce-commerceaddtocartoptionpillgroup jj-pills-hidden" aria-label="{{ "option" | append: forloop.index }}" aria-hidden="true">
                             {%- for value in option.values -%}
                               {%- assign is_available = false -%}
@@ -872,7 +699,6 @@
                               </div>
                             {%- endfor -%}
                           </div>
-                          <!-- Styled visible dropdown (mirrors pill selection) -->
                           <div class="jj-select-wrap">
                             <select class="jj-styled-select" data-option-index="{{ forloop.index }}" name="jj-visible-option{{ forloop.index }}" id="jj-option-{{ forloop.index }}" aria-label="{{ option.name }}">
                               <option value="" disabled selected>Select {{ option.name }}</option>
@@ -895,196 +721,23 @@
                         </fieldset>
                       {%- endfor -%}
                     </div>
-                    <div position-id="2e9f1bc9-32d9-1788-4c9a-6b3a5ce4b919" class="div-block-568">
-                      <input type="submit" data-node-type="commerce-add-to-cart-button" data-loading-text="{{ 'tn60b63398' | t }}" aria-busy="false" aria-haspopup="dialog" class="w-commerce-commerceaddtocartbutton add-to-cart-button" value="{{ 'tn26bdceda' | t }}">
+                    <div class="div-block-568">
+                      <input type="submit" data-node-type="commerce-add-to-cart-button" data-loading-text="Adding..." aria-busy="false" aria-haspopup="dialog" class="w-commerce-commerceaddtocartbutton add-to-cart-button" value="Add to Cart">
                     </div>
                     {%- render "product-variants-data" product: product -%}
                   {%- endform -%}
-                  {%- comment -%} ── ASK A QUESTION BUTTON ── {%- endcomment -%}
-                  <div style="display: flex; justify-content: center; width: 100%;">
+                  
+                  <!-- ── ASK A QUESTION (DIRECT TO AI CHAT) ── -->
+                  <div style="display: flex; justify-content: center; width: 100%; margin-top: 14px;">
                     <a href="javascript:void(0)" id="jj-ask-btn" class="jj-ask-question-btn">
-                      Ask a Question About This Product
+                      ✦ Ask a Question About This Product
                     </a>
                   </div>
                   <div style="display:none" class="w-commerce-commerceaddtocartoutofstock" tabindex="0">
-                    <div>{{ 't2d3b97b0' | t }}</div>
+                    <div>Out of Stock</div>
                   </div>
                   <div aria-live="assertive" data-node-type="commerce-add-to-cart-error" class="w-commerce-commerceaddtocarterrorstate">
-                    <div data-node-type="commerce-add-to-cart-error" class="w-checkout-error-msg" data-w-add-to-cart-quantity-error="Product is not available in this quantity." data-w-add-to-cart-general-error="Something went wrong when adding this item to the cart." data-w-add-to-cart-mixed-cart-error="You can’t purchase another product with a subscription." data-w-add-to-cart-buy-now-error="Something went wrong when trying to purchase this item." data-w-add-to-cart-checkout-disabled-error="Checkout is disabled on this site." data-w-add-to-cart-select-all-options-error="Please select an option in all properties.">{{ 'tn78832a8a' | t }}</div>
-                  </div>
-                </div>
-                <div class="w-dyn-list">
-                  <div role="list" class="w-dyn-items">
-                    <div role="listitem" class="w-dyn-item">
-                      <div class="div-block-619">
-                        <div class="div-block-620">
-                          <p class="paragraph-17 df">Release Date</p>
-                          <p class="paragraph-17">{{ product.published_at | date: "%Y" | default: "2024" }}</p>
-                        </div>
-                        <div class="div-block-620">
-                          <p class="paragraph-17 df">SKU</p>
-                          <p class="paragraph-17">{{ product.selected_or_first_available_variant.sku | default: "Verified Authentic" }}</p>
-                        </div>
-                        <div class="div-block-620">
-                          <p class="paragraph-17 df">Colorway</p>
-                          <p class="paragraph-17">{{ product.options_by_name['Color'].values.first | default: "Original / Multi" }}</p>
-                        </div>
-                        <div class="div-block-620">
-                          <p class="paragraph-17 df">Condition</p>
-                          <p class="paragraph-17">Brand New (DS)</p>
-                        </div>
-                        <div class="div-block-620">
-                          <p class="paragraph-17 df">Authenticity</p>
-                          <p class="paragraph-17">100% Guaranteed</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="section-6">
-                  <div class="rich-text-block-4 w-richtext">{{ product.metafields.udesly['story-richtext'] }}</div>
-                  <div class="accordion-item">
-                    <div class="accordion-item-trigger">
-                      <p class="paragraph-19">Product Features & Details</p>
-                      <div class="icon-accordion-wrapper">
-                        <div class="icon-accordion-line-1"></div>
-                        <div class="icon-accordion-line-2"></div>
-                      </div>
-                    </div>
-                    <div class="accordion-item-content">
-                      <p class="paragraph-20">Premium archival materials, detailed verification tags, and original brand packaging included with every pair.</p>
-                    </div>
-                  </div>
-                  <div class="accordion-item">
-                    <div class="accordion-item-trigger">
-                      <p class="paragraph-19">Sizing & Fit Guide</p>
-                      <div class="icon-accordion-wrapper">
-                        <div class="icon-accordion-line-1"></div>
-                        <div class="icon-accordion-line-2"></div>
-                      </div>
-                    </div>
-                    <div class="accordion-item-content">
-                      <p class="paragraph-20">Fits true to size. For wider feet or a more relaxed fit, we recommend ordering half a size up.</p>
-                    </div>
-                  </div>
-                  <div class="accordion-item">
-                    <div class="accordion-item-trigger">
-                      <p class="paragraph-19">Shipping & Delivery</p>
-                      <div class="icon-accordion-wrapper">
-                        <div class="icon-accordion-line-1"></div>
-                        <div class="icon-accordion-line-2"></div>
-                      </div>
-                    </div>
-                    <div class="accordion-item-content">
-                      <p class="paragraph-20">Ships within 1–3 business days with insured courier tracking. Free shipping on orders over $400.</p>
-                    </div>
-                  </div>
-                </div>
-                <div class="div-block-633">
-                  <div class="collection-list-wrapper-3 w-dyn-list">
-                    {%- assign collection = collections['all'] -%}{%- assign items_length = collection.products.size -%}<div role="list" class="collection-list-4 w-dyn-items">
-                      {%- for product in collection.products limit: 1 -%}<div role="listitem" class="w-dyn-item">
-                        <div class="rich-text-block-5 w-richtext">{{ product.metafields.udesly['features-richtext'] }}</div>
-                      </div>{%- endfor -%}
-                    </div>
-                    {%- if items_length == 0 -%}<div class="w-dyn-empty">
-                      <div>{{ 't3d503d2b' | t }}</div>
-                    </div>{%- endif -%}
-                  </div>
-                  <div class="collection-list-wrapper-3 w-dyn-list">
-                    {%- assign collection = collections['all'] -%}{%- assign items_length = collection.products.size -%}<div role="list" class="collection-list-4 w-dyn-items">
-                      {%- for product in collection.products limit: 1 -%}<div role="listitem" class="w-dyn-item">
-                        <div class="rich-text-block-5 w-richtext">{{ product.metafields.udesly['sizing-richtext'] }}</div>
-                      </div>{%- endfor -%}
-                    </div>
-                    {%- if items_length == 0 -%}<div class="w-dyn-empty">
-                      <div>{{ 't3d503d2b' | t }}</div>
-                    </div>{%- endif -%}
-                  </div>
-                  <div class="collection-list-wrapper-3 w-dyn-list">
-                    {%- assign collection = collections['all'] -%}{%- assign items_length = collection.products.size -%}<div role="list" class="collection-list-4 w-dyn-items">
-                      {%- for product in collection.products limit: 1 -%}<div role="listitem" class="w-dyn-item">
-                        <div class="rich-text-block-5 w-richtext">{{ product.metafields.udesly['shipping-richtext'] }}</div>
-                      </div>{%- endfor -%}
-                    </div>
-                    {%- if items_length == 0 -%}<div class="w-dyn-empty">
-                      <div>{{ 't3d503d2b' | t }}</div>
-                    </div>{%- endif -%}
-                  </div>
-                  <div class="collection-list-wrapper-3 w-dyn-list">
-                    {%- assign collection = collections['all'] -%}{%- assign items_length = collection.products.size -%}<div role="list" class="collection-list-4 w-dyn-items">
-                      {%- for product in collection.products limit: 1 -%}<div role="listitem" class="w-dyn-item">
-                        <div class="rich-text-block-5 w-richtext">{{ product.metafields.udesly['authenticity-richtext'] }}</div>
-                      </div>{%- endfor -%}
-                    </div>
-                    {%- if items_length == 0 -%}<div class="w-dyn-empty">
-                      <div>{{ 't3d503d2b' | t }}</div>
-                    </div>{%- endif -%}
-                  </div>
-                  <div class="collection-list-wrapper-3 w-dyn-list">
-                    {%- assign collection = collections['all'] -%}{%- assign items_length = collection.products.size -%}<div role="list" class="collection-list-4 w-dyn-items">
-                      {%- for product in collection.products limit: 1 -%}<div role="listitem" class="w-dyn-item">
-                        <div class="rich-text-block-5 w-richtext">{{ product.metafields.udesly['story-richtext'] }}</div>
-                      </div>{%- endfor -%}
-                    </div>
-                    {%- if items_length == 0 -%}<div class="w-dyn-empty">
-                      <div>{{ 't3d503d2b' | t }}</div>
-                    </div>{%- endif -%}
-                  </div>
-                  <div class="collection-list-wrapper-3 w-dyn-list">
-                    {%- assign collection = collections['all'] -%}{%- assign items_length = collection.products.size -%}<div role="list" class="collection-list-4 w-dyn-items">
-                      {%- for product in collection.products limit: 1 -%}<div role="listitem" class="w-dyn-item">
-                        <div class="rich-text-block-5 w-richtext">{{ product.metafields.udesly['description-richtext'] }}</div>
-                      </div>{%- endfor -%}
-                    </div>
-                    {%- if items_length == 0 -%}<div class="w-dyn-empty">
-                      <div>{{ 't3d503d2b' | t }}</div>
-                    </div>{%- endif -%}
-                  </div>
-                  <div class="collection-list-wrapper-3 w-dyn-list">
-                    <div role="list" class="collection-list-4 w-dyn-items">
-                      <div role="listitem" class="w-dyn-item">
-                        {%- unless product.metafields.udesly['features-richtext'] -%}<div class="div-block-634">
-                          <p class="paragraph-19">Features</p>
-                          <div class="div-block-635">
-                            <div class="text-block-10">{{ product.metafields.udesly['features-richtext'] }}</div>
-                          </div>
-                        </div>{%- endunless -%}
-                        {%- unless product.metafields.udesly['sizing-richtext'] -%}<div class="div-block-634">
-                          <p class="paragraph-19">Sizing</p>
-                          <div class="div-block-635">
-                            <div class="text-block-10">{{ product.metafields.udesly['sizing-richtext'] }}</div>
-                          </div>
-                        </div>{%- endunless -%}
-                        {%- unless product.metafields.udesly['shipping-richtext'] -%}<div class="div-block-634">
-                          <p class="paragraph-19">Shipping</p>
-                          <div class="div-block-635">
-                            <div class="text-block-10">{{ product.metafields.udesly['shipping-richtext'] }}</div>
-                          </div>
-                        </div>{%- endunless -%}
-                        {%- unless product.metafields.udesly['authenticity-richtext'] -%}<div class="div-block-634">
-                          <p class="paragraph-19">Authenticity</p>
-                          <div class="div-block-635">
-                            <div class="text-block-10">{{ product.metafields.udesly['authenticity-richtext'] }}</div>
-                          </div>
-                        </div>{%- endunless -%}
-                        {%- unless product.metafields.udesly['story-richtext'] -%}<div class="div-block-634">
-                          <p class="paragraph-19">Story</p>
-                          <div class="div-block-635">
-                            <div class="text-block-10">{{ product.metafields.udesly['story-richtext'] }}</div>
-                          </div>
-                        </div>{%- endunless -%}
-                        {%- unless product.metafields.udesly['description-richtext'] -%}<div class="div-block-634">
-                          <p class="paragraph-19">Brand</p>
-                          <div class="div-block-635">
-                            <div class="text-block-10">{{ product.metafields.udesly['description-richtext'] }}</div>
-                          </div>
-                        </div>{%- endunless -%}
-                        {%- if items_length == 0 -%}<div class="w-dyn-empty">
-                          <div>{{ 't3d503d2b' | t }}</div>
-                        </div>{%- endif -%}
-                      </div>
-                    </div>
+                    <div data-node-type="commerce-add-to-cart-error" class="w-checkout-error-msg">Please select an option in all properties.</div>
                   </div>
                 </div>
               </div>
@@ -1092,6 +745,7 @@
           </div>
         </div>
       </div>
+
       <!-- ── FIT CURATOR WIDGET ── -->
       <div class="jj-fit-curator-section" style="background:#050505; border-top:1px solid #1a1a1a; padding:60px 0; font-family:'Inter', sans-serif;">
         <div style="max-width:1200px; margin:0 auto; padding: 0 20px;">
@@ -1151,57 +805,6 @@
         </div>
         <div class="jj-lb-counter" id="jj-lb-counter"></div>
       </div>
-
-      <!-- ── IOS-STYLE SLIDE-UP CONTACT DRAWER ────────────────────── -->
-      <div id="jj-drawer-overlay"></div>
-      <div id="jj-contact-drawer" role="dialog" aria-modal="true" aria-label="Ask a question drawer">
-        <div class="jj-drawer-handle"></div>
-        <div class="jj-drawer-header">
-          <h2 class="jj-drawer-title">Ask a Question</h2>
-          <button class="jj-drawer-close" id="jj-drawer-close" aria-label="Close drawer">&times;</button>
-        </div>
-        <div class="jj-drawer-content">
-          <div class="jj-drawer-product-row">
-            <img src="{{ product.featured_image | img_url: '150x' }}" class="jj-drawer-product-img" alt="{{ product.title }}">
-            <div class="jj-drawer-product-info">
-              <h3 class="jj-drawer-product-title">{{ product.title }}</h3>
-              <p class="jj-drawer-product-price">{{ product.price | money }}</p>
-            </div>
-          </div>
-
-          {%- form "contact", id: "jj-drawer-form" -%}
-            <input type="hidden" name="contact[product_title]" value="{{ product.title }}">
-            <input type="hidden" name="contact[product_url]" value="{{ shop.url }}{{ product.url }}">
-            
-            <div class="jj-drawer-fields">
-              <div class="jj-drawer-field">
-                <input type="text" id="drawer-name" name="contact[name]" placeholder="Your Name" required autocomplete="name">
-              </div>
-              <div class="jj-drawer-field">
-                <input type="email" id="drawer-email" name="contact[email]" placeholder="Your Email" required autocomplete="email">
-              </div>
-              <div class="jj-drawer-field">
-                <input type="tel" id="drawer-phone" name="contact[phone]" placeholder="Phone Number (Optional)" autocomplete="tel">
-              </div>
-              <div class="jj-drawer-field">
-                <select id="drawer-reason" name="contact[reason]" required>
-                  <option value="Product Question" selected>Reason: Product Question</option>
-                  <option value="Sizing Advice">Reason: Sizing Advice</option>
-                  <option value="Availability">Reason: Availability / Restocks</option>
-                </select>
-              </div>
-              <div class="jj-drawer-field">
-                <textarea id="drawer-message" name="contact[body]" placeholder="Your Message" required>Hi, I have a question about the {{ product.title }}: </textarea>
-              </div>
-            </div>
-
-            <button type="submit" class="jj-drawer-submit">Send Message</button>
-            
-            <div class="jj-drawer-success" id="jj-drawer-success">✓ Message sent successfully!</div>
-            <div class="jj-drawer-error" id="jj-drawer-error">Something went wrong. Please try again.</div>
-          {%- endform -%}
-        </div>
-      </div>
     </div>
   </div>
   <script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=692e9588093fdf59aecf42c9" type="text/javascript" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
@@ -1211,9 +814,8 @@
   <script src="https://cdn.jsdelivr.net/npm/@finsweet/cms-library@1/cms-library.js"></script>
 
 <script>
-  // ── PRODUCT PAGE: COMPLETE ENGINE (GALLERY, LIGHTBOX, HOVER ZOOM, CURATOR, DRAWER) ────
+  // ── PRODUCT PAGE: COMPLETE ROBUST ENGINE ────────────────────────────
   (function() {
-    // Current Product Object
     var currentProduct = {
       id: {{ product.id | json }},
       title: {{ product.title | json }},
@@ -1224,7 +826,6 @@
       selectedVariantId: {{ product.selected_or_first_available_variant.id | json }}
     };
 
-    // Helper: Collect all product images into a flat ordered array
     function getAllImages() {
       var imgs = [];
       var thumbs = document.querySelectorAll('.jj-thumb');
@@ -1232,7 +833,7 @@
         thumbs.forEach(function(t) {
           var src = t.getAttribute('data-full') || t.src;
           if (src) {
-            var norm = src.replace(/_(\d+x|\d+x\d+)(\.[a-z]+)$/i, '_1920x$2');
+            var norm = src.replace(/_(\\d+x|\\d+x\\d+)(\\.[a-z]+)$/i, '_1920x$2');
             if (!imgs.includes(norm)) imgs.push(norm);
           }
         });
@@ -1243,7 +844,7 @@
           mobileSlides.forEach(function(s) {
             var src = s.getAttribute('data-full') || s.src;
             if (src) {
-              var norm = src.replace(/_(\d+x|\d+x\d+)(\.[a-z]+)$/i, '_1920x$2');
+              var norm = src.replace(/_(\\d+x|\\d+x\\d+)(\\.[a-z]+)$/i, '_1920x$2');
               if (!imgs.includes(norm)) imgs.push(norm);
             }
           });
@@ -1252,7 +853,7 @@
       if (!imgs.length) {
         var focal = document.getElementById('jj-focal-img');
         if (focal && focal.src) {
-          imgs.push(focal.src.replace(/_(\d+x|\d+x\d+)(\.[a-z]+)$/i, '_1920x$2'));
+          imgs.push(focal.src.replace(/_(\\d+x|\\d+x\\d+)(\\.[a-z]+)$/i, '_1920x$2'));
         }
       }
       return imgs;
@@ -1276,7 +877,7 @@
       lbImg = document.getElementById('jj-lb-img');
       lbImages = getAllImages();
       if (!lbImages.length) return;
-      var norm = clickedSrc ? clickedSrc.replace(/_(\d+x|\d+x\d+)(\.[a-z]+)$/i, '_1920x$2') : '';
+      var norm = clickedSrc ? clickedSrc.replace(/_(\\d+x|\\d+x\\d+)(\\.[a-z]+)$/i, '_1920x$2') : '';
       lbIndex = lbImages.indexOf(norm);
       if (lbIndex < 0) lbIndex = 0;
       showLbImage();
@@ -1286,7 +887,6 @@
       if (lbPrev) lbPrev.style.display = hasMultiple ? '' : 'none';
       if (lbNext) lbNext.style.display = hasMultiple ? '' : 'none';
       populateLbThumbs();
-      triggerImmediateZoom();
     }
 
     function closeLightbox() {
@@ -1305,9 +905,6 @@
       });
 
       resetZoom();
-      if (lb && lb.classList.contains('open')) {
-        triggerImmediateZoom();
-      }
     }
 
     function triggerImmediateZoom() {
@@ -1317,7 +914,6 @@
         lbImg.classList.add('zoomed');
         lbImg.style.cursor = 'zoom-out';
         lbImg.style.transform = 'scale(' + lbScale + ') translate(0,0)';
-        lbImg.style.transition = 'transform 0.25s ease';
       }
     }
 
@@ -1353,38 +949,41 @@
       });
     }
 
-    // ── DESKTOP GALLERY THUMBNAIL CLICK & FOCAL SWAP ────────────────
+    // ── THUMBNAIL SELECTOR (DIRECT LISTENER) ───────────────────────
+    function initThumbnailClicks() {
+      var thumbs = document.querySelectorAll('.jj-thumb');
+      var focalImg = document.getElementById('jj-focal-img');
+      thumbs.forEach(function(thumb) {
+        function handleThumbClick(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          var fullSrc = thumb.getAttribute('data-full') || thumb.src;
+          if (focalImg) {
+            focalImg.src = fullSrc;
+            focalImg.setAttribute('data-index', thumb.getAttribute('data-index') || '0');
+          }
+          thumbs.forEach(function(t) { t.classList.remove('jj-thumb-active'); });
+          thumb.classList.add('jj-thumb-active');
+        }
+        thumb.onclick = handleThumbClick;
+      });
+    }
+
+    // Focal image & mobile slide click -> open lightbox
     document.addEventListener('click', function(e) {
       var target = e.target;
       if (!target) return;
 
-      // 1. Desktop thumbnail click -> snap to focal image
-      var thumb = target.closest('.jj-thumb');
-      if (thumb) {
-        e.preventDefault();
-        var fullSrc = thumb.getAttribute('data-full') || thumb.src;
-        var focalImg = document.getElementById('jj-focal-img');
-        if (focalImg) {
-          focalImg.src = fullSrc;
-          focalImg.setAttribute('data-index', thumb.getAttribute('data-index') || '0');
-        }
-        document.querySelectorAll('.jj-thumb').forEach(function(t) {
-          t.classList.remove('jj-thumb-active');
-        });
-        thumb.classList.add('jj-thumb-active');
-        return;
-      }
+      if (target.closest('.jj-thumb')) return;
 
-      // 2. Focal image click -> open lightbox
       var focal = target.closest('#jj-focal-img, .jj-focal-image, #jj-focal-wrap');
-      if (focal && !target.closest('.jj-thumb')) {
+      if (focal) {
         e.preventDefault();
         var mainImg = document.getElementById('jj-focal-img') || focal.querySelector('img');
         if (mainImg) openLightbox(mainImg.src);
         return;
       }
 
-      // 3. Mobile slide click -> open lightbox
       var mobileSlide = target.closest('.jj-mobile-slide');
       if (mobileSlide) {
         e.preventDefault();
@@ -1393,13 +992,11 @@
       }
     });
 
-    // Close on backdrop or empty wrap click
+    if (lbClose) lbClose.addEventListener('click', closeLightbox);
     if (lb) lb.addEventListener('click', function(e) {
       if (e.target === lb || e.target.id === 'jj-lb-img-wrap') closeLightbox();
     });
-    if (lbClose) lbClose.addEventListener('click', closeLightbox);
 
-    // Arrow nav
     if (lbPrev) lbPrev.addEventListener('click', function(e) {
       e.stopPropagation();
       lbIndex = (lbIndex - 1 + lbImages.length) % lbImages.length;
@@ -1411,7 +1008,6 @@
       showLbImage();
     });
 
-    // Keyboard navigation
     document.addEventListener('keydown', function(e) {
       if (!lb || !lb.classList.contains('open')) return;
       if (e.key === 'Escape') closeLightbox();
@@ -1419,32 +1015,11 @@
       if (e.key === 'ArrowRight') { lbIndex = (lbIndex + 1) % lbImages.length; showLbImage(); }
     });
 
-    // Touch swipe inside lightbox
-    if (lb) {
-      lb.addEventListener('touchstart', function(e) { 
-        if (!lbZoomed) lbTouchStartX = e.touches[0].clientX; 
-      }, {passive: true});
-      lb.addEventListener('touchend', function(e) {
-        if (lbZoomed) return;
-        var dx = e.changedTouches[0].clientX - lbTouchStartX;
-        if (Math.abs(dx) > 50 && lbImages.length > 1) {
-          if (dx < 0) { lbIndex = (lbIndex + 1) % lbImages.length; }
-          else { lbIndex = (lbIndex - 1 + lbImages.length) % lbImages.length; }
-          showLbImage();
-        }
-      }, {passive: true});
-    }
-
-    // Toggle zoom on image click in lightbox
     var wrap = document.getElementById('jj-lb-img-wrap');
     if (lbImg && wrap) {
       lbImg.addEventListener('click', function(e) {
         e.stopPropagation();
-        if (!lbZoomed) {
-          triggerImmediateZoom();
-        } else {
-          resetZoom();
-        }
+        if (!lbZoomed) triggerImmediateZoom(); else resetZoom();
       });
 
       wrap.addEventListener('mousemove', function(e) {
@@ -1455,13 +1030,12 @@
         var transX = -cx * rect.width * (lbScale - 1) * 0.45;
         var transY = -cy * rect.height * (lbScale - 1) * 0.45;
         lbImg.style.transform = 'scale(' + lbScale + ') translate(' + transX + 'px,' + transY + 'px)';
-        lbImg.style.transition = 'none';
       });
     }
 
     // ── DESKTOP FOCAL HOVER ZOOM ──────────────────────────────────
     function initDesktopHoverZoom() {
-      var focalWrap = document.getElementById('jj-focal-wrap') || document.querySelector('.jj-focal-wrap');
+      var focalWrap = document.getElementById('jj-focal-wrap');
       var focalImg = document.getElementById('jj-focal-img');
       if (!focalWrap || !focalImg) return;
 
@@ -1471,7 +1045,7 @@
         var x = ((e.clientX - rect.left) / rect.width) * 100;
         var y = ((e.clientY - rect.top) / rect.height) * 100;
         focalImg.style.transformOrigin = x + '% ' + y + '%';
-        focalImg.style.transform = 'scale(1.5)';
+        focalImg.style.transform = 'scale(1.4)';
       });
 
       focalWrap.addEventListener('mouseleave', function() {
@@ -1494,7 +1068,6 @@
       }
       dotsContainer.style.display = 'flex';
 
-      // Attach click to indicator lines
       dotsContainer.querySelectorAll('.jj-swipe-dot').forEach(function(dot, i) {
         dot.addEventListener('click', function() {
           if (slides[i]) {
@@ -1503,7 +1076,6 @@
         });
       });
 
-      // Update indicator lines on scroll
       swipeTrack.addEventListener('scroll', function() {
         var scrollLeft = swipeTrack.scrollLeft;
         var slideWidth = swipeTrack.offsetWidth || window.innerWidth;
@@ -1514,24 +1086,20 @@
       }, {passive: true});
     }
 
-    // ── VARIANT DROPDOWN SYNC ENGINE ──────────────────────────────
+    // ── VARIANT DROPDOWN SYNC ─────────────────────────────────────
     function initVariantDropdowns() {
       var selects = document.querySelectorAll('.jj-styled-select');
-      if (!selects.length) return;
-
       selects.forEach(function(select) {
         select.addEventListener('change', function() {
           var selectedVal = select.value;
           var optIndex = select.getAttribute('data-option-index');
 
-          // 1. Update native hidden select
           var nativeSelect = document.getElementById('jj-native-select-' + optIndex);
           if (nativeSelect) {
             nativeSelect.value = selectedVal;
             nativeSelect.dispatchEvent(new Event('change', { bubbles: true }));
           }
 
-          // 2. Trigger corresponding hidden pill button
           var fieldset = select.closest('.jj-option-fieldset');
           if (fieldset) {
             var pillGroup = fieldset.querySelector('.jj-pills-hidden');
@@ -1549,95 +1117,115 @@
       });
     }
 
-    // ── IOS SLIDE-UP DRAWER INTERACTIVES ───────────────────────────
-    var askBtn = document.getElementById('jj-ask-btn');
-    var drawer = document.getElementById('jj-contact-drawer');
-    var drawerOverlay = document.getElementById('jj-drawer-overlay');
-    var drawerClose = document.getElementById('jj-drawer-close');
-    var drawerForm = document.getElementById('jj-drawer-form');
-
-    function openContactDrawer() {
-      var dOverlay = document.getElementById('jj-drawer-overlay');
-      var dDrawer = document.getElementById('jj-contact-drawer');
-      if (dOverlay && dDrawer) {
-        dOverlay.classList.add('open');
-        dDrawer.classList.add('open');
-        document.body.style.overflow = 'hidden';
-      }
-    }
-
-    function closeContactDrawer() {
-      var dOverlay = document.getElementById('jj-drawer-overlay');
-      var dDrawer = document.getElementById('jj-contact-drawer');
-      if (dOverlay && dDrawer) {
-        dOverlay.classList.remove('open');
-        dDrawer.classList.remove('open');
-        document.body.style.overflow = '';
+    // ── ASK A QUESTION (DIRECT TO AI CHAT) ─────────────────────────
+    function openAIChatWithProduct() {
+      var title = {{ product.title | json }};
+      if (window.jjAIChat && typeof window.jjAIChat.sendMessage === 'function') {
+        window.jjAIChat.open();
+        window.jjAIChat.sendMessage("Hi, I have a question about " + title);
+      } else if (window.jjAIChat && typeof window.jjAIChat.open === 'function') {
+        window.jjAIChat.open();
+      } else {
+        var trigger = document.getElementById('jj-ai-chat-trigger');
+        if (trigger) trigger.click();
       }
     }
 
     document.addEventListener('click', function(e) {
-      var btn = e.target.closest('#jj-ask-btn, .jj-ask-question-btn');
-      if (btn) {
+      var askBtn = e.target.closest('#jj-ask-btn, .jj-ask-question-btn');
+      if (askBtn) {
         e.preventDefault();
-        openContactDrawer();
+        openAIChatWithProduct();
       }
     });
 
-    if (drawerClose) drawerClose.addEventListener('click', closeContactDrawer);
-    if (drawerOverlay) drawerOverlay.addEventListener('click', closeContactDrawer);
+    // ── ADD TO CART AJAX ENGINE (PREVENTS PAGE RELOAD & OPENS DRAWER) ──
+    function initAddToCart() {
+      document.addEventListener('submit', function(e) {
+        var form = e.target.closest('form[action^="/cart/add"], .w-commerce-commerceaddtocartform');
+        if (!form) return;
 
-    if (drawerForm) {
-      drawerForm.addEventListener('submit', function(e) {
         e.preventDefault();
         e.stopPropagation();
         if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
-        var submitBtn = drawerForm.querySelector('.jj-drawer-submit');
-        var successMsg = document.getElementById('jj-drawer-success');
-        var errorMsg = document.getElementById('jj-drawer-error');
 
-        var name = document.getElementById('drawer-name').value.trim();
-        var email = document.getElementById('drawer-email').value.trim();
-        var message = document.getElementById('drawer-message').value.trim();
-        var reason = document.getElementById('drawer-reason').value;
+        var selectEl = form.querySelector('.jj-styled-select');
+        var selectedVal = selectEl ? selectEl.value : null;
 
+        var variantId = null;
+        var variantIdInput = form.querySelector('[name="id"]');
+        if (variantIdInput && variantIdInput.value) {
+          variantId = variantIdInput.value;
+        }
+
+        if (!variantId && selectedVal && currentProduct && currentProduct.variants) {
+          var match = currentProduct.variants.find(function(v) {
+            return v.options.includes(selectedVal) || v.title.includes(selectedVal);
+          });
+          if (match) variantId = match.id;
+        }
+
+        if (!variantId && currentProduct && currentProduct.selectedVariantId) {
+          variantId = currentProduct.selectedVariantId;
+        }
+
+        if (!variantId) {
+          alert('Please select a size / variant option.');
+          return;
+        }
+
+        var submitBtn = form.querySelector('[type="submit"], .add-to-cart-button');
         if (submitBtn) {
           submitBtn.disabled = true;
-          submitBtn.textContent = 'Sending...';
+          if (submitBtn.value) submitBtn.value = 'Adding...';
+          else submitBtn.textContent = 'Adding...';
         }
-        if (successMsg) successMsg.style.display = 'none';
-        if (errorMsg) errorMsg.style.display = 'none';
 
-        setTimeout(function() {
+        fetch('/cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ items: [{ id: parseInt(variantId, 10), quantity: 1 }] })
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
           if (submitBtn) {
             submitBtn.disabled = false;
-            submitBtn.textContent = 'Send Message';
+            if (submitBtn.value) submitBtn.value = 'Added!';
+            else submitBtn.textContent = 'Added!';
+            setTimeout(function() {
+              if (submitBtn.value) submitBtn.value = 'Add to Cart';
+              else submitBtn.textContent = 'Add to Cart';
+            }, 2000);
           }
-          if (successMsg) {
-            successMsg.textContent = '✓ Connecting with JJKICKSZZ AI Curator...';
-            successMsg.style.display = 'block';
+          fetch('/cart.js')
+            .then(function(r) { return r.json(); })
+            .then(function(cartData) {
+              var countEl = document.querySelector('.w-commerce-commercecartopenlinkcount, .cart-quantity');
+              if (countEl) countEl.textContent = cartData.item_count;
+              var flashDot = document.querySelector('.cart-flash-dot');
+              if (flashDot) flashDot.style.display = cartData.item_count > 0 ? 'block' : 'none';
+            });
+
+          var cartLink = document.querySelector('.w-commerce-commercecartopenlink, [data-node-type="commerce-cart-open-link"]');
+          if (cartLink) {
+            cartLink.click();
           }
-          
-          setTimeout(function() {
-            closeContactDrawer();
-            drawerForm.reset();
-            if (successMsg) successMsg.style.display = 'none';
-            
-            if (window.jjAIChat && typeof window.jjAIChat.sendMessage === 'function') {
-              var fullQuery = "I have a question about " + {{ product.title | json }} + " (" + reason + "): "" + message + """;
-              window.jjAIChat.sendMessage(fullQuery);
-              
-              setTimeout(function() {
-                var disclaimerMsg = "Customer service will also review your question and respond to your email (" + email + ") within 24 hours if needed.";
-                window.jjAIChat.appendSystemMessage(disclaimerMsg);
-              }, 1500);
-            }
-          }, 800);
-        }, 600);
-      });
+          if (typeof window.Udesly !== 'undefined') {
+            window.Udesly.dispatch('product-added', true);
+          }
+        })
+        .catch(function(err) {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            if (submitBtn.value) submitBtn.value = 'Add to Cart';
+            else submitBtn.textContent = 'Add to Cart';
+          }
+          console.error('Add to Cart error:', err);
+        });
+      }, true);
     }
 
-    // ── FIT CURATOR WIDGET ENGINE ─────────────────────────────────
+    // ── FIT CURATOR WIDGET ─────────────────────────────────────────
     function initFitCurator() {
       var container = document.getElementById('jj-canvas-container');
       var listContainer = document.getElementById('jj-curator-items-list');
@@ -1667,10 +1255,7 @@
           var tops = [], bottoms = [], shoes = [];
           products.forEach(function(p) {
             if (p.id === currentProduct.id) return;
-            var hasStock = p.variants && p.variants.some(function(v) { 
-              if (typeof v.available !== 'undefined') return v.available;
-              return true;
-            });
+            var hasStock = p.variants && p.variants.some(function(v) { return v.available !== false; });
             if (!hasStock) return;
             if (p.handle.indexOf('insurance') !== -1 || p.title.indexOf('Insurance') !== -1) return;
 
@@ -1684,7 +1269,6 @@
               shoes.push(p);
             } else {
               if (isCurrentProductShirt && /hoodie|jacket|coat|parka|windbreaker/i.test(combo)) {
-                // Skip outerwear if main product is a t-shirt
               } else {
                 tops.push(p);
               }
@@ -1934,9 +1518,9 @@
                             if (flashDot) flashDot.style.display = cartData.item_count > 0 ? 'block' : 'none';
                           });
 
-                        var nativeCartOpen = document.querySelector('.w-commerce-commercecartopenlink');
-                        if (nativeCartOpen) {
-                          if (window.openCartDrawer) window.openCartDrawer(); else nativeCartOpen.click();
+                        var cartLink = document.querySelector('.w-commerce-commercecartopenlink, [data-node-type="commerce-cart-open-link"]');
+                        if (cartLink) {
+                          cartLink.click();
                         }
                       })
                       .catch(function(err) {
@@ -2079,9 +1663,9 @@
                     if (flashDot) flashDot.style.display = cartData.item_count > 0 ? 'block' : 'none';
                   });
 
-                var nativeCartOpen = document.querySelector('.w-commerce-commercecartopenlink');
-                if (nativeCartOpen) {
-                  if (window.openCartDrawer) window.openCartDrawer(); else nativeCartOpen.click();
+                var cartLink = document.querySelector('.w-commerce-commercecartopenlink, [data-node-type="commerce-cart-open-link"]');
+                if (cartLink) {
+                  cartLink.click();
                 }
               })
               .catch(function(err) {
@@ -2099,97 +1683,14 @@
         });
     }
 
-    // ── OBSERVERS & CART HANDLERS ─────────────────────────────────
-    function initCartObserver() {
-      var observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(m) {
-          if (m.target.classList.contains('w-commerce-commerceaddtocarterrorstate') && m.target.style.display !== 'none') {
-            m.target.style.display = 'none';
-          }
-        });
-      });
-      document.querySelectorAll('.w-commerce-commerceaddtocarterrorstate').forEach(function(el) {
-        observer.observe(el, { attributes: true, attributeFilter: ['style'] });
-      });
-    }
-
-    function initCartSubmitInterceptor() {
-      document.addEventListener('submit', function(e) {
-        var form = e.target.closest('form[action^="/cart/add"], .w-commerce-commerceaddtocartform');
-        if (!form) return;
-
-        e.preventDefault();
-        e.stopPropagation();
-
-        var variantIdInput = form.querySelector('[name="id"]');
-        var variantId = variantIdInput ? variantIdInput.value : null;
-
-        if (!variantId && currentProduct && currentProduct.selectedVariantId) {
-          variantId = currentProduct.selectedVariantId;
-        }
-
-        if (!variantId) {
-          var selectField = form.querySelector('select[name="id"], select.select-field');
-          if (selectField) variantId = selectField.value;
-        }
-
-        if (!variantId) {
-          alert('Please select a size / variant option.');
-          return;
-        }
-
-        var submitBtn = form.querySelector('[type="submit"], .add-to-cart-button');
-        if (submitBtn) {
-          submitBtn.disabled = true;
-          if (submitBtn.value) submitBtn.value = 'Adding...';
-          else submitBtn.textContent = 'Adding...';
-        }
-
-        fetch('/cart/add.js', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ items: [{ id: parseInt(variantId, 10), quantity: 1 }] })
-        })
-        .then(function(res) { return res.json(); })
-        .then(function(data) {
-          if (submitBtn) {
-            submitBtn.disabled = false;
-            if (submitBtn.value) submitBtn.value = 'Added!';
-            else submitBtn.textContent = 'Added!';
-            setTimeout(function() {
-              if (submitBtn.value) submitBtn.value = 'Add to Cart';
-              else submitBtn.textContent = 'Add to Cart';
-            }, 2000);
-          }
-          fetch('/cart.js')
-            .then(function(r) { return r.json(); })
-            .then(function(cartData) {
-              var countEl = document.querySelector('.w-commerce-commercecartopenlinkcount, .cart-quantity');
-              if (countEl) countEl.textContent = cartData.item_count;
-              var flashDot = document.querySelector('.cart-flash-dot');
-              if (flashDot) flashDot.style.display = cartData.item_count > 0 ? 'block' : 'none';
-            });
-          if (window.openCartDrawer) window.openCartDrawer();
-        })
-        .catch(function(err) {
-          if (submitBtn) {
-            submitBtn.disabled = false;
-            if (submitBtn.value) submitBtn.value = 'Add to Cart';
-            else submitBtn.textContent = 'Add to Cart';
-          }
-          console.error('Failed to add single item:', err);
-        });
-      }, true);
-    }
-
-    // ── MASTER INITIALIZER (RUNS ON IMMEDIATE READY + DOM + BARBA) ──
+    // ── MASTER INITIALIZER ─────────────────────────────────────────
     function initAllProductFeatures() {
+      initThumbnailClicks();
       initDots();
       initVariantDropdowns();
       initDesktopHoverZoom();
       initFitCurator();
-      initCartObserver();
-      initCartSubmitInterceptor();
+      initAddToCart();
     }
 
     if (document.readyState !== 'loading') {

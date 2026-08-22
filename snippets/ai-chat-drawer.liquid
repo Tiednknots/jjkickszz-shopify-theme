@@ -63,27 +63,38 @@
     position: fixed;
     bottom: 24px;
     right: 24px;
-    width: 56px;
-    height: 56px;
+    width: 54px;
+    height: 54px;
     border-radius: 50%;
     background: #ffffff;
     color: #000000;
-    border: 1px solid rgba(0,0,0,0.06);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+    border: none;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.2);
     cursor: pointer;
+    z-index: 9999998 !important;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 9999;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s;
   }
   .jj-ai-chat-trigger:hover {
-    transform: scale(1.08) translateY(-2px);
-    box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+    transform: scale(1.06);
+    box-shadow: 0 6px 24px rgba(255, 255, 255, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.4);
   }
   .jj-ai-chat-trigger svg {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
+    fill: currentColor;
+    transition: transform 0.3s;
+  }
+  .jj-ai-chat-trigger.open svg.icon-sparkle {
+    display: none;
+  }
+  .jj-ai-chat-trigger.open svg.icon-close {
+    display: block;
+  }
+  .jj-ai-chat-trigger svg.icon-close {
+    display: none;
   }
   @media (max-width: 767px) {
     .jj-ai-chat-trigger {
@@ -98,32 +109,35 @@
     }
   }
 
-  /* Slide-Out Drawer Panel */
+  /* Slide-Out Drawer Panel (Always Above Headers: z-index 9999999) */
   .jj-ai-chat-drawer {
-    position: fixed;
-    top: 74px; /* Starts at the end of the menu header */
-    right: -420px; /* Initially hidden offscreen */
-    width: 400px;
-    height: calc(100% - 74px);
-    background: #0b0b0b; /* Deep black theme */
-    border-left: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: -10px 0 40px rgba(0,0,0,0.7);
-    display: flex;
-    flex-direction: column;
-    z-index: 10000;
-    transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    box-sizing: border-box;
+    position: fixed !important;
+    top: 0 !important;
+    right: -440px !important;
+    width: 420px !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    background: #0b0b0b !important;
+    border-left: 1px solid rgba(255, 255, 255, 0.12) !important;
+    box-shadow: -10px 0 40px rgba(0,0,0,0.85) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    z-index: 9999999 !important;
+    transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    box-sizing: border-box !important;
   }
   .jj-ai-chat-drawer.open {
-    right: 0;
+    right: 0 !important;
   }
   @media (max-width: 767px) {
     .jj-ai-chat-drawer {
-      width: 100%;
-      right: -100%;
-      border-left: none;
-      top: 64px; /* Starts at the end of the mobile menu header */
-      height: calc(100% - 64px);
+      width: 100% !important;
+      right: -100% !important;
+      border-left: none !important;
+      top: 0 !important;
+      height: 100vh !important;
+      max-height: 100vh !important;
+      z-index: 9999999 !important;
     }
   }
 
