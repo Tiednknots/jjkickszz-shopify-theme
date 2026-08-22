@@ -630,18 +630,16 @@
     function processBotResponse(rawText) {
       // Parse out product handles like [Product: handle]
       var handles = [];
-      // Flexible match that extracts everything inside [Product: ...] and handles case insensitivity
       var cleanText = rawText.replace(/\[Product:\s*([^\]]+)\]/gi, function(match, handle) {
-        handles.push(handle.trim());
-        return ''; // remove references from the displayed bubble text
+        var cleanHandle = handle.trim().toLowerCase().replace(/[^a-z0-9-_]/g, '');
+        if (cleanHandle) handles.push(cleanHandle);
+        return '';
       });
 
       appendMessage('bot', cleanText);
       
-      // If the response contains product recommendations, fetch and display checkout cards
-      if (handles.length > 0) {
-        injectProductCards(handles);
-      }
+      // Inject product cards using direct catalog fallback if handles found or mentioned
+      injectProductCards(handles, rawText);
       
       if (window.pendingQuestionFeedback) {
         window.pendingQuestionFeedback = false;
@@ -654,7 +652,41 @@
       scrollToBottom();
     }
 
-    function injectProductCards(handles) {
+    function injectProductCards(handles, rawText) {
+      // If handles is empty, attempt to match products from liveProductsArray mentioned in rawText
+      var matchedProducts = [];
+      var seenHandles = new Set();
+
+      // 1. Match from explicit handles
+      if (handles && handles.length > 0) {
+        handles.forEach(function(h) {
+          var found = liveProductsArray.find(function(p) {
+            return (p.handle || '').toLowerCase() === h.toLowerCase();
+          });
+          if (found && !seenHandles.has(found.handle)) {
+            seenHandles.add(found.handle);
+            matchedProducts.push(found);
+          }
+        });
+      }
+
+      // 2. Match from text mentions if fewer than 3 products found
+      if (matchedProducts.length < 3 && rawText && liveProductsArray && liveProductsArray.length > 0) {
+        var rawLower = rawText.toLowerCase();
+        liveProductsArray.forEach(function(p) {
+          if (matchedProducts.length >= 3) return;
+          var titleLower = (p.title || '').toLowerCase();
+          if (titleLower.length >= 4 && rawLower.indexOf(titleLower) !== -1) {
+            if (!seenHandles.has(p.handle)) {
+              seenHandles.add(p.handle);
+              matchedProducts.push(p);
+            }
+          }
+        });
+      }
+
+      if (matchedProducts.length === 0) return;
+
       var outfitId = 'outfit-' + Date.now();
       var outfitCard = document.createElement('div');
       outfitCard.className = 'jj-ai-chat-outfit-container';
@@ -663,67 +695,48 @@
       
       messagesContainer.appendChild(outfitCard);
 
-      var rootPath = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
-      var fetchPromises = handles.map(function(handle) {
-        return fetch(rootPath + 'products/' + handle + '.js')
-          .then(function(res) { return res.json(); })
-          .catch(function(err) {
-            console.warn('[AIChat] Failed to fetch product info for:', handle, err);
-            return null;
-          });
-      });
+      var variantsList = [];
+      matchedProducts.forEach(function(p) {
+        var firstAvail = p.variants && p.variants.find(function(v) { return v.available !== false; });
+        var isAvailable = !!firstAvail;
+        var variantId = firstAvail ? firstAvail.id : (p.variants && p.variants[0] ? p.variants[0].id : '');
 
-      Promise.all(fetchPromises).then(function(products) {
-        var validProducts = products.filter(function(p) { return p !== null; });
-        if (validProducts.length === 0) {
-          outfitCard.remove();
-          return;
+        if (isAvailable && variantId) {
+          variantsList.push(variantId);
         }
 
-        var variantsList = [];
-        validProducts.forEach(function(p) {
-          var isAvailable = p.available;
-          var variantId = '';
-          if (p.variants && p.variants.length > 0) {
-            var firstAvail = p.variants.find(function(v) { return v.available; });
-            variantId = firstAvail ? firstAvail.id : p.variants[0].id;
-          }
+        var priceVal = firstAvail ? parseFloat(firstAvail.price) : 0;
+        var priceStr = priceVal > 0 ? '$' + priceVal.toFixed(2).replace('.00', '') : '';
+        var imgUrl = (p.images && p.images.length > 0 ? (p.images[0].src || p.images[0]) : '') || p.featured_image || '';
+        var prodUrl = '/products/' + p.handle;
 
-          if (isAvailable && variantId) {
-            variantsList.push(variantId);
-          }
-
-          var priceStr = p.price ? '$' + (parseFloat(p.price) / 100).toFixed(2).replace('.00', '') : '';
-          var imgUrl = p.featured_image || (p.images && p.images.length > 0 ? p.images[0] : '');
-
-          var cardHtml = 
-            '<a href="' + p.url + '" class="jj-ai-chat-card" target="_blank">' +
-            '  <div class="jj-ai-chat-card-img"><img src="' + imgUrl + '" alt="' + p.title + '" loading="lazy"></div>' +
-            '  <div class="jj-ai-chat-card-info">' +
-            '    <div class="jj-ai-chat-card-title">' + p.title + '</div>' +
-            '    <div class="jj-ai-chat-card-price">' + (isAvailable ? priceStr : 'SOLD OUT') + '</div>' +
-            '  </div>' +
-            '</a>';
-          
-          outfitCard.insertAdjacentHTML('beforeend', cardHtml);
-        });
-
-        // Add Checkout Trigger Button
-        if (variantsList.length > 0) {
-          var btnText = validProducts.length > 1 ? 'Add Outfit to Cart' : 'Add to Cart';
-          var addBtn = document.createElement('button');
-          addBtn.type = 'button';
-          addBtn.className = 'jj-ai-chat-outfit-btn';
-          addBtn.textContent = btnText;
-          addBtn.setAttribute('data-variants', variantsList.join(','));
-          
-          outfitCard.appendChild(addBtn);
-          bindOutfitButton(addBtn);
-        }
+        var cardHtml = 
+          '<a href="' + prodUrl + '" class="jj-ai-chat-card" target="_blank">' +
+          '  <div class="jj-ai-chat-card-img"><img src="' + imgUrl + '" alt="' + p.title + '" loading="lazy"></div>' +
+          '  <div class="jj-ai-chat-card-info">' +
+          '    <div class="jj-ai-chat-card-title">' + p.title + '</div>' +
+          '    <div class="jj-ai-chat-card-price">' + (isAvailable ? priceStr : 'SOLD OUT') + '</div>' +
+          '  </div>' +
+          '</a>';
         
-        saveChatState();
-        scrollToBottom();
+        outfitCard.insertAdjacentHTML('beforeend', cardHtml);
       });
+
+      // Add Checkout Trigger Button
+      if (variantsList.length > 0) {
+        var btnText = matchedProducts.length > 1 ? 'Add Outfit to Cart' : 'Add to Cart';
+        var addBtn = document.createElement('button');
+        addBtn.type = 'button';
+        addBtn.className = 'jj-ai-chat-outfit-btn';
+        addBtn.textContent = btnText;
+        addBtn.setAttribute('data-variants', variantsList.join(','));
+        
+        outfitCard.appendChild(addBtn);
+        bindOutfitButton(addBtn);
+      }
+      
+      saveChatState();
+      scrollToBottom();
     }
 
     function bindOutfitButton(addBtn) {
