@@ -2,7 +2,7 @@
 {
   "name": "Marquee",
   "tag": "section",
-  "class": "white-section menu hero",
+  "class": "jj-home-marquee-section",
   "settings": [
     {
       "type": "text",
@@ -26,13 +26,13 @@
       "type": "color",
       "id": "bg_color",
       "label": "Background Color",
-      "default": "#ffffff"
+      "default": "#000000"
     },
     {
       "type": "color",
       "id": "text_color",
       "label": "Text Color",
-      "default": "#000000"
+      "default": "#ffffff"
     },
     {
       "type": "checkbox",
@@ -55,55 +55,82 @@
 }
 {% endschema %}
 
-<section class="section-3" style="background-color: {{ section.settings.bg_color }}; color: {{ section.settings.text_color }}; {% if section.settings.show_borders %}border-top: 1px solid {{ section.settings.border_color }}; border-bottom: 1px solid {{ section.settings.border_color }};{% endif %} height: 44px; min-height: 44px; display: flex; align-items: center; overflow: hidden;">
-  <div class="code-embed-3 w-embed" style="width: 100%; height: 100%; display: flex; align-items: center;">
-    <style>
-      .jj-marquee-container {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        overflow: hidden;
-        position: relative;
-      }
-      .jj-marquee-track-inner {
-        display: flex;
-        align-items: center;
-        width: max-content;
-        flex-shrink: 0;
-        animation: jj-marquee-anim 25s linear infinite !important;
-        will-change: transform;
-      }
-      .jj-content-group-item {
-        display: flex;
-        align-items: center;
-        padding-right: 4rem;
-        flex-shrink: 0;
-      }
-      .jj-text-badge {
-        font-size: 11px;
-        font-family: 'Inter', sans-serif;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.12em;
-        white-space: nowrap;
-        margin-right: 3rem;
-      }
-      @keyframes jj-marquee-anim {
-        0% { transform: translateX(0); }
-        100% { transform: translateX(-50%); }
-      }
-    </style>
-    <div class="jj-marquee-container">
-      <div class="jj-marquee-track-inner">
-        {% for i in (1..6) %}
-        <div class="jj-content-group-item">
-          <span class="jj-text-badge">{{ section.settings.text_1 }}</span>
-          <span class="jj-text-badge">{{ section.settings.text_2 }}</span>
-          <span class="jj-text-badge">{{ section.settings.text_3 }}</span>
-        </div>
-        {% endfor %}
+<style>
+  .jj-home-marquee-section {
+    width: 100% !important;
+    display: block !important;
+    position: -webkit-sticky !important;
+    position: sticky !important;
+    top: 80px !important;
+    z-index: 90 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  @media (max-width: 767px) {
+    .jj-home-marquee-section {
+      top: 60px !important;
+    }
+  }
+  .jj-home-marquee-wrapper {
+    width: 100% !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+  .jj-home-marquee-inner {
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    overflow: hidden !important;
+    position: relative !important;
+    mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%) !important;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%) !important;
+  }
+  .jj-home-marquee-track {
+    display: flex !important;
+    align-items: center !important;
+    width: max-content !important;
+    flex-shrink: 0 !important;
+    animation: jj-home-marquee-anim 25s linear infinite !important;
+    will-change: transform !important;
+  }
+  .jj-home-marquee-group {
+    display: flex !important;
+    align-items: center !important;
+    padding-right: 4rem !important;
+    flex-shrink: 0 !important;
+  }
+  .jj-home-marquee-badge {
+    font-size: 11px !important;
+    font-family: 'Inter', -apple-system, sans-serif !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.12em !important;
+    white-space: nowrap !important;
+    margin-right: 3rem !important;
+    color: inherit !important;
+  }
+  @keyframes jj-home-marquee-anim {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+</style>
+
+<div class="jj-home-marquee-wrapper" style="background-color: {{ section.settings.bg_color }}; color: {{ section.settings.text_color }}; {% if section.settings.show_borders %}border-top: 1px solid {{ section.settings.border_color }}; border-bottom: 1px solid {{ section.settings.border_color }};{% endif %}">
+  <div class="jj-home-marquee-inner">
+    <div class="jj-home-marquee-track">
+      {% for i in (1..6) %}
+      <div class="jj-home-marquee-group">
+        <span class="jj-home-marquee-badge">{{ section.settings.text_1 }}</span>
+        <span class="jj-home-marquee-badge">{{ section.settings.text_2 }}</span>
+        <span class="jj-home-marquee-badge">{{ section.settings.text_3 }}</span>
       </div>
+      {% endfor %}
     </div>
   </div>
-</section>
+</div>

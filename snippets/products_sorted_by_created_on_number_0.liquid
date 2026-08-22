@@ -1,6 +1,7 @@
 {% paginate collections.all.products by 48 %}
 {% capture listItems %}
-{%- for item in collections.all.products %}
+{%- assign sorted_products = collections.all.products | sort: 'created_at' | reverse -%}
+{%- for item in sorted_products -%}
                 <div role="listitem" class="collection-item-2 margin w-dyn-item" data-id="{{ item.id }}" data-vendor="{{ item.vendor | escape }}">
                     <a href="{{ item.url }}" class="link-block-2 w-inline-block">
                       {%- assign _is_sold_out = true -%}
