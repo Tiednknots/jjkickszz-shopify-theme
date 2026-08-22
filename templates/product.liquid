@@ -4,194 +4,57 @@
     <section class="section-3">
       <div option:html="Scrolling-text (use chatgpt to generate html scrolling text or change the text inside)" class="code-embed-3 w-embed">
         <style>
-  /* --- 1. OUTER WRAPPER (Full Width) --- */
+  /* ── MARQUEE INNER STYLES ─────────────────────────────────────── */
   .jj-marquee-wrapper {
     width: 100%;
     height: 100%;
     display: flex;
-    justify-content: center; /* Forces the marquee to the center */
+    justify-content: center;
     align-items: center;
     position: relative;
-    border-top: none;
-    border-bottom: none;
   }
-  /* --- 2. THE CENTERED VISIBLE AREA (Restricted Width) --- */
   .jj-centered-mask {
-    /* VISIBILITY CONTROLS */
-    width: 60%; /* Only show text in the middle 60% of the parent */
-    max-width: 800px; /* Optional cap so it doesn't get too wide on giant screens */
+    width: 60%;
+    max-width: 800px;
     height: 100%;
     overflow: hidden;
     display: flex;
     align-items: center;
-    /* FADE MASK: Soft edges on the constrained area */
     mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
     -webkit-mask-image: linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%);
   }
-  /* --- 3. THE SCROLLING TRACK --- */
   .jj-marquee-track {
     display: flex;
     align-items: center;
     width: max-content;
     flex-shrink: 0;
-    /* EDITED: Slower Speed (25s) */
     animation: promo-scroll 25s linear infinite;
   }
-  /* --- CONTENT GROUPS --- */
   .jj-content-group {
     display: flex;
     align-items: center;
-    /* This padding pushes the next duplicate away */
-    padding-right: 6rem; 
+    padding-right: 6rem;
   }
-  /* --- TEXT STYLING --- */
   .jj-text-item {
-    font-size: inherit; 
-    color: inherit; 
+    font-size: inherit;
+    color: inherit;
     font-weight: inherit;
     white-space: nowrap;
-    margin-right: 4rem; /* Gap between statements */
+    margin-right: 4rem;
   }
   .jj-text-item:last-child { margin-right: 0; }
-  /* --- ANIMATION --- */
   @keyframes promo-scroll {
     0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); } 
+    100% { transform: translateX(-50%); }
   }
-  /* --- MOBILE --- */
   @media (max-width: 767px) {
-    /* EDITED: Slower Mobile Speed (20s) */
-    .jj-marquee-track { animation-duration: 20s; } 
-    /* Make it wider on phones so it's readable */
+    .jj-marquee-track { animation-duration: 20s; }
     .jj-centered-mask { width: 90%; }
     .jj-content-group { padding-right: 3rem; }
     .jj-text-item { margin-right: 2rem; }
   }
+</style>
 
-/* ── PRODUCT GALLERY LAYOUT ───────────────────────────────── */
-@media screen and (min-width: 992px) {
-  .more-image-wrapper {
-    display: flex !important;
-    flex-direction: row-reverse !important; /* Stack thumbnails left, main right */
-    gap: 20px !important;
-    width: 100% !important;
-    align-items: flex-start !important;
-  }
-  .collection-list-wrapper-2 {
-    order: 1 !important;
-    width: 80px !important;
-    flex-shrink: 0 !important;
-    margin-bottom: 0 !important;
-  }
-  #main-image {
-    order: 2 !important;
-    flex-grow: 1 !important;
-    width: calc(100% - 100px) !important;
-    max-height: calc(100vh - 140px) !important;
-    object-fit: contain !important;
-  }
-  .collection-list-3 {
-    display: flex !important;
-    flex-direction: column !important; /* Vertical stack */
-    gap: 12px !important;
-    width: 100% !important;
-    max-height: calc(100vh - 140px) !important;
-    overflow-y: auto !important; /* Scrollable thumbnails */
-    scrollbar-width: none !important;
-    margin-top: 0 !important;
-  }
-  .collection-list-3::-webkit-scrollbar {
-    display: none !important;
-  }
-}
-
-@media (max-width: 991px) {
-  /* Horizontal swipe row for mobile */
-  .collection-list-wrapper-2 {
-    display: contents !important; /* Let children bubble up to flex row */
-  }
-  .collection-list-3 {
-    display: contents !important; /* Let children bubble up to flex row */
-  }
-  .more-image-wrapper {
-    display: flex !important;
-    flex-direction: row !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    scroll-snap-type: x mandatory !important;
-    scrollbar-width: none !important;
-    -ms-overflow-style: none !important;
-    gap: 12px !important;
-    padding: 0 !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-    height: auto !important;
-  }
-  .more-image-wrapper::-webkit-scrollbar {
-    display: none !important;
-  }
-  #main-image,
-  .collection-item-3 {
-    min-width: calc(100vw - 2rem) !important;
-    max-width: calc(100vw - 2rem) !important;
-    width: calc(100vw - 2rem) !important;
-    height: auto !important;
-    aspect-ratio: 1 / 1 !important;
-    flex-shrink: 0 !important;
-    scroll-snap-align: center !important;
-  }
-}
-\n
-/* ── PRODUCT GALLERY DESKTOP OVERRIDES ─────────────────────── */
-@media screen and (min-width: 992px) {
-  div.more-image-container div.more-image-wrapper {
-    display: flex !important;
-    flex-direction: row-reverse !important; /* Thumbnails on left, main image on right */
-    gap: 24px !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    align-items: flex-start !important;
-    justify-content: flex-end !important;
-    box-sizing: border-box !important;
-  }
-  div.more-image-container div.more-image-wrapper .collection-list-wrapper-2 {
-    order: 1 !important;
-    width: 80px !important;
-    min-width: 80px !important;
-    flex-shrink: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    display: block !important;
-  }
-  div.more-image-container div.more-image-wrapper #main-image {
-    order: 2 !important;
-    flex-grow: 1 !important;
-    width: calc(100% - 104px) !important;
-    max-width: calc(100% - 104px) !important;
-    max-height: calc(100vh - 220px) !important;
-    object-fit: contain !important;
-    margin: 0 !important;
-  }
-  div.more-image-container div.more-image-wrapper .collection-list-3 {
-    display: flex !important;
-    flex-direction: column !important; /* Vertical thumbnails stack */
-    gap: 12px !important;
-    width: 100% !important;
-    max-height: calc(100vh - 220px) !important;
-    overflow-y: auto !important; /* Scrollable thumbnails */
-    scrollbar-width: none !important;
-    margin-top: 0 !important;
-  }
-  div.more-image-container div.more-image-wrapper .collection-list-3::-webkit-scrollbar {
-    display: none !important;
-  }
-  div.more-image-container div.more-image-wrapper .collection-item-3 {
-    width: 80px !important;
-    height: 80px !important;
-    flex-shrink: 0 !important;
-  }
-}
-\n</style>
         <div class="jj-marquee-wrapper">
           <div class="jj-centered-mask">
             <div class="jj-marquee-track">
@@ -227,24 +90,81 @@
         <div class="div-block-631"></div>
         <div class="div-block-629">
           <div class="thumbnail-section">
-            <div class="more-image-container">
-              <div class="more-image-wrapper">
-                {% for image in product.images %}
-                  <div class="gallery-image-item">
-                    <img loading="{% if forloop.first %}eager{% else %}lazy{% endif %}" 
-                         {% if forloop.first %}fetchpriority="high"{% endif %} 
-                         src="{{ image | product_img_url: '1024x' }}" 
-                         alt="{{ image.alt | default: product.title }}" 
-                         id="{% if forloop.first %}main-image{% else %}gallery-image-{{ forloop.index }}{% endif %}" 
-                         class="main-image gallery-image-img" 
-                         data-index="{{ forloop.index0 }}">
-                  </div>
-                {% endfor %}
+            {%- if product.images.size > 1 -%}
+              <!-- ── DESKTOP: Thumbnail strip left + focal image right ── -->
+              <div class="jj-gallery-desktop">
+                <div class="jj-thumb-strip">
+                  {%- for image in product.images -%}
+                    <img
+                      class="jj-thumb{% if forloop.first %} jj-thumb-active{% endif %}"
+                      src="{{ image | product_img_url: '200x' }}"
+                      data-full="{{ image | product_img_url: '1200x' }}"
+                      data-index="{{ forloop.index0 }}"
+                      alt="{{ image.alt | default: product.title }}"
+                      loading="lazy"
+                    >
+                  {%- endfor -%}
+                </div>
+                <div class="jj-focal-wrap">
+                  <img
+                    id="jj-focal-img"
+                    class="jj-focal-image"
+                    src="{{ product.images.first | product_img_url: '1200x' }}"
+                    alt="{{ product.images.first.alt | default: product.title }}"
+                    data-index="0"
+                    loading="eager"
+                    fetchpriority="high"
+                  >
+                </div>
               </div>
-            </div>
+
+              <!-- ── MOBILE/TABLET: Horizontal swipe carousel ── -->
+              <div class="jj-gallery-mobile">
+                <div class="jj-mobile-swipe" id="jj-mobile-swipe">
+                  {%- for image in product.images -%}
+                    <img
+                      class="jj-mobile-slide"
+                      src="{{ image | product_img_url: '1024x' }}"
+                      alt="{{ image.alt | default: product.title }}"
+                      data-index="{{ forloop.index0 }}"
+                      loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                      {% if forloop.first %}fetchpriority="high"{% endif %}
+                    >
+                  {%- endfor -%}
+                </div>
+                <!-- Mobile dot indicators -->
+                <div class="jj-swipe-dots" id="jj-swipe-dots"></div>
+              </div>
+            {%- else -%}
+              <!-- ── SINGLE IMAGE: Full width focal ── -->
+              <div class="jj-gallery-desktop jj-gallery-single">
+                <div class="jj-focal-wrap">
+                  <img
+                    id="jj-focal-img"
+                    class="jj-focal-image"
+                    src="{{ product.featured_image | product_img_url: '1200x' }}"
+                    alt="{{ product.featured_image.alt | default: product.title }}"
+                    data-index="0"
+                    loading="eager"
+                    fetchpriority="high"
+                  >
+                </div>
+              </div>
+              <!-- Mobile single image -->
+              <div class="jj-gallery-mobile">
+                <div class="jj-mobile-swipe" id="jj-mobile-swipe">
+                  <img
+                    class="jj-mobile-slide"
+                    src="{{ product.featured_image | product_img_url: '1024x' }}"
+                    alt="{{ product.featured_image.alt | default: product.title }}"
+                    loading="eager"
+                    fetchpriority="high"
+                  >
+                </div>
+              </div>
+            {%- endif -%}
           </div>
-          <!-- Mobile swipe dot indicators -->
-          <div class="jj-swipe-dots" id="jj-swipe-dots"></div>
+          <!-- Mobile swipe dots live inside .jj-gallery-mobile above -->
           <div class="product-container">
             <div class="product-descriptions">
               {%- comment -%} — STATUS BADGE — {%- endcomment -%}
@@ -285,19 +205,19 @@
                   {%- form "product", product, data-node-type: "commerce-add-to-cart-form", class: "w-commerce-commerceaddtocartform default-state" -%}
                     <div data-node-type="add-to-cart-option-list" class="option-list" position-id="2e9f1bc9-32d9-1788-4c9a-6b3a5ce4b912">
                       {%- for option in product.options_with_values -%}
-                        <fieldset data-node-type="add-to-cart-option" class="option">
-                          <h1 data-node-type="heading" class="field-label asd">{{ option.name | upcase }}</h1>
-                          <select data-node-type="add-to-cart-option-select" class="select-field w-select" style="display: none;" name="{{ "option" | append: forloop.index }}">
+                        <fieldset data-node-type="add-to-cart-option" class="option jj-option-fieldset">
+                          <label class="field-label asd jj-option-label" for="jj-option-{{ forloop.index }}">{{ option.name | upcase }}</label>
+                          <!-- Native Webflow hidden select (keep for Webflow cart logic) -->
+                          <select data-node-type="add-to-cart-option-select" class="select-field w-select" style="display: none;" name="{{ "option" | append: forloop.index }}" id="jj-native-select-{{ forloop.index }}">
                             {%- render "product-options", option: option -%}
                           </select>
-                          <div data-node-type="add-to-cart-option-pill-group" class="button-group w-commerce-commerceaddtocartoptionpillgroup" aria-label="{{ "option" | append: forloop.index  }}">
+                          <!-- Hidden pill group (keep for Webflow cart logic, hidden visually) -->
+                          <div data-node-type="add-to-cart-option-pill-group" class="button-group w-commerce-commerceaddtocartoptionpillgroup jj-pills-hidden" aria-label="{{ "option" | append: forloop.index }}" aria-hidden="true">
                             {%- for value in option.values -%}
                               {%- assign is_available = false -%}
                               {%- for variant in product.variants -%}
                                 {%- if variant.options contains value -%}
-                                  {%- if variant.available -%}
-                                    {%- assign is_available = true -%}
-                                  {%- endif -%}
+                                  {%- if variant.available -%}{%- assign is_available = true -%}{%- endif -%}
                                 {%- endif -%}
                               {%- endfor -%}
                               <div data-node-type="add-to-cart-option-pill" class="button-2 w-commerce-commerceaddtocartoptionpill{% unless is_available %} jj-pill-sold-out{% endunless %}" data-option-name="{{ value | handle }}">
@@ -305,8 +225,29 @@
                               </div>
                             {%- endfor -%}
                           </div>
+                          <!-- Styled visible dropdown (mirrors pill selection) -->
+                          <div class="jj-select-wrap">
+                            <select class="jj-styled-select" data-option-index="{{ forloop.index }}" name="jj-visible-option{{ forloop.index }}" id="jj-option-{{ forloop.index }}" aria-label="{{ option.name }}">
+                              <option value="" disabled selected>Select {{ option.name }}</option>
+                              {%- for value in option.values -%}
+                                {%- assign is_available = false -%}
+                                {%- for variant in product.variants -%}
+                                  {%- if variant.options contains value -%}
+                                    {%- if variant.available -%}{%- assign is_available = true -%}{%- endif -%}
+                                  {%- endif -%}
+                                {%- endfor -%}
+                                <option value="{{ value }}"{% unless is_available %} class="jj-opt-soldout" disabled{% endunless %}>
+                                  {{ value }}{% unless is_available %} — Sold Out{% endunless %}
+                                </option>
+                              {%- endfor -%}
+                            </select>
+                            <span class="jj-select-arrow">
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                            </span>
+                          </div>
                         </fieldset>
                       {%- endfor -%}
+
                     </div>
                     <div position-id="2e9f1bc9-32d9-1788-4c9a-6b3a5ce4b919" class="div-block-568">
                       <input type="submit" data-node-type="commerce-add-to-cart-button" data-loading-text="{{ 'tn60b63398' | t }}" aria-busy="false" aria-haspopup="dialog" class="w-commerce-commerceaddtocartbutton add-to-cart-button" value="{{ 'tn26bdceda' | t }}">
@@ -512,180 +453,270 @@
   /* Force hide the native Webflow error state */
   .w-commerce-commerceaddtocarterrorstate { display: none !important; }
 
-  /* ── PRODUCT PAGE LAYOUT — DESKTOP STICKY ───────────────────── */
+  /* ── PRODUCT PAGE 2-COLUMN GRID — DESKTOP ─────────────────────── */
   @media screen and (min-width: 992px) {
     .div-block-629 {
       display: grid !important;
-      grid-template-columns: 0.9fr 1.1fr !important; /* Option B: Balanced columns width */
-      gap: 4rem !important;
+      grid-template-columns: 1fr 1fr !important;
+      gap: 3rem !important;
       align-items: start !important;
-      padding: 0 4rem !important; /* Removed vertical padding from parent to extend vertical border */
+      padding: 2rem 3rem 4rem !important;
       box-sizing: border-box !important;
       max-width: 100% !important;
     }
 
-    /* LEFT: Sticky image column */
+    /* LEFT: Sticky gallery column — sticks until right column scrolls past */
     .thumbnail-section {
+      position: sticky !important;
+      top: 124px !important; /* 80px navbar + 40px marquee + 4px buffer */
+      align-self: flex-start !important;
+      width: 90% !important;
+      margin: 0 auto !important;
+      overflow: visible !important;
+      max-height: none !important;
+    }
+
+    /* RIGHT: Normal scroll — no sticky */
+    .product-container {
+      position: relative !important;
+      top: auto !important;
+      max-height: none !important;
+      overflow: visible !important;
+      width: 90% !important;
+      margin: 0 auto !important;
+      padding-top: 1rem !important;
+      padding-left: 2rem !important;
+      border-left: 1px solid #252525 !important;
+    }
+
+    /* Desktop gallery: HIDE mobile swipe, SHOW desktop layout */
+    .jj-gallery-mobile { display: none !important; }
+    .jj-gallery-desktop { display: flex !important; }
+
+    /* ── DESKTOP: Thumbnail strip left of focal image ── */
+    .jj-gallery-desktop {
+      flex-direction: row !important;
+      align-items: flex-start !important;
+      gap: 12px !important;
+      width: 100% !important;
+    }
+
+    /* Single-image: no strip needed */
+    .jj-gallery-single {
+      flex-direction: column !important;
+    }
+    .jj-gallery-single .jj-thumb-strip { display: none !important; }
+
+    /* Thumbnail strip: vertical column on the left */
+    .jj-thumb-strip {
       display: flex !important;
       flex-direction: column !important;
-      gap: 16px !important;
-      overflow-y: visible !important;
-      position: sticky !important;
-      top: 120px !important; /* Clears sticky marquee/menu at 120px */
-      max-height: calc(100vh - 140px) !important;
+      gap: 8px !important;
+      width: 72px !important;
+      min-width: 72px !important;
+      flex-shrink: 0 !important;
+      max-height: calc(100vh - 148px) !important;
+      overflow-y: auto !important;
+      scrollbar-width: none !important;
+    }
+    .jj-thumb-strip::-webkit-scrollbar { display: none !important; }
+
+    /* Individual thumbnail */
+    .jj-thumb {
+      width: 72px !important;
+      height: 72px !important;
+      object-fit: cover !important;
+      border-radius: 6px !important;
+      border: 2px solid transparent !important;
+      opacity: 0.55 !important;
+      cursor: pointer !important;
+      flex-shrink: 0 !important;
+      transition: opacity 0.2s ease, border-color 0.2s ease !important;
+      background: #111 !important;
+    }
+    .jj-thumb:hover { opacity: 0.85 !important; }
+    .jj-thumb.jj-thumb-active {
+      opacity: 1 !important;
+      border-color: #ffffff !important;
+    }
+
+    /* Focal image: fills remaining column width */
+    .jj-focal-wrap {
+      flex: 1 !important;
+      min-width: 0 !important;
+    }
+    .jj-focal-image {
+      width: 100% !important;
+      aspect-ratio: 1 / 1 !important;
+      object-fit: cover !important;
+      border-radius: 12px !important;
+      cursor: zoom-in !important;
+      display: block !important;
+      background: #0d0d0d !important;
+    }
+  }
+
+  /* ── TABLET & MOBILE (≤991px) — Swipe gallery ─────────────────── */
+  @media (max-width: 991px) {
+    .div-block-629 {
+      display: flex !important;
+      flex-direction: column !important;
+      padding: 0 !important;
+      gap: 0 !important;
+    }
+
+    .thumbnail-section {
+      position: static !important;
+      max-height: none !important;
+      overflow: visible !important;
+      width: 100% !important;
+      margin: 0 !important;
+    }
+
+    /* Mobile: HIDE desktop layout, SHOW swipe carousel */
+    .jj-gallery-desktop { display: none !important; }
+    .jj-gallery-mobile {
+      display: block !important;
+      width: 100% !important;
+    }
+
+    /* 65vh mobile swipe track */
+    .jj-mobile-swipe {
+      display: flex !important;
+      flex-direction: row !important;
+      overflow-x: auto !important;
+      overflow-y: hidden !important;
+      scroll-snap-type: x mandatory !important;
       scrollbar-width: none !important;
       -ms-overflow-style: none !important;
       width: 100% !important;
-      padding-top: 1rem !important;   
-      padding-bottom: 1rem !important;
-      align-items: center !important;
+      height: 65vh !important;
+      min-height: 280px !important;
     }
-    .thumbnail-section::-webkit-scrollbar { display: none !important; }
+    .jj-mobile-swipe::-webkit-scrollbar { display: none !important; }
 
-    /* Main + each thumb as a stacked image in the scroll column */
-    .more-image-wrapper {
+    .jj-mobile-slide {
+      flex-shrink: 0 !important;
+      width: 100vw !important;
+      height: 65vh !important;
+      min-height: 280px !important;
+      object-fit: cover !important;
+      scroll-snap-align: center !important;
+      display: block !important;
+    }
+
+    /* Dot indicators spacing */
+    .jj-swipe-dots {
       display: flex !important;
-      flex-direction: column !important;
-      gap: 16px !important;
-      width: 100% !important;
+      justify-content: center !important;
       align-items: center !important;
+      gap: 6px !important;
+      padding: 12px 0 16px !important;
+    }
+
+    /* Product details */
+    .product-container {
+      position: static !important;
+      max-height: none !important;
+      overflow: visible !important;
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 0 1.25rem 2rem !important;
+      border-left: none !important;
     }
   }
 
-  #main-image {
-    max-height: calc(100vh - 180px) !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    aspect-ratio: 1 / 1 !important;
-    object-fit: contain !important;
-    border-radius: 12px !important;
-    cursor: zoom-in !important;
+  /* ── STYLED VARIANT DROPDOWN ──────────────────────────────────── */
+
+  /* Hide the Webflow pill buttons visually (keep in DOM for cart logic) */
+  .jj-pills-hidden {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    pointer-events: none !important;
+  }
+
+  /* Option fieldset reset */
+  .jj-option-fieldset {
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 0 16px 0 !important;
+  }
+
+  .jj-option-label {
     display: block !important;
-    margin: 0 auto !important;
-    background-color: transparent !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.12em !important;
+    text-transform: uppercase !important;
+    color: rgba(255,255,255,0.55) !important;
+    margin-bottom: 8px !important;
   }
 
-  /* Compact grid of thumbnails underneath the main image on desktop */
-  .collection-list-3 {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: wrap !important;
-    justify-content: center !important;
-    gap: 10px !important;
+  /* Dropdown wrapper: positions the chevron */
+  .jj-select-wrap {
+    position: relative !important;
     width: 100% !important;
-    margin-top: 12px !important;
   }
 
-  .collection-item-3 {
-    width: 60px !important;
-    height: 60px !important;
-    flex-shrink: 0 !important;
-  }
-
-  #thumb-image, .thumb-image {
+  /* The styled select */
+  .jj-styled-select {
     width: 100% !important;
-    height: 100% !important;
-    aspect-ratio: 1 / 1 !important;
-    object-fit: cover !important;
-    cursor: pointer !important;
-    display: block !important;
-    transition: all 0.2s ease !important;
-    border-radius: 8px !important;
-    border: 2px solid transparent !important;
-    background: #0f0f0f !important;
-    opacity: 0.6 !important;
-  }
-
-  #thumb-image:hover, .thumb-image:hover {
-    opacity: 0.9 !important;
-    border-color: rgba(255, 255, 255, 0.2) !important;
-  }
-
-  #thumb-image.active-thumb, .thumb-image.active-thumb {
-    opacity: 1 !important;
-    border-color: #ffffff !important;
-  }
-
-  /* RIGHT: Sticky product info */
-  .product-container {
-    position: sticky !important;
-    top: 120px !important; /* Clears sticky marquee/menu at 120px */
-    max-height: calc(100vh - 140px) !important;
-    overflow-y: auto !important;
-    scrollbar-width: none !important;
-    -ms-overflow-style: none !important;
-    width: 100% !important;
-    padding-top: 2rem !important;   /* Moved from parent grid */
-    padding-bottom: 2.5rem !important;/* Moved from parent grid */
-    padding-left: 2rem !important;   /* Separates details from vertical line */
-    border-left: 1px solid #252525 !important; /* Runs full height of grid container */
-  }
-  .product-container::-webkit-scrollbar { display: none !important; }
-
-  /* Prevent long product titles from breaking layout */
-  .title-label.producc {
-    white-space: normal !important;
-    word-break: break-word;
-    overflow-wrap: break-word;
-    max-width: 100%;
-    line-height: 1.2;
-  }
-
-  /* Compact variant selection pills layout */
-  .button-group.w-commerce-commerceaddtocartoptionpillgroup {
-    display: grid !important;
-    grid-template-columns: repeat(auto-fill, minmax(65px, 1fr)) !important;
-    gap: 6px !important;
-    margin: 8px 0 16px 0 !important;
-    max-height: 180px !important; /* Limit vertical height of huge variant lists */
-    overflow-y: auto !important; /* Scroll vertically if there are too many sizes! */
-    padding-right: 4px !important;
-    scrollbar-width: thin !important;
-  }
-  
-  .button-group.w-commerce-commerceaddtocartoptionpillgroup::-webkit-scrollbar {
-    width: 4px !important;
-  }
-  .button-group.w-commerce-commerceaddtocartoptionpillgroup::-webkit-scrollbar-thumb {
-    background: #444 !important;
-    border-radius: 2px !important;
-  }
-
-  .button-2.w-commerce-commerceaddtocartoptionpill {
-    padding: 6px 8px !important;
-    background-color: #161616 !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    background: #111111 !important;
     border: 1px solid #2e2e2e !important;
-    border-radius: 6px !important;
+    border-radius: 8px !important;
+    color: #ffffff !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.03em !important;
+    padding: 11px 42px 11px 14px !important;
+    cursor: pointer !important;
+    outline: none !important;
+    transition: border-color 0.2s ease !important;
+    /* Prevent iOS zoom-in on focus */
+    font-size: max(13px, 16px) !important;
+  }
+
+  @media (min-width: 992px) {
+    .jj-styled-select { font-size: 13px !important; }
+  }
+
+  .jj-styled-select:focus {
+    border-color: rgba(255,255,255,0.5) !important;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.08) !important;
+  }
+
+  .jj-styled-select option { background: #111111; color: #ffffff; }
+  .jj-styled-select .jj-opt-soldout,
+  .jj-styled-select option:disabled { color: #555555 !important; }
+
+  /* Chevron icon positioned inside the select */
+  .jj-select-arrow {
+    position: absolute !important;
+    right: 14px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    pointer-events: none !important;
+    color: rgba(255,255,255,0.4) !important;
     display: flex !important;
     align-items: center !important;
-    justify-content: center !important;
-    min-height: 36px !important;
-    cursor: pointer !important;
-    margin: 0 !important; /* Clear default margins */
-    transition: all 0.2s ease !important;
-  }
-  
-  .button-2.w-commerce-commerceaddtocartoptionpill:hover {
-    border-color: #555 !important;
-    background-color: #1e1e1e !important;
-  }
-  
-  .button-2.w-commerce-commerceaddtocartoptionpill.w--selected {
-    border-color: #fff !important;
-    background-color: #ffffff !important;
-    color: #000000 !important;
-  }
-  .button-2.w-commerce-commerceaddtocartoptionpill.w--selected .text-block-9 {
-    color: #000000 !important;
-    font-weight: 700 !important;
   }
 
-  .button-2.w-commerce-commerceaddtocartoptionpill.jj-pill-sold-out {
-    opacity: 0.35 !important;
-    text-decoration: line-through !important;
+  /* ── PRODUCT TITLE ─────────────────────────────────────────────── */
+  .title-label.producc {
+    white-space: normal !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    max-width: 100% !important;
+    line-height: 1.2 !important;
+    font-size: 2rem !important;
   }
 
-  /* ── ASK A QUESTION BUTTON ───────────────────────────────────── */
+  /* ── ASK A QUESTION BUTTON ─────────────────────────────────────── */
   .jj-ask-question-btn {
     display: inline-flex;
     align-items: center;
@@ -704,677 +735,135 @@
     text-decoration: underline;
     cursor: pointer;
     transition: color 0.2s ease;
-    width: auto;
   }
+  .jj-ask-question-btn:hover { color: rgba(255,255,255,0.9); }
 
-  .jj-ask-question-btn:hover {
-    color: rgba(255,255,255,0.9);
-  }
-
-  /* ── LIGHTBOX ────────────────────────────────────────────────── */
+  /* ── LIGHTBOX ──────────────────────────────────────────────────── */
   #jj-lightbox {
     display: none;
     position: fixed;
     inset: 0;
-    z-index: 9999;
+    z-index: 999999;
     background: rgba(0,0,0,0.97);
     align-items: center;
     justify-content: center;
     flex-direction: column;
   }
-
   #jj-lightbox.open {
     display: flex;
     animation: jj-lb-fadein 0.2s ease;
   }
-
   @keyframes jj-lb-fadein {
     from { opacity: 0; }
     to { opacity: 1; }
   }
-
   .jj-lb-close {
     position: absolute;
-    top: 20px;
-    right: 24px;
-    background: transparent;
-    border: none;
+    top: 20px; right: 24px;
+    background: transparent; border: none;
     color: rgba(255,255,255,0.6);
-    font-size: 28px;
-    cursor: pointer;
-    line-height: 1;
-    padding: 8px;
-    transition: color 0.15s ease;
-    z-index: 10;
+    font-size: 28px; cursor: pointer;
+    line-height: 1; padding: 8px;
+    transition: color 0.15s ease; z-index: 10;
   }
   .jj-lb-close:hover { color: #fff; }
-
   .jj-lb-img-wrap {
     position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    flex: 1; width: 100%; overflow: hidden;
   }
-
   #jj-lb-img {
-    max-width: 90vw;
-    max-height: 85vh;
+    max-width: 90vw; max-height: 80vh;
     object-fit: contain;
     user-select: none;
     transition: transform 0.1s ease;
     cursor: zoom-in;
   }
+  #jj-lb-img.zoomed { cursor: move; }
 
-  #jj-lb-img.zoomed {
-    cursor: move;
-  }
-
-  .jj-lb-arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.15);
-    color: rgba(255,255,255,0.6);
-    font-size: 20px;
-    width: 48px;
-    height: 48px;
+  /* Lightbox bottom bar: prev | thumbnails | next */
+  .jj-lb-bottom-bar {
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    transition: all 0.15s ease;
-    z-index: 10;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 24px 20px;
+    box-sizing: border-box;
   }
-
+  .jj-lb-thumbs {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    overflow-x: auto;
+    max-width: 70vw;
+    scrollbar-width: none;
+  }
+  .jj-lb-thumbs::-webkit-scrollbar { display: none; }
+  .jj-lb-thumb {
+    width: 52px; height: 52px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 2px solid transparent;
+    opacity: 0.5;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: opacity 0.15s ease, border-color 0.15s ease;
+  }
+  .jj-lb-thumb:hover { opacity: 0.85; }
+  .jj-lb-thumb.jj-lb-thumb-active {
+    opacity: 1 !important;
+    border-color: #ffffff !important;
+  }
+  .jj-lb-arrow {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.7);
+    font-size: 18px;
+    width: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+  }
   .jj-lb-arrow:hover {
     background: rgba(255,255,255,0.08);
     color: #fff;
+    border-color: rgba(255,255,255,0.4);
   }
-
-  #jj-lb-prev { left: 20px; }
-  #jj-lb-next { right: 20px; }
-
   .jj-lb-counter {
     position: absolute;
-    bottom: 20px;
-    left: 50%;
+    bottom: 76px; left: 50%;
     transform: translateX(-50%);
     font-family: 'Inter', sans-serif;
-    font-size: 11px;
-    letter-spacing: 0.1em;
+    font-size: 11px; letter-spacing: 0.1em;
     color: rgba(255,255,255,0.3);
   }
 
-  /* ── MOBILE — HORIZONTAL SWIPE GALLERY ──────────────────────── */
-  @media (max-width: 991px) {
-    .div-block-629 {
-      display: flex !important;
-      flex-direction: column !important;
-      padding: 0 !important;
-      gap: 0 !important;
-      margin-bottom: 0 !important;
-      padding-bottom: 0 !important;
-    }
-
-    .thumbnail-section {
-      margin-top: 0 !important;
-      max-height: none !important;
-      overflow: visible !important;
-      position: static !important; /* Not sticky on mobile */
-      margin-bottom: 0 !important;
-      padding-bottom: 0 !important;
-    }
-
-    /* Padded wrapper for the gallery card */
-    .more-image-container {
-      margin-top: 0 !important;
-      padding: 0 1rem !important;    /* exactly 1rem left/right padding */
-      box-sizing: border-box !important;
-      margin-bottom: 0 !important;
-      padding-bottom: 0 !important;
-      height: calc(100vw - 2rem) !important; /* Enforce square height constraints */
-    }
-
-    /* Horizontal scroll track with gaps */
-    .more-image-wrapper {
-      display: flex !important;
-      flex-direction: row !important;
-      overflow-x: auto !important;
-      overflow-y: hidden !important;
-      scroll-snap-type: x mandatory !important;
-      scrollbar-width: none !important;
-      -ms-overflow-style: none !important;
-      gap: 12px !important;
-      padding: 0 !important;
-      width: 100% !important;
-      box-sizing: border-box !important;
-      margin-bottom: 0 !important;
-      padding-bottom: 0 !important;
-      height: 100% !important;
-    }
-    .more-image-wrapper::-webkit-scrollbar { display: none !important; }
-
-    /* Custom slide sizing utilizing calc to match container padding */
-    #main-image {
-      min-width: calc(100vw - 2rem) !important;
-      max-width: calc(100vw - 2rem) !important;
-      width: calc(100vw - 2rem) !important;
-      height: 100% !important; /* Lock height to match container */
-      aspect-ratio: 1 / 1 !important; /* Square aspect ratio */
-      object-fit: cover !important; /* Fill container cleanly */
-      background: transparent !important; /* No white background card box */
-      border-radius: 12px !important;
-      scroll-snap-align: center !important;
-      margin: 0 !important;
-      flex-shrink: 0 !important;
-      border: none !important; /* Remove white border */
-      box-shadow: none !important;
-    }
-
-    /* Stack thumbs inline with main for the mobile swipe row */
-    .collection-list-3 {
-      display: flex !important;
-      flex-direction: row !important;
-      gap: 12px !important;
-      height: 100% !important;
-    }
-
-    .collection-item-3 {
-      min-width: calc(100vw - 2rem) !important;
-      max-width: calc(100vw - 2rem) !important;
-      width: calc(100vw - 2rem) !important;
-      height: 100% !important; /* Lock height to match container */
-      flex-shrink: 0 !important;
-      scroll-snap-align: center !important;
-    }
-
-    #thumb-image, .thumb-image {
-      width: 100% !important;
-      height: 100% !important;
-      aspect-ratio: 1 / 1 !important;
-      object-fit: cover !important;
-      background: transparent !important; /* No white background card box */
-      border-radius: 12px !important;
-      border: none !important; /* Remove white border */
-      box-shadow: none !important;
-    }
-
-    .product-container {
-      position: static !important;
-      max-height: none !important;
-      overflow: visible !important;
-      padding: 0 1rem 2rem !important; /* 1rem space at left/right, 0 top */
-    }
-
-    .product-descriptions {
-      margin-top: 0 !important;
-      padding-top: 0 !important;
-    }
-
-    /* Selector indicators container spacing */
-    .jj-swipe-dots {
-      display: flex !important;
-      margin-top: 0.5rem !important;    /* 0.5rem under image gallery */
-      margin-bottom: 0.75rem !important; /* Spaced out under indicators to product details */
-      padding: 0 !important;
-    }
-  }
-
-  /* Hide scrollbars on desktop gallery */
-  .thumbnail-section,
-  .more-image-container,
-  .more-image-wrapper {
-    scrollbar-width: none !important;
-    -ms-overflow-style: none !important;
-  }
-  .thumbnail-section::-webkit-scrollbar,
-  .more-image-container::-webkit-scrollbar,
-  .more-image-wrapper::-webkit-scrollbar {
-    display: none !important;
-    width: 0 !important;
-    height: 0 !important;
-    background: transparent !important;
-  }
-
-  /* Similar items card height & styling overrides */
+  /* Similar items row */
   .new-similar-items .collection-list-wrapper {
-    height: auto !important;
-    min-height: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
+    height: auto !important; min-height: 0 !important;
+    margin: 0 !important; padding: 0 !important;
   }
   .new-similar-items .collection-list-2.contents-of-scroll {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    align-items: flex-start !important; /* Do NOT stretch vertically */
-    height: auto !important;
-    min-height: 0 !important;
-    padding-top: 10px !important;
-    padding-bottom: 20px !important;
+    display: flex !important; flex-direction: row !important;
+    flex-wrap: nowrap !important; align-items: flex-start !important;
+    height: auto !important; min-height: 0 !important;
+    padding-top: 10px !important; padding-bottom: 20px !important;
     gap: 16px !important;
   }
   .new-similar-items .collection-item-2.product,
   .new-similar-items .collection-item-2 {
-    flex: 0 0 170px !important; /* Width is 170px for a clean card size on mobile */
-    width: 170px !important;
-    height: auto !important;
-    min-height: 0 !important;
-    margin: 0 !important;
+    flex: 0 0 170px !important; width: 170px !important;
+    height: auto !important; min-height: 0 !important; margin: 0 !important;
   }
   .new-similar-items .collection-item-2.product .link-block-2,
   .new-similar-items .collection-item-2 .link-block-2 {
-    display: flex !important;
-    flex-direction: column !important;
-    height: auto !important; /* Let it wrap content tightly */
-    border: 1px solid #2e2e2e !important;
-    border-radius: 8px !important;
-    background-color: #0b0b0b !important; /* Dark solid card background */
-    padding: 0 0 12px 0 !important;
-    overflow: hidden !important;
-  }
-  .new-similar-items .div-block-15,
-  .new-similar-items .home-custom-img-wrap {
-    width: 100% !important;
-    height: 170px !important; /* Perfect square image header */
-    min-height: 170px !important;
-    max-height: 170px !important;
-    overflow: hidden !important;
-    position: relative !important;
-    border-radius: 8px 8px 0 0 !important; /* Rounded top corners only */
-    border: none !important;
-  }
-
-  /* Desktop specific similar items cards: 65vh unified height */
-  @media screen and (min-width: 992px) {
-    .new-similar-items .collection-list-2.contents-of-scroll {
-      display: grid !important;
-      grid-template-columns: repeat(4, 1fr) !important;
-      gap: 20px !important;
-      height: 65vh !important; /* Unified height */
-      align-items: stretch !important;
-      padding-bottom: 0 !important;
-    }
-    .new-similar-items .collection-item-2.product,
-    .new-similar-items .collection-item-2 {
-      width: 100% !important;
-      flex: none !important;
-      height: 100% !important;
-    }
-    .new-similar-items .collection-item-2.product .link-block-2,
-    .new-similar-items .collection-item-2 .link-block-2 {
-      height: 100% !important;
-      padding: 0 0 16px 0 !important;
-    }
-    .new-similar-items .div-block-15,
-    .new-similar-items .home-custom-img-wrap {
-      height: calc(65vh - 120px) !important; /* Dynamic image height */
-      min-height: auto !important;
-      max-height: none !important;
-    }
-  }
-  .new-similar-items .image-6,
-  .new-similar-items .home-custom-img {
-    width: 100% !important;
-    height: 100% !important;
-    min-height: 100% !important;
-    max-height: 100% !important;
-    object-fit: cover !important;
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    border: none !important;
-  }
-  .new-similar-items .text-block-4.title {
-    font-size: 13px !important;
-    line-height: 1.2 !important;
-    margin: 8px 8px 4px 8px !important;
-    white-space: normal !important; /* Wrap title */
-    height: 32px !important; /* Two lines height */
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    display: -webkit-box !important;
-    -webkit-line-clamp: 2 !important;
-    -webkit-box-orient: vertical !important;
-  }
-  .new-similar-items .text-block-779 {
-    font-size: 13px !important;
-    font-weight: 600 !important;
-    margin: 0 8px 8px 8px !important;
-    color: #fff !important;
-  }
-  .new-similar-items .div-block-1163 {
-    margin: 0 8px !important;
-    padding: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    gap: 4px !important;
-  }
-  .new-similar-items .div-block-1163 .asd {
-    font-size: 11px !important;
-    color: #888 !important;
-    margin: 0 !important;
-  }
-  .new-similar-items .size-contents {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    gap: 4px !important;
-  }
-  .new-similar-items .sizes-variants {
-    font-size: 11px !important;
-    color: #fff !important;
-    background: #1e1e1e !important;
-    padding: 2px 4px !important;
-    border-radius: 3px !important;
-    margin: 0 !important;
-  }
-
-  /* Selector indicators styled as lines (hidden on desktop) */
-  .jj-swipe-dots {
-    display: none;
-    justify-content: center;
-    gap: 6px;
-    padding: 0;
-    width: 100%;
-  }
-
-  .jj-swipe-dot {
-    width: 20px;
-    height: 3px;
-    border-radius: 2px;
-    background: rgba(255,255,255,0.25);
-    transition: background 0.2s ease, width 0.2s ease;
-    cursor: pointer;
-  }
-
-  .jj-swipe-dot.active {
-    background: rgba(255,255,255,0.9);
-    width: 28px;
-  }
-
-  /* ── LIGHTBOX CUSTOMIZATIONS ─────────────────────────────────── */
-  .jj-lb-bottom-bar {
-    position: absolute;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    z-index: 10002 !important;
-  }
-  .jj-lb-thumbs {
-    display: flex;
-    gap: 8px;
-    max-width: 60vw;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-  .jj-lb-thumbs::-webkit-scrollbar { display: none; }
-
-  .jj-lb-thumb-img {
-    width: 44px;
-    height: 44px;
-    object-fit: cover;
-    border-radius: 4px;
-    border: 1px solid transparent;
-    cursor: pointer;
-    opacity: 0.6;
-    transition: opacity 0.2s ease, border-color 0.2s ease;
-    flex-shrink: 0;
-  }
-  .jj-lb-thumb-img.active, .jj-lb-thumb-img:hover {
-    opacity: 1;
-    border-color: #fff;
-  }
-
-  .jj-lb-bottom-bar .jj-lb-arrow {
-    position: static !important;
-    transform: none !important;
-    background: rgba(255,255,255,0.08) !important;
-    border: 1px solid rgba(255,255,255,0.15) !important;
-    color: rgba(255,255,255,0.6) !important;
-    font-size: 18px !important;
-    width: 40px !important;
-    height: 40px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    cursor: pointer !important;
-    transition: all 0.15s ease !important;
-    border-radius: 50% !important;
-    flex-shrink: 0 !important;
-  }
-  .jj-lb-bottom-bar .jj-lb-arrow:hover {
-    background: rgba(255,255,255,0.18) !important;
-    color: #fff !important;
-    border-color: #fff !important;
-  }
-
-  .jj-lb-close {
-    position: absolute;
-    top: 24px;
-    right: 24px;
-    width: 44px;
-    height: 44px;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 50%;
-    color: #fff;
-    font-size: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background 0.2s ease, color 0.2s ease;
-    z-index: 10002 !important;
-  }
-  .jj-lb-close:hover {
-    background: rgba(255,255,255,0.18);
-  }
-
-  /* ── IOS-STYLE CONTACT DRAWER ────────────────────────────────── */
-  #jj-drawer-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.65);
-    z-index: 10005;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-  }
-  #jj-drawer-overlay.open {
-    display: block;
-    opacity: 1;
-  }
-  #jj-contact-drawer {
-    position: fixed;
-    bottom: 0;
-    left: 50%;
-    transform: translate(-50%, 100%);
-    width: 100%;
-    max-width: 500px;
-    background: #0b0b0b;
-    border-top: 1px solid #2e2e2e;
-    border-top-left-radius: 24px;
-    border-top-right-radius: 24px;
-    z-index: 10006;
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    box-sizing: border-box;
-    max-height: 85vh;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 -10px 40px rgba(0,0,0,0.6);
-  }
-  #jj-contact-drawer.open {
-    transform: translate(-50%, 0);
-  }
-  .jj-drawer-handle {
-    width: 36px;
-    height: 4px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 2px;
-    margin: 12px auto 8px;
-    flex-shrink: 0;
-  }
-  .jj-drawer-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 24px 16px;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    flex-shrink: 0;
-  }
-  .jj-drawer-title {
-    font-family: 'Inter', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    color: #fff;
-    margin: 0;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-  .jj-drawer-close {
-    background: transparent;
-    border: none;
-    color: rgba(255,255,255,0.4);
-    font-size: 24px;
-    cursor: pointer;
-    padding: 4px;
-    line-height: 1;
-  }
-  .jj-drawer-content {
-    padding: 24px;
-    overflow-y: auto;
-    flex: 1;
-    box-sizing: border-box;
-  }
-  .jj-drawer-product-row {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 12px;
-    padding: 12px;
-    margin-bottom: 20px;
-  }
-  .jj-drawer-product-img {
-    width: 54px;
-    height: 54px;
-    object-fit: cover;
-    border-radius: 6px;
-  }
-  .jj-drawer-product-info {
-    flex: 1;
-  }
-  .jj-drawer-product-title {
-    font-family: 'Inter', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    color: #fff;
-    margin: 0 0 3px 0;
-  }
-  .jj-drawer-product-price {
-    font-family: 'Inter', sans-serif;
-    font-size: 12px;
-    color: #22c55e;
-    margin: 0;
-    font-weight: 600;
-  }
-  .jj-drawer-fields {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  .jj-drawer-field {
-    width: 100%;
-  }
-  .jj-drawer-field input,
-  .jj-drawer-field select,
-  .jj-drawer-field textarea {
-    width: 100%;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 8px;
-    color: #fff;
-    padding: 12px 14px;
-    font-family: 'Inter', sans-serif;
-    font-size: 13px;
-    outline: none;
-    box-sizing: border-box;
-    transition: border-color 0.2s ease;
-  }
-  .jj-drawer-field select {
-    appearance: none;
-    -webkit-appearance: none;
-    background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    background-size: 18px;
-    padding-right: 36px;
-  }
-  .jj-drawer-field textarea {
-    min-height: 90px;
-    resize: none;
-    line-height: 1.5;
-  }
-  .jj-drawer-field input:focus,
-  .jj-drawer-field select:focus,
-  .jj-drawer-field textarea:focus {
-    border-color: rgba(255,255,255,0.3);
-  }
-  .jj-drawer-submit {
-    width: 100%;
-    background: #fff;
-    color: #000;
-    border: none;
-    border-radius: 8px;
-    padding: 14px;
-    font-family: 'Inter', sans-serif;
-    font-size: 12px;
-    font-weight: 700;
-    margin-top: 16px;
-    cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    transition: background 0.2s ease;
-  }
-  .jj-drawer-submit:hover {
-    background: #e6e6e6;
-  }
-  .jj-drawer-success {
-    display: none;
-    color: #22c55e;
-    font-family: 'Inter', sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    text-align: center;
-    margin-top: 12px;
-    background: rgba(34,197,94,0.06);
-    border: 1px solid rgba(34,197,94,0.15);
-    border-radius: 8px;
-    padding: 10px;
-  }
-  .jj-drawer-error {
-    display: none;
-    color: #ef4444;
-    font-family: 'Inter', sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    text-align: center;
-    margin-top: 12px;
-    background: rgba(239,68,68,0.06);
-    border: 1px solid rgba(239,68,68,0.15);
-    border-radius: 8px;
-    padding: 10px;
+    display: flex !important; flex-direction: column !important;
+    height: auto !important; border: 1px solid #2e2e2e !important;
+    border-radius: 8px !important; background-color: #0b0b0b !important;
+    padding: 0 0 12px 0 !important; overflow: hidden !important;
   }
 </style>
   <script>
@@ -1436,12 +925,34 @@
     // Collect all product images into a flat ordered array
     function getAllImages() {
       var imgs = [];
-      var mainImg = document.getElementById('main-image');
-      if (mainImg) imgs.push(mainImg.src.replace(/_(\d+x|\d+x\d+)(\.[a-z]+)$/i, '_1920x$2'));
-      document.querySelectorAll('.thumb-image').forEach(function(img) {
-        var src = img.src.replace(/_(\d+x|\d+x\d+)(\.[a-z]+)$/i, '_1920x$2');
-        if (src && !imgs.includes(src)) imgs.push(src);
-      });
+      var thumbs = document.querySelectorAll('.jj-thumb');
+      if (thumbs.length > 0) {
+        thumbs.forEach(function(t) {
+          var src = t.getAttribute('data-full') || t.src;
+          if (src) {
+            var norm = src.replace(/_(\d+x|\d+x\d+)(\.[a-z]+)$/i, '_1920x$2');
+            if (!imgs.includes(norm)) imgs.push(norm);
+          }
+        });
+      }
+      if (!imgs.length) {
+        var mobileSlides = document.querySelectorAll('.jj-mobile-slide');
+        if (mobileSlides.length > 0) {
+          mobileSlides.forEach(function(s) {
+            var src = s.getAttribute('data-full') || s.src;
+            if (src) {
+              var norm = src.replace(/_(\d+x|\d+x\d+)(\.[a-z]+)$/i, '_1920x$2');
+              if (!imgs.includes(norm)) imgs.push(norm);
+            }
+          });
+        }
+      }
+      if (!imgs.length) {
+        var focal = document.getElementById('jj-focal-img');
+        if (focal && focal.src) {
+          imgs.push(focal.src.replace(/_(\d+x|\d+x\d+)(\.[a-z]+)$/i, '_1920x$2'));
+        }
+      }
       return imgs;
     }
 
@@ -1460,53 +971,47 @@
 
     function openLightbox(clickedSrc) {
       lbImages = getAllImages();
-      // Find the index of the clicked image
-      var norm = clickedSrc.replace(/_(\d+x|\d+x\d+)(\.[a-z]+)$/i, '_1920x$2');
+      if (!lbImages.length) return;
+      var norm = clickedSrc ? clickedSrc.replace(/_(\d+x|\d+x\d+)(\.[a-z]+)$/i, '_1920x$2') : '';
       lbIndex = lbImages.indexOf(norm);
       if (lbIndex < 0) lbIndex = 0;
       showLbImage();
-      lb.classList.add('open');
+      if (lb) lb.classList.add('open');
       document.body.style.overflow = 'hidden';
-      // Show/hide arrows based on image count
       var hasMultiple = lbImages.length > 1;
       if (lbPrev) lbPrev.style.display = hasMultiple ? '' : 'none';
       if (lbNext) lbNext.style.display = hasMultiple ? '' : 'none';
-
-      // Populate thumbnail carousel inside lightbox
       populateLbThumbs();
-
-      // Zoom immediately on open
       triggerImmediateZoom();
     }
 
     function closeLightbox() {
-      lb.classList.remove('open');
+      if (lb) lb.classList.remove('open');
       document.body.style.overflow = '';
       resetZoom();
     }
 
     function showLbImage() {
-      if (!lbImages.length) return;
+      if (!lbImages.length || !lbImg) return;
       lbImg.src = lbImages[lbIndex];
       if (lbCounter) lbCounter.textContent = lbImages.length > 1 ? (lbIndex + 1) + ' / ' + lbImages.length : '';
       
-      // Update active thumbnail state
-      document.querySelectorAll('.jj-lb-thumb-img').forEach(function(thumb, idx) {
-        thumb.classList.toggle('active', idx === lbIndex);
+      document.querySelectorAll('.jj-lb-thumb').forEach(function(thumb, idx) {
+        thumb.classList.toggle('jj-lb-thumb-active', idx === lbIndex);
       });
 
       resetZoom();
-      if (lb.classList.contains('open')) {
+      if (lb && lb.classList.contains('open')) {
         triggerImmediateZoom();
       }
     }
+
     function triggerImmediateZoom() {
       lbZoomed = true;
-      lbScale = 2.0;
+      lbScale = 1.8;
       if (lbImg) {
         lbImg.classList.add('zoomed');
         lbImg.style.cursor = 'zoom-out';
-        // Center zoom initially
         lbTranslateX = 0;
         lbTranslateY = 0;
         lbImg.style.transform = 'scale(' + lbScale + ') translate(0,0)';
@@ -1535,8 +1040,8 @@
       thumbsContainer.style.display = 'flex';
       lbImages.forEach(function(src, idx) {
         var img = document.createElement('img');
-        img.src = src;
-        img.className = 'jj-lb-thumb-img' + (idx === lbIndex ? ' active' : '');
+        img.src = src.replace('_1920x', '_150x');
+        img.className = 'jj-lb-thumb' + (idx === lbIndex ? ' jj-lb-thumb-active' : '');
         img.addEventListener('click', function(e) {
           e.stopPropagation();
           lbIndex = idx;
@@ -1546,40 +1051,42 @@
       });
     }
 
-    // Highlight first thumbnail on start
-    var firstThumb = document.querySelector('.thumb-image');
-    if (firstThumb) firstThumb.classList.add('active-thumb');
-
-    // Trigger lightbox or swap main image on desktop/mobile
+    // ── DESKTOP GALLERY THUMBNAIL CLICK & FOCAL SWAP ────────────────
     document.addEventListener('click', function(e) {
       var target = e.target;
       if (!target) return;
-      
-      // Check if clicked item is a thumbnail or wrapper
-      var thumbItem = target.classList.contains('thumb-image') ? target : (target.closest('.collection-item-3') ? target.closest('.collection-item-3').querySelector('img') : null);
-      
-      if (thumbItem && window.innerWidth >= 992) {
+
+      // 1. Desktop thumbnail click -> snap to focal image
+      var thumb = target.closest('.jj-thumb');
+      if (thumb) {
         e.preventDefault();
-        var mainImg = document.getElementById('main-image');
-        if (mainImg) {
-          mainImg.src = thumbItem.getAttribute('data-large-src') || thumbItem.src;
-          // Set active thumbnail highlight border
-          document.querySelectorAll('.thumb-image').forEach(function(img) {
-            img.classList.remove('active-thumb');
-          });
-          thumbItem.classList.add('active-thumb');
+        var fullSrc = thumb.getAttribute('data-full') || thumb.src;
+        var focalImg = document.getElementById('jj-focal-img');
+        if (focalImg) {
+          focalImg.src = fullSrc;
+          focalImg.setAttribute('data-index', thumb.getAttribute('data-index') || '0');
         }
+        document.querySelectorAll('.jj-thumb').forEach(function(t) {
+          t.classList.remove('jj-thumb-active');
+        });
+        thumb.classList.add('jj-thumb-active');
         return;
       }
-      
-      // Clicking the main image (or any thumbnail on mobile) launches the lightbox
-      if (target.id === 'main-image' || (thumbItem && window.innerWidth < 992)) {
-        var img = target.tagName === 'IMG' ? target : target.querySelector('img');
-        if (!img && thumbItem) img = thumbItem;
-        if (img) {
-          e.preventDefault();
-          openLightbox(img.src);
-        }
+
+      // 2. Focal image click -> open lightbox
+      var focal = target.closest('#jj-focal-img, .jj-focal-image');
+      if (focal) {
+        e.preventDefault();
+        openLightbox(focal.src);
+        return;
+      }
+
+      // 3. Mobile slide click -> open lightbox
+      var mobileSlide = target.closest('.jj-mobile-slide');
+      if (mobileSlide) {
+        e.preventDefault();
+        openLightbox(mobileSlide.src);
+        return;
       }
     });
 
@@ -1609,7 +1116,7 @@
       if (e.key === 'ArrowRight') { lbIndex = (lbIndex + 1) % lbImages.length; showLbImage(); }
     });
 
-    // Touch swipe inside lightbox (only when not zoomed to allow panning)
+    // Touch swipe inside lightbox
     if (lb) {
       lb.addEventListener('touchstart', function(e) { 
         if (!lbZoomed) lbTouchStartX = e.touches[0].clientX; 
@@ -1638,7 +1145,6 @@
         }
       });
 
-      // Mouse follow tracked on static wrapper to prevent jitter feedback loops
       wrap.addEventListener('mousemove', function(e) {
         if (!lbZoomed) return;
         var rect = wrap.getBoundingClientRect();
@@ -1651,37 +1157,73 @@
       });
     }
 
-    // ── MOBILE DOT INDICATORS ──────────────────────────────────────
+    // ── MOBILE SWIPE CAROUSEL & DOT INDICATORS ────────────────────
     function initDots() {
       var dotsContainer = document.getElementById('jj-swipe-dots');
-      if (!dotsContainer) return;
-      var wrapper = document.querySelector('.more-image-wrapper');
-      if (!wrapper) return;
+      var swipeTrack = document.getElementById('jj-mobile-swipe');
+      if (!dotsContainer || !swipeTrack) return;
 
-      var imgs = wrapper.querySelectorAll('img');
-      if (imgs.length < 2) return;
+      var slides = swipeTrack.querySelectorAll('.jj-mobile-slide');
+      if (slides.length <= 1) {
+        dotsContainer.style.display = 'none';
+        return;
+      }
 
-      // Build dots
       dotsContainer.innerHTML = '';
-      imgs.forEach(function(img, i) {
+      slides.forEach(function(slide, i) {
         var dot = document.createElement('div');
         dot.className = 'jj-swipe-dot' + (i === 0 ? ' active' : '');
         dot.addEventListener('click', function() {
-          img.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          slide.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         });
         dotsContainer.appendChild(dot);
       });
 
-      // Update dots on scroll
-      wrapper.addEventListener('scroll', function() {
-        var scrollLeft = wrapper.scrollLeft;
-        var itemWidth = wrapper.offsetWidth;
-        var activeIndex = Math.round(scrollLeft / itemWidth);
+      swipeTrack.addEventListener('scroll', function() {
+        var scrollLeft = swipeTrack.scrollLeft;
+        var slideWidth = swipeTrack.offsetWidth || window.innerWidth;
+        var activeIndex = Math.round(scrollLeft / slideWidth);
         dotsContainer.querySelectorAll('.jj-swipe-dot').forEach(function(d, i) {
           d.classList.toggle('active', i === activeIndex);
         });
       }, {passive: true});
     }
+
+    // ── VARIANT DROPDOWN SYNC ENGINE ──────────────────────────────
+    function initVariantDropdowns() {
+      var selects = document.querySelectorAll('.jj-styled-select');
+      if (!selects.length) return;
+
+      selects.forEach(function(select) {
+        select.addEventListener('change', function() {
+          var selectedVal = select.value;
+          var optIndex = select.getAttribute('data-option-index');
+
+          // 1. Update native hidden select
+          var nativeSelect = document.getElementById('jj-native-select-' + optIndex);
+          if (nativeSelect) {
+            nativeSelect.value = selectedVal;
+            nativeSelect.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+
+          // 2. Trigger corresponding hidden pill button
+          var fieldset = select.closest('.jj-option-fieldset');
+          if (fieldset) {
+            var pillGroup = fieldset.querySelector('.jj-pills-hidden');
+            if (pillGroup) {
+              var pills = pillGroup.querySelectorAll('.button-2.w-commerce-commerceaddtocartoptionpill');
+              pills.forEach(function(pill) {
+                var text = (pill.textContent || '').trim();
+                if (text === selectedVal) {
+                  pill.click();
+                }
+              });
+            }
+          }
+        });
+      });
+    }
+
 
     // ── CURSOR LOGIC ───────────────────────────────────────────────
     function initCursor() {
@@ -2339,119 +1881,6 @@
 
     document.addEventListener('DOMContentLoaded', function() {
 
-      // Mobile Swipe Indicators & Single Image Dot Hide
-      (function initSwipeDots() {
-        var dotsContainer = document.getElementById('jj-swipe-dots');
-        var thumbs = document.querySelectorAll('.thumb-image, .collection-item-3 img');
-        if (!dotsContainer) return;
-        if (thumbs.length <= 1) {
-          dotsContainer.style.display = 'none';
-          return;
-        }
-
-        dotsContainer.innerHTML = '';
-        thumbs.forEach(function(t, idx) {
-          var dot = document.createElement('div');
-          dot.className = 'jj-swipe-dot' + (idx === 0 ? ' active' : '');
-          dot.addEventListener('click', function() {
-            t.click();
-            dotsContainer.querySelectorAll('.jj-swipe-dot').forEach(function(d) { d.classList.remove('active'); });
-            dot.classList.add('active');
-          });
-          dotsContainer.appendChild(dot);
-        });
-      })();
-
-
-      // Mobile Image Gallery Touch Swiping
-      (function initMobileGallerySwipe() {
-        var wrapper = document.querySelector('.more-image-wrapper');
-        if (!wrapper) return;
-
-        var startX = 0, startY = 0;
-        wrapper.addEventListener('touchstart', function(e) {
-          if (window.innerWidth >= 992) return;
-          var touch = e.touches[0];
-          startX = touch.clientX;
-          startY = touch.clientY;
-        }, { passive: true });
-
-        wrapper.addEventListener('touchend', function(e) {
-          if (window.innerWidth >= 992) return;
-          var touch = e.changedTouches[0];
-          var diffX = touch.clientX - startX;
-          var diffY = touch.clientY - startY;
-
-          if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY)) {
-            var thumbs = Array.from(document.querySelectorAll('.thumb-image, .collection-item-3 img'));
-            if (thumbs.length <= 1) return;
-            var currentIdx = thumbs.findIndex(function(t) { return t.classList.contains('w--current') || t.classList.contains('active'); });
-            if (currentIdx === -1) currentIdx = 0;
-
-            var nextIdx = currentIdx;
-            if (diffX < 0) {
-              nextIdx = (currentIdx + 1) % thumbs.length;
-            } else {
-              nextIdx = (currentIdx - 1 + thumbs.length) % thumbs.length;
-            }
-
-            var targetThumb = thumbs[nextIdx];
-            if (targetThumb) targetThumb.click();
-          }
-        }, { passive: true });
-      })();
-
-
-      // Interactive 1.5x Cursor Zoom for All Gallery Images
-      (function initImageZoom() {
-        document.addEventListener('mousemove', function(e) {
-          if (window.innerWidth < 992) return;
-          var targetImg = e.target.closest('.gallery-image-img, .main-image, #main-image');
-          if (!targetImg) return;
-          var wrapper = targetImg.closest('.gallery-image-item') || targetImg.parentElement;
-          if (!wrapper) return;
-
-          wrapper.style.overflow = 'hidden';
-          wrapper.style.borderRadius = '12px';
-          targetImg.style.borderRadius = '12px';
-          targetImg.style.transition = 'transform 0.15s ease-out';
-
-          var rect = wrapper.getBoundingClientRect();
-          var x = ((e.clientX - rect.left) / rect.width) * 100;
-          var y = ((e.clientY - rect.top) / rect.height) * 100;
-
-          targetImg.style.transformOrigin = x + '% ' + y + '%';
-          targetImg.style.transform = 'scale(1.5)';
-        });
-
-        document.addEventListener('mouseout', function(e) {
-          if (window.innerWidth < 992) return;
-          var targetImg = e.target.closest('.gallery-image-img, .main-image, #main-image');
-          if (targetImg) {
-            targetImg.style.transform = 'scale(1)';
-            targetImg.style.transformOrigin = 'center center';
-          }
-        });
-      })();
-
-      // Responsive Thumbnail Click Handler
-      document.addEventListener('click', function(e) {
-        var thumb = e.target.closest('.thumb-image, .collection-item-3 img');
-        if (thumb) {
-          var newSrc = thumb.getAttribute('data-large-src') || thumb.getAttribute('src');
-          var mainImg = document.getElementById('main-image') || document.querySelector('.main-image');
-          if (mainImg && newSrc) {
-            mainImg.src = newSrc;
-            mainImg.removeAttribute('srcset');
-          }
-          document.querySelectorAll('.thumb-image, .collection-item-3 img').forEach(function(t) {
-            t.classList.remove('w--current', 'active');
-          });
-          thumb.classList.add('w--current', 'active');
-        }
-      });
-
-
       // Intercept single add-to-cart form submit to prevent HTML POST redirect
       document.addEventListener('submit', function(e) {
         var form = e.target.closest('form[action^="/cart/add"], .w-commerce-commerceaddtocartform');
@@ -2530,11 +1959,11 @@
       }
       
       initDots();
+      initVariantDropdowns();
       initCursor();
       initCartObserver();
-      
       initFitCurator();
-      
+
 
 
       // Fallback click listener to trigger Webflow's native cart drawer opener

@@ -2,59 +2,25 @@
      THE VAULT — INLINE SHOP FILTER BAR
      ============================================================ -->
 <style>
-  /* Global Sticky & Stacking Context overrides for JJKICKS Storefront */
-  .navbar {
-    z-index: 1001 !important;
-  }
-  .white-section.menu {
-    z-index: 998 !important;
-  }
-  .filter-contents {
-    position: -webkit-sticky !important;
-    position: sticky !important;
-    top: auto !important; position: relative !important;
-    z-index: 999 !important;
-    display: block;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-  }
-
-  @media (max-width: 767px) {
-    .navbar {
-      height: 70px !important;
-      min-height: 70px !important;
-      z-index: 1001 !important;
-    }
-
-    .white-section.menu {
-      margin-top: 70px !important;
-      top: 70px !important;
-      z-index: 998 !important;
-      position: -webkit-sticky !important;
-      position: sticky !important;
-    }
-
-    .filter-contents {
-      position: -webkit-sticky !important;
-      position: sticky !important;
-      top: auto !important; position: relative !important;
-      z-index: 999 !important;
-      background: #0b0b0b;
-    }
-  }
+  /*
+   * POSITIONING NOTE:
+   * .navbar        → fixed top:0,    height:80px  (premium-styles.css.liquid)
+   * .white-section.menu → fixed top:80px, height:40px (premium-styles.css.liquid)
+   * .filter-contents    → fixed top:120px, height:46px (premium-styles.css.liquid)
+   * DO NOT add position/top overrides here — they will conflict.
+   * Only z-index and visual styling belong in this file.
+   */
 
   /* ── FILTER BAR WRAPPER ──────────────────────────────────────── */
   .jj-filter-wrap {
-    position: relative;
     width: 100%;
     box-sizing: border-box;
     background: #0b0b0b;
-    border-top: 1px solid #2e2e2e;
-    border-bottom: 1px solid #2e2e2e;
-    margin: 0 0 24px 0;
+    border-bottom: 1px solid #222222;
+    margin: 0;
     z-index: 20;
   }
+
 
   .jj-subtle-filter-bar {
     display: flex;

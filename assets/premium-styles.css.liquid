@@ -986,9 +986,9 @@ h1, .heading { letter-spacing: -0.02em; line-height: 1; }
 
 /* ── STICKY SHOP FILTERS OVERRIDES ─────────────────────────── */
 .filter-contents {
-  z-index: 800 !important; /* Ensures sticky bar scrolls above product cards */
-  top: 15vh !important;    /* Align below desktop navbar (~15vh tall) */
+  z-index: 800 !important; /* Base z-index; shop-page fixed rules override this below */
 }
+
 
 /* Center Shop By Brand & Filter on Larger Devices */
 @media (min-width: 992px) {
@@ -1961,7 +1961,7 @@ div.div-block-629 {
    FIXED HEADERS (MENU, MARQUEE, SHOP FILTER) & FLUSH CONTENT OFFSETS
    ========================================================================== */
 
-/* ── 1. FIXED MENU NAVBAR (TOP: 0, HEIGHT: 80PX) ── */
+/* ── 1. FIXED MENU NAVBAR (ALL PAGES: TOP=0, HEIGHT=80px) ─────────────── */
 .navbar,
 .navbar.desktop,
 .navbar.mobile,
@@ -1977,10 +1977,11 @@ div.div-block-629 {
   box-sizing: border-box !important;
 }
 
-/* ── 2. FIXED MARQUEE ANNOUNCEMENT BAR (TOP: 80PX, HEIGHT: 40PX) ── */
-.white-section.menu,
-.white-section,
-.section-3 {
+/* ── 2a. MARQUEE — PRODUCT & SHOP PAGES (FIXED AT TOP=80px) ───────────── */
+/* On product/shop pages the marquee is rendered inside the template and stays fixed */
+body.template-product .white-section.menu,
+body.template-collection .white-section.menu,
+body.template-page-shop .white-section.menu {
   position: fixed !important;
   top: 80px !important;
   left: 0 !important;
@@ -1994,7 +1995,44 @@ div.div-block-629 {
   box-sizing: border-box !important;
 }
 
-/* ── 3. FIXED SHOP FILTER BAR (TOP: 120PX, HEIGHT: 46PX — SHOP PAGES ONLY) ── */
+/* ── 2b. MARQUEE — HOMEPAGE (STICKY, SCROLLS WITH PAGE THEN LOCKS) ─────── */
+/* On homepage the marquee lives inside content_for_index (Shopify CMS section).
+   It starts in normal document flow below the hero and sticks under the navbar
+   once the user scrolls to it. */
+body.template-index .white-section.menu,
+body.template-index .white-section {
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  top: 80px !important;
+  z-index: 99990 !important;
+  background-color: #000000 !important;
+  border-bottom: 1px solid #222222 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  /* Do NOT force fixed height — let content determine height naturally */
+}
+
+/* Mobile navbar height adjustment */
+@media (max-width: 767px) {
+  .navbar,
+  .navbar.desktop,
+  .navbar.mobile {
+    height: 70px !important;
+  }
+  body.template-product .white-section.menu,
+  body.template-collection .white-section.menu,
+  body.template-page-shop .white-section.menu {
+    top: 70px !important;
+  }
+  body.template-index .white-section.menu,
+  body.template-index .white-section {
+    top: 70px !important;
+  }
+}
+
+/* ── 3. FIXED SHOP FILTER BAR (TOP=120px, SHOP PAGES ONLY) ────────────── */
+/* Sits flush under the fixed marquee (80px navbar + 40px marquee = 120px) */
 body.template-collection .filter-contents,
 body.template-collection .jj-filter-wrap,
 body.template-page-shop .filter-contents,
@@ -2016,9 +2054,22 @@ body.template-page-shop .jj-filter-wrap,
   box-sizing: border-box !important;
 }
 
-/* ── 4. FLUSH CONTENT OFFSETS ── */
+@media (max-width: 767px) {
+  body.template-collection .filter-contents,
+  body.template-collection .jj-filter-wrap,
+  body.template-page-shop .filter-contents,
+  body.template-page-shop .jj-filter-wrap,
+  .template-collection .filter-contents,
+  .template-collection .jj-filter-wrap,
+  .template-page-shop .filter-contents,
+  .template-page-shop .jj-filter-wrap {
+    top: 110px !important; /* 70px navbar + 40px marquee */
+  }
+}
 
-/* Product Page Container (Offset = 80px Navbar + 40px Marquee = 120px) */
+/* ── 4. CONTENT OFFSETS ─────────────────────────────────────────────────── */
+
+/* Product Page: 120px offset (80px navbar + 40px marquee) */
 body.template-product .barba-wrapper,
 body.template-product .page-content,
 body.template-product .product-template-container,
@@ -2038,17 +2089,7 @@ body.template-product div.div-block-629,
   border-top: none !important;
 }
 
-@media screen and (min-width: 992px) {
-  body.template-product .thumbnail-section,
-  body.template-product .product-container,
-  .template-product .thumbnail-section,
-  .template-product .product-container {
-    top: 120px !important;
-    max-height: calc(100vh - 140px) !important;
-  }
-}
-
-/* Shop Page Container (Offset = 80px Navbar + 40px Marquee + 46px Filter = 166px) */
+/* Shop Page: 166px offset (80px navbar + 40px marquee + 46px filter) */
 body.template-collection .barba-wrapper,
 body.template-collection .page-content,
 body.template-page-shop .barba-wrapper,
@@ -2064,18 +2105,24 @@ body.template-page-shop .page-content,
   position: relative !important;
 }
 
-/* Home & Other Pages Container (Offset = 80px Navbar + 40px Marquee = 120px) */
-body:not(.template-product):not(.template-collection):not(.template-page-shop) .barba-wrapper,
-body:not(.template-product):not(.template-collection):not(.template-page-shop) .page-content,
-body:not(.template-product):not(.template-collection):not(.template-page-shop) .section-5,
-body:not(.template-product):not(.template-collection):not(.template-page-shop) .hero,
-body:not(.template-product):not(.template-collection):not(.template-page-shop) .hero-section {
-  margin-top: 120px !important;
-  padding-top: 0 !important;
-  position: relative !important;
+@media (max-width: 767px) {
+  /* Mobile shop: 110px navbar+marquee + 46px filter = 156px */
+  body.template-collection .barba-wrapper,
+  body.template-collection .page-content,
+  body.template-page-shop .barba-wrapper,
+  body.template-page-shop .page-content {
+    margin-top: 156px !important;
+  }
 }
 
-/* Hide Spacer Block */
+/* Homepage: no offset needed — marquee is in-flow (sticky, not fixed) */
+body.template-index .barba-wrapper,
+body.template-index .page-content {
+  margin-top: 80px !important; /* Only navbar height; marquee flows naturally below hero */
+  padding-top: 0 !important;
+}
+
+/* ── 5. HIDE SPACER BLOCK ───────────────────────────────────────────────── */
 .div-block-631,
 div.div-block-631 {
   display: none !important;
@@ -2083,3 +2130,4 @@ div.div-block-631 {
   margin: 0 !important;
   padding: 0 !important;
 }
+
