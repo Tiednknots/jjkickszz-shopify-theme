@@ -3,10 +3,35 @@
  * Fetches live Shopify catalog and powers the AI curator via Google Gemini.
  *
  * ENV VARS required in Cloudflare dashboard:
- *   GEMINI_API_KEY  — from https://aistudio.google.com
+ *   GEMINI_API_KEY      — from https://aistudio.google.com
+ *   GEMINI_MODEL        — (optional) model override, defaults to gemini-2.5-flash
+ *   SHOPIFY_ADMIN_TOKEN — (optional) for order tracking + admin catalog
+ *   SHOPIFY_CLIENT_ID   — (optional) for OAuth install flow
+ *   SHOPIFY_CLIENT_SECRET — (optional) for OAuth install flow
+ *
+ * NOTE: gemini-1.5-flash-latest is DEPRECATED (shut down Aug 2026).
+ * Using gemini-2.5-flash as the replacement.
  */
 
 const SHOPIFY_DOMAIN = "jjkickszz.com";
+
+// ── MODEL CONFIGURATION ──────────────────────────────────────────────────────
+const DEFAULT_GEMINI_MODEL = "gemini-2.5-flash";
+const GEMINI_API_BASE = "https://generativelanguage.googleapis.com/v1beta/models";
+
+// Returns the full Gemini generateContent URL for the active model.
+// Set GEMINI_MODEL env var in Cloudflare to override without redeploying.
+function getGeminiUrl(env) {
+  const model = (env && env.GEMINI_MODEL) ? env.GEMINI_MODEL.trim() : DEFAULT_GEMINI_MODEL;
+  return `${GEMINI_API_BASE}/${model}:generateContent`;
+}
+
+// Shared CORS headers
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
 
 // Infer clothing category from product title — order matters: specific before generic
 function getCategory(title) {
@@ -209,7 +234,7 @@ async function enrichProduct(product, geminiKey, shopifyToken) {
   if (imgB64) parts.push({ inline_data: { mime_type: "image/jpeg", data: imgB64 } });
 
   const geminiRes = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${geminiKey}`,
+    `${getGeminiUrl(env)}?key=${geminiKey}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -248,39 +273,51 @@ async function enrichProduct(product, geminiKey, shopifyToken) {
 export default {
   async fetch(request, env) {
 
-    // CORS
+    // CORS preflight
     if (request.method === "OPTIONS") {
-      return new Response(null, {
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type",
-        },
-      });
+      return new Response(null, { headers: CORS_HEADERS });
     }
 
     const geminiKey = env.GEMINI_API_KEY;
+    const activeModel = (env && env.GEMINI_MODEL) ? env.GEMINI_MODEL.trim() : DEFAULT_GEMINI_MODEL;
 
-    // GET debug routes
+    // ── GET debug routes ──────────────────────────────────────────────────────
     if (request.method === "GET") {
       const { searchParams } = new URL(request.url);
 
-      // ?action=catalog — see what Gemini receives
+      // ?action=catalog — inspect what the AI sees
       if (searchParams.get("action") === "catalog") {
         const result = await getLiveCatalog(env);
         const body = result.error
           ? `❌ Catalog fetch failed: ${result.error}`
           : `✅ ${result.count} products loaded:\n\n${result.products}`;
         return new Response(body, {
-          headers: { "Content-Type": "text/plain", "Access-Control-Allow-Origin": "*" }
+          headers: { "Content-Type": "text/plain", ...CORS_HEADERS }
         });
       }
 
-      // ?test=YOUR QUESTION — raw Gemini test (no system prompt)
+      // ?action=models — list all available Gemini models for your API key (diagnostic)
+      if (searchParams.get("action") === "models" && geminiKey) {
+        const res = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models?key=${geminiKey}`,
+          { headers: { "Accept": "application/json" } }
+        );
+        const data = await res.json();
+        const names = (data.models || [])
+          .filter(m => (m.supportedGenerationMethods || []).includes("generateContent"))
+          .map(m => `  ${m.name}  (${m.displayName || ""})`)
+          .join("\n");
+        return new Response(
+          `✅ Models that support generateContent for your API key:\n\n${names || "None found — check your API key validity"}`,
+          { headers: { "Content-Type": "text/plain", ...CORS_HEADERS } }
+        );
+      }
+
+      // ?test=YOUR QUESTION — raw Gemini test with active model
       if (searchParams.get("test") && geminiKey) {
         const prompt = searchParams.get("test");
         const res = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${geminiKey}`,
+          `${getGeminiUrl(env)}?key=${geminiKey}`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -288,22 +325,25 @@ export default {
           }
         );
         return new Response(JSON.stringify(await res.json(), null, 2), {
-          headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
+          headers: { "Content-Type": "application/json", ...CORS_HEADERS }
         });
       }
 
       return new Response(
-        geminiKey ? "✅ JJKICKSZZ AI online. Use ?action=catalog to inspect inventory." : "⚠️ GEMINI_API_KEY not set.",
-        { headers: { "Content-Type": "text/plain", "Access-Control-Allow-Origin": "*" } }
+        geminiKey
+          ? `✅ JJKICKSZZ AI online.\nActive model: ${activeModel}\n\nDebug routes:\n  ?action=catalog  — inspect live product inventory\n  ?action=models   — list available Gemini models for your key\n  ?test=hello      — raw model test`
+          : "⚠️ GEMINI_API_KEY not set in Cloudflare environment variables.",
+        { headers: { "Content-Type": "text/plain", ...CORS_HEADERS } }
       );
     }
+
 
     if (request.method !== "POST") {
       return new Response("Method not allowed", { status: 405 });
     }
     if (!geminiKey) {
       return new Response(JSON.stringify({ error: "GEMINI_API_KEY not configured." }), {
-        status: 500, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
+        status: 500, headers: { "Content-Type": "application/json", ...CORS_HEADERS }
       });
     }
 
@@ -363,16 +403,16 @@ export default {
         const shopifyToken = env.SHOPIFY_ADMIN_TOKEN || env.SHOPIFY_TOKEN;
         if (!shopifyToken) {
           return new Response(JSON.stringify({ error: "SHOPIFY_ADMIN_TOKEN env var missing in Cloudflare." }), {
-            status: 500, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
+            status: 500, headers: { "Content-Type": "application/json", ...CORS_HEADERS }
           });
         }
         const enrichment = await enrichProduct(product, geminiKey, shopifyToken);
         return new Response(JSON.stringify({ success: true, enriched: enrichment }), {
-          headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
+          headers: { "Content-Type": "application/json", ...CORS_HEADERS }
         });
       } catch (err) {
         return new Response(JSON.stringify({ error: err.message }), {
-          status: 500, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
+          status: 500, headers: { "Content-Type": "application/json", ...CORS_HEADERS }
         });
       }
     }
@@ -451,7 +491,7 @@ Order ${orderName} was not found in the shop database. Suggest they verify the o
       }
 
       const geminiRes = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${geminiKey}`,
+        `${getGeminiUrl(env)}?key=${geminiKey}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -479,12 +519,12 @@ Order ${orderName} was not found in the shop database. Suggest they verify the o
       }
 
       return new Response(JSON.stringify({ response: reply }), {
-        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
+        headers: { "Content-Type": "application/json", ...CORS_HEADERS }
       });
 
     } catch (err) {
       return new Response(JSON.stringify({ error: err.message }), {
-        status: 500, headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
+        status: 500, headers: { "Content-Type": "application/json", ...CORS_HEADERS }
       });
     }
   }
