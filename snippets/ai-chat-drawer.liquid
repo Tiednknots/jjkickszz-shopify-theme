@@ -470,8 +470,10 @@
     if (!triggerBtn || !drawerEl) return;
 
     // ── Live Product Catalog ─────────────────────────────────────────
-    // Fetched once when the drawer opens. Sent with every request so
-    // Gemini knows the REAL inventory (types, prices, colors).
+    // Fetched once when the drawer opens. NOTE: the Worker fetches its own
+    // live catalog from Shopify directly and does not read this field —
+    // it's kept here only in case you want the Worker to trust the
+    // frontend's copy in the future. Safe to leave as-is.
     var liveCatalog = null;
 
     function fetchLiveCatalog(callback) {
@@ -499,7 +501,7 @@
           callback(liveCatalog);
         })
         .catch(function() {
-          liveCatalog = ''; // fallback — worker will use hardcoded list
+          liveCatalog = ''; // fallback — worker will use its own live catalog
           callback(liveCatalog);
         });
     }
@@ -543,9 +545,13 @@
     window.jjAIChat = {
       open: openDrawer,
       close: closeDrawer,
-      sendMessage: function(text) {
+      // text: the question to ask. productContext (optional): an object like
+      // { title, price, vendor, available_sizes, url } describing the product
+      // page the customer was on when they asked — pass this from your
+      // "Ask about this product" button so the AI answers about that exact item.
+      sendMessage: function(text, productContext) {
         openDrawer();
-        sendUserMessage(text);
+        sendUserMessage(text, productContext || null);
         window.pendingQuestionFeedback = true;
       },
       appendSystemMessage: function(text) {
@@ -573,7 +579,7 @@
       }
     });
 
-    function sendUserMessage(text) {
+    function sendUserMessage(text, productContext) {
       appendMessage('user', text);
       scrollToBottom();
       var loaderId = appendTypingIndicator();
@@ -584,7 +590,8 @@
         var payload = {
           message: text,
           history: getChatHistory(),
-          catalog: catalog
+          catalog: catalog,
+          productContext: productContext || null
         };
 
         var workerEndpoint = 'https://jjkickszz-ai.create-d8d.workers.dev/';
@@ -597,9 +604,12 @@
         .then(function(res) { return res.json(); })
         .then(function(data) {
           removeTypingIndicator(loaderId);
-          var rawText = data.response || '';
-          if (!rawText || rawText.indexOf('Gemini API Error') === 0) {
-            console.error('[AIChat] Worker error:', data);
+          // FIX: the Worker returns { reply: "..." }, not { response: "..." }.
+          // Reading the wrong field here silently discarded every real AI
+          // answer and dropped straight into the offline fallback below.
+          var rawText = data.reply || '';
+          if (!rawText || data.error) {
+            console.error('[AIChat] Worker error:', data.error || data);
             processOfflineFallback(text);
             return;
           }
@@ -781,7 +791,7 @@
       } else if (textLower.indexOf('shipping') !== -1 || textLower.indexOf('delivery') !== -1) {
         botResponse = "Orders are processed within 1-3 business days. Shipping takes approximately 5-8 days depending on your location. We offer free shipping on all orders over $400!";
       } else {
-        botResponse = "I'm currently updating our inventory records. For now, check out these popular arrivals: [Product: 2-in-1-hybrid-tee]";
+        botResponse = "I'm having trouble reaching live inventory right now, one second and try again, or browse: [Product: 2-in-1-hybrid-tee]";
       }
 
       setTimeout(function() {
