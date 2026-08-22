@@ -1957,8 +1957,11 @@ div.div-block-629 {
 
 
 
+/* ==========================================================================
+   FIXED HEADERS (MENU, MARQUEE, SHOP FILTER) & FLUSH CONTENT OFFSETS
+   ========================================================================== */
 
-/* ── MASTER STICKY HEADERS (MENU, MARQUEE, SHOP FILTER) ── */
+/* ── 1. FIXED MENU NAVBAR (TOP: 0, HEIGHT: 80PX) ── */
 .navbar,
 .navbar.desktop,
 .navbar.mobile,
@@ -1974,6 +1977,7 @@ div.div-block-629 {
   box-sizing: border-box !important;
 }
 
+/* ── 2. FIXED MARQUEE ANNOUNCEMENT BAR (TOP: 80PX, HEIGHT: 40PX) ── */
 .white-section.menu,
 .white-section,
 .section-3 {
@@ -1990,13 +1994,15 @@ div.div-block-629 {
   box-sizing: border-box !important;
 }
 
-/* Shop Filter Bar FLUSH below marquee at top: 120px */
-.filter-contents,
-.jj-filter-wrap,
+/* ── 3. FIXED SHOP FILTER BAR (TOP: 120PX, HEIGHT: 46PX — SHOP PAGES ONLY) ── */
 body.template-collection .filter-contents,
 body.template-collection .jj-filter-wrap,
 body.template-page-shop .filter-contents,
-body.template-page-shop .jj-filter-wrap {
+body.template-page-shop .jj-filter-wrap,
+.template-collection .filter-contents,
+.template-collection .jj-filter-wrap,
+.template-page-shop .filter-contents,
+.template-page-shop .jj-filter-wrap {
   position: fixed !important;
   top: 120px !important;
   left: 0 !important;
@@ -2010,11 +2016,70 @@ body.template-page-shop .jj-filter-wrap {
   box-sizing: border-box !important;
 }
 
-/* Product Page Desktop overrides: thumbnail-section position static & 2rem padding-top */
+/* ── 4. FLUSH CONTENT OFFSETS ── */
+
+/* Product Page Container (Offset = 80px Navbar + 40px Marquee = 120px) */
+body.template-product .barba-wrapper,
+body.template-product .page-content,
+body.template-product .product-template-container,
+.template-product .barba-wrapper,
+.template-product .page-content,
+.template-product .product-template-container {
+  margin-top: 120px !important;
+  padding-top: 0 !important;
+  position: relative !important;
+}
+
+body.template-product div.div-block-629,
+.template-product div.div-block-629 {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  position: relative !important;
+  border-top: none !important;
+}
+
 @media screen and (min-width: 992px) {
   body.template-product .thumbnail-section,
-  .template-product .thumbnail-section {
-    position: static !important;
-    padding-top: 2rem !important;
+  body.template-product .product-container,
+  .template-product .thumbnail-section,
+  .template-product .product-container {
+    top: 120px !important;
+    max-height: calc(100vh - 140px) !important;
   }
+}
+
+/* Shop Page Container (Offset = 80px Navbar + 40px Marquee + 46px Filter = 166px) */
+body.template-collection .barba-wrapper,
+body.template-collection .page-content,
+body.template-page-shop .barba-wrapper,
+body.template-page-shop .page-content,
+.template-collection .barba-wrapper,
+.template-collection .page-content,
+.template-page-shop .barba-wrapper,
+.template-page-shop .page-content,
+.template-collection .collection-list-wrapper,
+.template-page-shop .collection-list-wrapper {
+  margin-top: 166px !important;
+  padding-top: 0 !important;
+  position: relative !important;
+}
+
+/* Home & Other Pages Container (Offset = 80px Navbar + 40px Marquee = 120px) */
+body:not(.template-product):not(.template-collection):not(.template-page-shop) .barba-wrapper,
+body:not(.template-product):not(.template-collection):not(.template-page-shop) .page-content,
+body:not(.template-product):not(.template-collection):not(.template-page-shop) .section-5,
+body:not(.template-product):not(.template-collection):not(.template-page-shop) .hero,
+body:not(.template-product):not(.template-collection):not(.template-page-shop) .hero-section {
+  margin-top: 120px !important;
+  padding-top: 0 !important;
+  position: relative !important;
+}
+
+/* Hide Spacer Block */
+.div-block-631,
+div.div-block-631 {
+  display: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
