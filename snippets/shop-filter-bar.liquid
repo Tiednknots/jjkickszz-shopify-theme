@@ -233,26 +233,30 @@
   }
 
   .jj-sort-label {
-    font-size: 11px;
-    color: rgba(255,255,255,0.3);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    font-weight: 700;
-    font-family: 'Inter', sans-serif;
+    font-size: 11px !important;
+    color: rgba(255,255,255,0.7) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.06em !important;
+    font-weight: 700 !important;
+    font-family: 'Inter', sans-serif !important;
+    opacity: 1 !important;
+    visibility: visible !important;
   }
 
   .jj-subtle-sort select {
-    background: transparent;
-    border: none;
-    color: rgba(255,255,255,0.7);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    outline: none;
-    cursor: pointer;
-    font-family: 'Inter', sans-serif;
-    -webkit-appearance: none;
-    appearance: none;
+    background: #1a1a1a !important;
+    border: 1px solid #333333 !important;
+    border-radius: 4px !important;
+    color: #ffffff !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.04em !important;
+    outline: none !important;
+    cursor: pointer !important;
+    font-family: 'Inter', sans-serif !important;
+    padding: 3px 8px !important;
+    opacity: 1 !important;
+    visibility: visible !important;
   }
 
   .jj-subtle-sort select option { background: #111; color: #fff; }
@@ -422,10 +426,10 @@
       <div class="jj-subtle-sort">
         <span class="jj-sort-label">Sort:</span>
         <select id="jj-sort-select">
-          <option value="default" selected>Newest</option>
-          <option value="price-asc">Price: Low → High</option>
-          <option value="price-desc">Price: High → Low</option>
-          <option value="title-asc">Alphabetical: A → Z</option>
+          <option value="newest" selected>Newest</option>
+          <option value="price-asc">Low → High</option>
+          <option value="price-desc">High → Low</option>
+          <option value="title-asc">A → Z</option>
         </select>
       </div>
 
