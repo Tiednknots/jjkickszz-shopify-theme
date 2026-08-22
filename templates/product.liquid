@@ -1,37 +1,5 @@
 {%- assign headerSnippetPath = "header-index" -%}{%- assign wfPage = "692ec189f4f62ea5a929da5b" -%}{%- assign bodyClasses = "body-5" -%}
   {%- render 'global-navbar' -%}
-<div class="white-section menu sticky-on-scroll">
-  <section class="section-3">
-    <div option:html="Scrolling-text" class="code-embed-3 w-embed">
-      <div class="jj-marquee-wrapper">
-        <div class="jj-centered-mask">
-          <div class="jj-marquee-track">
-            <div class="jj-content-group">
-              <span class="jj-text-item">100% Authentic Heat 🔥 Guaranteed</span>
-              <span class="jj-text-item">All Sales Are Final</span>
-              <span class="jj-text-item">Free Shipping on orders over $400</span>
-            </div>
-            <div class="jj-content-group">
-              <span class="jj-text-item">100% Authentic Heat 🔥 Guaranteed</span>
-              <span class="jj-text-item">All Sales Are Final</span>
-              <span class="jj-text-item">Free Shipping on orders over $400</span>
-            </div>
-            <div class="jj-content-group">
-              <span class="jj-text-item">100% Authentic Heat 🔥 Guaranteed</span>
-              <span class="jj-text-item">All Sales Are Final</span>
-              <span class="jj-text-item">Free Shipping on orders over $400</span>
-            </div>
-            <div class="jj-content-group">
-              <span class="jj-text-item">100% Authentic Heat 🔥 Guaranteed</span>
-              <span class="jj-text-item">All Sales Are Final</span>
-              <span class="jj-text-item">Free Shipping on orders over $400</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-</div>
   
   <div data-barba="wrapper" class="barba-wrapper">
     <div data-barba-namespace="product" data-barba="container" class="page-content">
@@ -344,7 +312,7 @@
       overflow-y: visible !important;
       position: static !important;
       padding-top: 2rem !important; /* Clears sticky marquee/menu at 120px */
-      
+      max-height: calc(100vh - 140px) !important;
       scrollbar-width: none !important;
       -ms-overflow-style: none !important;
       width: 100% !important;
@@ -422,7 +390,7 @@
   .product-container {
     position: sticky !important;
     top: 120px !important; /* Clears sticky marquee/menu at 120px */
-    
+    max-height: calc(100vh - 140px) !important;
     overflow-y: auto !important;
     scrollbar-width: none !important;
     -ms-overflow-style: none !important;
