@@ -1,4 +1,4 @@
-{%- paginate collections.all.products by 1000 -%}
+{%- paginate collections.all.products by 50 -%}
   {%- assign in_stock_handles_str = "" -%}
   {%- for prod in collections.all.products -%}
     {%- if prod.available -%}
