@@ -26,7 +26,7 @@
                           {%- endif -%}
                         {%- endfor -%}
                       {%- endcapture -%}
-                      <div class="div-block-15 {% unless item.available %}jj-sold-out-card{% endunless %}"><img loading="lazy" src="{{ item.featured_image | img_url: '600x' }}" alt="{{ item.featured_image.alt | default: item.title }}" class="image-6" data-commerce-type="variation-image" srcset="{{ item.featured_image | img_url: '600x' }} 600w, {{ item.featured_image | img_url: '1024x' }} 1024w">
+                      <div class="div-block-15 {% unless item.available %}jj-sold-out-card{% endunless %}"><img loading="lazy" decoding="async" src="{{ item.featured_image | img_url: '500x' }}" alt="{{ item.featured_image.alt | default: item.title }}" class="image-6" data-commerce-type="variation-image" sizes="(max-width: 479px) 50vw, (max-width: 991px) 33vw, 25vw" srcset="{{ item.featured_image | img_url: '400x' }} 400w, {{ item.featured_image | img_url: '600x' }} 600w, {{ item.featured_image | img_url: '800x' }} 800w">
                         <div class="link-overlay bs">{{ item.vendor }}</div>
                         {%- if _is_sold_out -%}<div class="sold-out-label">
                           <div class="div-block-1167">
