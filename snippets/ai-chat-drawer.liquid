@@ -206,15 +206,16 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255,255,255,0.1) transparent;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
   }
-  .jj-ai-chat-messages::-webkit-scrollbar {
-    width: 4px;
-  }
-  .jj-ai-chat-messages::-webkit-scrollbar-thumb {
-    background-color: rgba(255,255,255,0.15);
-    border-radius: 2px;
+  .jj-ai-chat-messages::-webkit-scrollbar,
+  .jj-ai-chat-drawer::-webkit-scrollbar,
+  .jj-ai-chat-suggested::-webkit-scrollbar,
+  #jj-ai-chat-root::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
   }
 
   /* Messages Styling */
