@@ -1771,7 +1771,7 @@ iframe[src*="userway"] {
    FIXED HEADERS (MENU, MARQUEE, SHOP FILTER) & FLUSH CONTENT OFFSETS
    ========================================================================== */
 
-/* ── 1. FIXED MENU NAVBAR (ALL PAGES: TOP=0, HEIGHT=80px) ─────────────── */
+/* ── 1. FIXED MENU NAVBAR (ALL PAGES: TOP=0, 80px DESKTOP / 70px MOBILE) ── */
 .navbar,
 .navbar.desktop,
 .navbar.mobile,
@@ -1781,22 +1781,55 @@ iframe[src*="userway"] {
   left: 0 !important;
   width: 100% !important;
   height: 80px !important;
+  min-height: 80px !important;
+  max-height: 80px !important;
   z-index: 1000 !important;
   background-color: #000000 !important;
   margin: 0 !important;
-  padding: 0 !important;
+  padding: 0 4rem !important; /* Left & right padding on desktop */
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.navbar .container,
+.navbar .container.w-container,
+.navbar .div-block-5 {
+  width: 100% !important;
+  max-width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
   box-sizing: border-box !important;
 }
 
-@media (max-width: 767px) {
+@media screen and (min-width: 1440px) {
   .navbar,
-  .navbar.desktop,
-  .navbar.mobile {
-    height: 60px !important;
+  .navbar.desktop {
+    padding: 0 5rem !important;
   }
 }
 
-/* ── 2. GLOBAL MARQUEE FADE MASK & FIXED BAR (BLACK BG, HEIGHT=48px) ─── */
+@media screen and (max-width: 991px) {
+  .navbar,
+  .navbar.desktop,
+  .navbar.mobile {
+    height: 70px !important;
+    min-height: 70px !important;
+    max-height: 70px !important;
+    padding: 0 2rem !important;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .navbar,
+  .navbar.desktop,
+  .navbar.mobile {
+    padding: 0 1.25rem !important;
+  }
+}
+
+/* ── 2. GLOBAL MARQUEE FADE MASK & FIXED BAR (SOLID BLACK, 48px / 46px) ─ */
 .white-section.menu,
 .white-section.menu .section-3,
 .jj-marquee-wrapper,
@@ -1845,21 +1878,21 @@ body.template-product .white-section.menu,
   box-sizing: border-box !important;
 }
 
-@media (max-width: 767px) {
+@media screen and (max-width: 991px) {
   body.template-collection .white-section.menu,
   body.template-page-shop .white-section.menu,
   body.template-product .white-section.menu,
   .template-collection .white-section.menu,
   .template-page-shop .white-section.menu,
   .template-product .white-section.menu {
-    top: 60px !important;
+    top: 70px !important; /* Never hidden behind 70px navbar on mobile/tablets */
     height: 46px !important;
     min-height: 46px !important;
     max-height: 46px !important;
   }
 }
 
-/* ── 3. FIXED SHOP FILTER BAR (TOP=128px DESKTOP, TOP=106px MOBILE) ───── */
+/* ── 3. FIXED SHOP FILTER BAR (TOP=128px DESKTOP, TOP=116px MOBILE) ───── */
 body.template-collection .filter-contents,
 body.template-page-shop .filter-contents,
 .template-collection .filter-contents,
@@ -1897,12 +1930,12 @@ body.template-page-shop .filter-contents .jj-filter-wrap,
   align-items: center !important;
 }
 
-@media (max-width: 767px) {
+@media screen and (max-width: 991px) {
   body.template-collection .filter-contents,
   body.template-page-shop .filter-contents,
   .template-collection .filter-contents,
   .template-page-shop .filter-contents {
-    top: 106px !important;
+    top: 116px !important;
     height: 44px !important;
     min-height: 44px !important;
     max-height: 44px !important;
@@ -1912,7 +1945,7 @@ body.template-page-shop .filter-contents .jj-filter-wrap,
 
 /* ── 4. CONTENT OFFSETS & BREATHING ROOM PADDING ───────────────────────── */
 
-/* Product Page: 128px offset (80px navbar + 48px marquee) */
+/* Product Page: 128px desktop offset (80px nav + 48px marquee) */
 body.template-product .barba-wrapper,
 body.template-product .page-content,
 body.template-product .product-template-container,
@@ -1956,17 +1989,24 @@ body.template-page-shop .page-content,
   }
 }
 
-@media (max-width: 767px) {
+@media screen and (max-width: 991px) {
+  body.template-product .barba-wrapper,
+  body.template-product .page-content,
+  .template-product .barba-wrapper,
+  .template-product .page-content {
+    margin-top: 116px !important;
+  }
+
   body.template-collection .barba-wrapper,
   body.template-collection .page-content,
   body.template-page-shop .barba-wrapper,
   body.template-page-shop .page-content {
-    margin-top: 150px !important;
+    margin-top: 160px !important;
     padding-top: 1.5rem !important;
   }
 }
 
-/* Homepage: no offset needed — marquee is in-flow (sticky, not fixed) */
+/* Homepage: no offset needed — marquee is in-flow */
 body.template-index .barba-wrapper,
 body.template-index .page-content {
   margin-top: 80px !important;
