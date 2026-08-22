@@ -1997,19 +1997,25 @@ body.template-page-shop .filter-contents .jj-filter-wrap,
 }
 
 /* ── 4. RESPONSIVE COLLECTION LIST TOP PADDING (8rem / 12rem / 10rem) ──── */
+.collection-list-2.shop,
+.collection-list-2.shop.w-dyn-items,
 body.template-collection .collection-list-2.shop,
 body.template-page-shop .collection-list-2.shop,
 .template-collection .collection-list-2.shop,
-.template-page-shop .collection-list-2.shop {
-  padding-top: 8rem !important; /* Larger devices */
+.template-page-shop .collection-list-2.shop,
+body.template-collection .collection-list-2,
+body.template-page-shop .collection-list-2 {
+  padding-top: 8rem !important; /* Larger desktop devices */
   box-sizing: border-box !important;
 }
 
 @media screen and (min-width: 768px) and (max-width: 991px) {
-  .collection-list-2.shop.w-dyn-items,
   .collection-list-2.shop,
-  .collection-list-2.w-dyn-items,
-  .brand-view .collection-list-2,
+  .collection-list-2.shop.w-dyn-items,
+  body.template-collection .collection-list-2.shop,
+  body.template-page-shop .collection-list-2.shop,
+  .template-collection .collection-list-2.shop,
+  .template-page-shop .collection-list-2.shop,
   body.template-collection .collection-list-2,
   body.template-page-shop .collection-list-2 {
     padding-top: 12rem !important; /* Medium sized devices (Tablets) */
@@ -2017,10 +2023,12 @@ body.template-page-shop .collection-list-2.shop,
 }
 
 @media screen and (max-width: 767px) {
-  .collection-list-2.shop.w-dyn-items,
   .collection-list-2.shop,
-  .collection-list-2.w-dyn-items,
-  .brand-view .collection-list-2,
+  .collection-list-2.shop.w-dyn-items,
+  body.template-collection .collection-list-2.shop,
+  body.template-page-shop .collection-list-2.shop,
+  .template-collection .collection-list-2.shop,
+  .template-page-shop .collection-list-2.shop,
   body.template-collection .collection-list-2,
   body.template-page-shop .collection-list-2 {
     padding-top: 10rem !important; /* Smaller devices (Mobile) */

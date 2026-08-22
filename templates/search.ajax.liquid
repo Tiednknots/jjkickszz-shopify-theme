@@ -4,7 +4,7 @@
     {%- for item in search.results -%}
       {%- if item.object_type == 'product' -%}
         {%- if item.handle == 'shipping-insurance' or item.title contains 'Insurance' -%}{%- continue -%}{%- endif -%}
-        <div role="listitem" class="collection-item-2 margin w-dyn-item" data-vendor="{{ item.vendor | escape }}">
+        <div role="listitem" class="collection-item-2 margin w-dyn-item" data-id="{{ item.id }}" data-created="{{ item.created_at | date: '%s' }}" data-vendor="{{ item.vendor | escape }}">
           <a href="{{ item.url }}" class="link-block-2 w-inline-block">
             {%- assign _is_sold_out = true -%}
             {%- assign _avail_count = 0 -%}

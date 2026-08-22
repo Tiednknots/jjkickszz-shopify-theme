@@ -467,7 +467,9 @@
       var clearBtn      = document.getElementById('jj-clear-filters-btn');
 
       var state = { query: '', sort: 'default', inStockOnly: false, selectedVendor: '' };
-      if (sortSelect) sortSelect.value = 'default';
+      if (sortSelect) sortSelect.value = 'newest';
+      // Auto-load and sort newest items on page load
+      applyFilters();
       // Cache product grid and pagination element
       var grid = document.querySelector('.collection-list-2');
       var pagination = document.querySelector('.jj-pagination-container') || document.querySelector('.w-pagination-wrapper');
@@ -596,7 +598,11 @@
                         el.querySelector('.text-block-4.title')?.textContent || '').toLowerCase().trim();
               };
               var getId = function(el) {
-                return parseInt(el.getAttribute('data-id')) || 0;
+                var c = parseInt(el.getAttribute('data-created'));
+                if (c && !isNaN(c)) return c;
+                var id = parseInt(el.getAttribute('data-id'));
+                if (id && !isNaN(id)) return id;
+                return 0;
               };
 
               if (state.sort === 'price-asc') {
@@ -799,7 +805,9 @@
           if (desktopInput) desktopInput.value = '';
           if (mobileInput) mobileInput.value = '';
           if (instockCB) instockCB.checked = false;
-          if (sortSelect) sortSelect.value = 'default';
+          if (sortSelect) sortSelect.value = 'newest';
+      // Auto-load and sort newest items on page load
+      applyFilters();
           if (brandLabel) brandLabel.textContent = 'Brand';
 
           vendorChips.forEach(function(c) { c.classList.remove('selected'); });
