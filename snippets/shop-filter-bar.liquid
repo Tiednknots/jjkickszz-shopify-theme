@@ -392,6 +392,17 @@
   /* Hide mobile elements on desktop */
   .jj-mobile-search-btn { display: none; }
   .jj-mobile-search-bar { display: none; }
+
+@media (max-width: 767px) {
+  .jj-subtle-filter-bar {
+    padding: 6px 12px !important;
+    gap: 8px !important;
+    overflow-x: auto !important;
+    scrollbar-width: none !important;
+  }
+  .jj-subtle-filter-bar::-webkit-scrollbar { display: none !important; }
+}
+
 </style>
 
 <div class="jj-filter-wrap">

@@ -2021,13 +2021,15 @@ body.template-page-shop .jj-filter-wrap {
 
 
 
+
 /* ==========================================================================
-   HOMEPAGE HERO MARQUEE & PRODUCT PAGE DESKTOP 85% RIGHT COLUMN
+   MASTER BREAKPOINT & UI/UX RESPONSIVE REBUILD
    ========================================================================== */
 
-/* ── 1. HOMEPAGE MARQUEE (STICKY UNDER NAVBAR AT TOP: 80PX ON SCROLL) ── */
-body.template-index .navbar,
-.template-index .navbar {
+/* ── 1. GLOBAL NAVBAR (DESKTOP: 80PX / MOBILE: 70PX) ── */
+.navbar,
+.navbar.desktop,
+.nav-wrapper {
   position: fixed !important;
   top: 0 !important;
   left: 0 !important;
@@ -2035,8 +2037,18 @@ body.template-index .navbar,
   height: 80px !important;
   z-index: 99999 !important;
   background-color: #000000 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
 }
 
+@media screen and (max-width: 991px) {
+  .navbar,
+  .navbar.mobile {
+    height: 70px !important;
+  }
+}
+
+/* ── 2. HOMEPAGE MARQUEE (BELOW HERO, STICKY AT TOP: 80PX/70PX) ── */
 body.template-index .barba-wrapper,
 .template-index .barba-wrapper,
 .template-index .page-content {
@@ -2044,7 +2056,13 @@ body.template-index .barba-wrapper,
   padding-top: 0 !important;
 }
 
-/* Marquee sits below hero section and becomes sticky at top: 80px on scroll */
+@media screen and (max-width: 991px) {
+  body.template-index .barba-wrapper,
+  .template-index .barba-wrapper {
+    margin-top: 70px !important;
+  }
+}
+
 body.template-index .white-section.menu.sticky-on-scroll,
 .template-index .white-section.menu.sticky-on-scroll {
   position: -webkit-sticky !important;
@@ -2059,12 +2077,96 @@ body.template-index .white-section.menu.sticky-on-scroll,
   box-sizing: border-box !important;
 }
 
-/* ── 2. PRODUCT PAGE DESKTOP LAYOUT (NO STICKY RIGHT COL, 85% DETAILS WIDTH) ── */
+@media screen and (max-width: 991px) {
+  body.template-index .white-section.menu.sticky-on-scroll,
+  .template-index .white-section.menu.sticky-on-scroll {
+    top: 70px !important;
+  }
+}
+
+/* ── 3. SHOP PAGE FIXED STACK & FLUSH GRID ── */
+body.template-collection .white-section.menu,
+body.template-page-shop .white-section.menu,
+.template-collection .white-section.menu,
+.template-page-shop .white-section.menu {
+  position: fixed !important;
+  top: 80px !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 40px !important;
+  z-index: 99990 !important;
+  background-color: #000000 !important;
+  border-bottom: 1px solid #222222 !important;
+}
+
+@media screen and (max-width: 991px) {
+  body.template-collection .white-section.menu,
+  body.template-page-shop .white-section.menu {
+    top: 70px !important;
+  }
+}
+
+body.template-collection .filter-contents,
+body.template-collection .jj-filter-wrap,
+body.template-page-shop .filter-contents,
+body.template-page-shop .jj-filter-wrap,
+.template-collection .filter-contents,
+.template-collection .jj-filter-wrap,
+.template-page-shop .filter-contents,
+.template-page-shop .jj-filter-wrap {
+  position: fixed !important;
+  top: 120px !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 46px !important;
+  z-index: 99980 !important;
+  background-color: #000000 !important;
+  border-bottom: 1px solid #222222 !important;
+}
+
+@media screen and (max-width: 991px) {
+  body.template-collection .filter-contents,
+  body.template-collection .jj-filter-wrap,
+  body.template-page-shop .filter-contents,
+  body.template-page-shop .jj-filter-wrap {
+    top: 110px !important;
+  }
+}
+
+/* Offset Shop Grid Below Fixed Header Stack (Desktop: 166px / Mobile: 156px) */
+@media screen and (min-width: 992px) {
+  body.template-collection .page-content,
+  body.template-page-shop .page-content,
+  .template-collection .collection-list-wrapper,
+  .template-page-shop .collection-list-wrapper,
+  .section-5.mobile.shop {
+    padding-top: 175px !important;
+    margin-top: 0 !important;
+  }
+}
+
+@media screen and (max-width: 991px) {
+  body.template-collection .page-content,
+  body.template-page-shop .page-content,
+  .template-collection .collection-list-wrapper,
+  .template-page-shop .collection-list-wrapper,
+  .section-5.mobile.shop {
+    padding-top: 156px !important;
+    margin-top: 0 !important;
+  }
+
+  .collection-list-2.shop.w-dyn-items {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+  }
+}
+
+/* ── 4. PRODUCT PAGE DESKTOP GRID & TABLET 5REM MARGIN ── */
 @media screen and (min-width: 992px) {
   body.template-product .div-block-629,
-  .template-product .div-block-629 {
+  .template-product div.div-block-629 {
     display: grid !important;
-    grid-template-columns: 1fr 1fr !important; /* 50/50 Balanced Split */
+    grid-template-columns: 1fr 1fr !important; /* 50/50 Split */
     gap: 3rem !important;
     align-items: start !important;
     margin-top: 120px !important;
@@ -2098,10 +2200,10 @@ body.template-index .white-section.menu.sticky-on-scroll,
     margin: 0 !important;
   }
 
-  /* Right Column Details (NO STICKY) */
+  /* Right Column Details (No Sticky, 85% Width) */
   body.template-product .product-container,
   .template-product .product-container {
-    position: relative !important; /* STICKY REMOVED */
+    position: relative !important;
     top: auto !important;
     max-height: none !important;
     overflow: visible !important;
@@ -2111,7 +2213,6 @@ body.template-index .white-section.menu.sticky-on-scroll,
     box-sizing: border-box !important;
   }
 
-  /* Product details take 85% of right column width */
   .product-container .product-descriptions,
   .product-container > div,
   .product-container form {
@@ -2121,7 +2222,6 @@ body.template-index .white-section.menu.sticky-on-scroll,
     margin-right: auto !important;
   }
 
-  /* Title formatting prevents weird letter wraps */
   .title-label.producc,
   .title-label {
     white-space: normal !important;
@@ -2130,5 +2230,40 @@ body.template-index .white-section.menu.sticky-on-scroll,
     line-height: 1.2 !important;
     font-size: 2.2rem !important;
     max-width: 100% !important;
+  }
+}
+
+/* Variant Size Pills Left/Right Padding & Auto Width */
+.button-group.w-commerce-commerceaddtocartoptionpillgroup {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  margin: 10px 0 18px 0 !important;
+  max-height: 220px !important;
+  overflow-y: auto !important;
+  padding-right: 4px !important;
+  width: 100% !important;
+}
+
+.button-2.w-commerce-commerceaddtocartoptionpill {
+  padding: 8px 16px !important;
+  background-color: #161616 !important;
+  border: 1px solid #2e2e2e !important;
+  border-radius: 6px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 38px !important;
+  min-width: 52px !important;
+  width: auto !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
+  box-sizing: border-box !important;
+}
+
+/* Tablet & Mobile 5rem Top Margin on Image Container */
+@media (max-width: 991px) {
+  .more-image-container {
+    margin-top: 5rem !important;
   }
 }
