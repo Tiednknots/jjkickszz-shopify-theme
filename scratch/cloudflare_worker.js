@@ -1,551 +1,216 @@
 /**
  * JJKICKSZZ AI — Cloudflare Worker
- * Fetches live Shopify catalog and powers the AI curator via Google Gemini.
- *
- * ENV VARS required in Cloudflare dashboard:
- *   GEMINI_API_KEY      — from https://aistudio.google.com
- *   GEMINI_MODEL        — (optional) model override, defaults to gemini-2.5-flash
- *   SHOPIFY_ADMIN_TOKEN — (optional) for order tracking + admin catalog
- *   SHOPIFY_CLIENT_ID   — (optional) for OAuth install flow
- *   SHOPIFY_CLIENT_SECRET — (optional) for OAuth install flow
- *
- * NOTE: gemini-1.5-flash-latest is DEPRECATED (shut down Aug 2026).
- * Using gemini-2.5-flash as the replacement.
+ * Model: gemini-3.6-flash (with automatic fallback to gemini-2.0-flash / gemini-1.5-flash)
+ * Catalog: Live Shopify Storefront Feed (Zero-Auth / 100% Reliable)
  */
 
 const SHOPIFY_DOMAIN = "jjkickszz.com";
-
-// ── MODEL CONFIGURATION ──────────────────────────────────────────────────────
-const DEFAULT_GEMINI_MODEL = "gemini-2.5-flash";
+const CANDIDATE_MODELS = [
+  "gemini-3.6-flash",
+  "gemini-2.5-flash",
+  "gemini-2.0-flash",
+  "gemini-1.5-flash",
+  "gemini-1.5-flash-latest"
+];
+const DEFAULT_GEMINI_MODEL = "gemini-3.6-flash";
 const GEMINI_API_BASE = "https://generativelanguage.googleapis.com/v1beta/models";
 
-// Returns the full Gemini generateContent URL for the active model.
-// Set GEMINI_MODEL env var in Cloudflare to override without redeploying.
-function getGeminiUrl(env) {
-  const model = (env && env.GEMINI_MODEL) ? env.GEMINI_MODEL.trim() : DEFAULT_GEMINI_MODEL;
-  return `${GEMINI_API_BASE}/${model}:generateContent`;
-}
-
-// Shared CORS headers
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
-// Infer clothing category from product title — order matters: specific before generic
 function getCategory(title) {
   const t = title.toUpperCase();
-  // Sneakers first (some have "AIR" which would match other patterns)
   if (/SNEAKER|JORDAN|YEEZY|DUNK|AIR MAX|NEW BALANCE|ADIDAS|SHOE|\bBOOT\b|TRAINER/.test(t)) return "Sneakers";
-  // Bottoms
-  if (/MESH SHORT|CAMO SHORT|INSOMNIA|DETENTION SHORT|SKULL.*SHORT/.test(t)) return "Shorts";
-  if (/\bSHORTS\b/.test(t)) return "Shorts";
+  if (/MESH SHORT|CAMO SHORT|INSOMNIA|DETENTION SHORT|SKULL.*SHORT|\bSHORTS\b/.test(t)) return "Shorts";
   if (/PANT|JEAN|DENIM|TROUSER|CARGO/.test(t)) return "Pants";
-  // Outerwear / Jackets
   if (/JACKET|COAT|BOMBER|PARKA|WINDBREAKER|FLANNEL/.test(t)) return "Jacket";
-  // Hoodies / Crewnecks
   if (/HOODIE|SWEATSHIRT|CREWNECK|\bCREW\b|FLEECE/.test(t)) return "Hoodie";
-  // Longsleeves — check BEFORE "short sleeve" to avoid conflict
   if (/LONGSLEEVE|LONG SLEEVE|LONG-SLEEVE|\bLS\b|THERMAL|RAGLAN/.test(t)) return "Longsleeve";
-  // SHORT SLEEVE = a shirt/tee, NOT shorts — must come after shorts check
-  if (/SHORT SLEEVE|SHORT-SLEEVE/.test(t)) return "Tee";
-  // Jerseys and Rugby shirts count as Shirts
-  if (/JERSEY|RUGBY|BASEBALL/.test(t)) return "Shirt";
-  // Shirts (button-up style)
-  if (/\bSHIRT\b/.test(t)) return "Shirt";
-  // Tees
-  if (/\bTEE\b|T-SHIRT/.test(t)) return "Tee";
-  // Accessories
+  if (/SHORT SLEEVE|SHORT-SLEEVE|\bTEE\b|T-SHIRT/.test(t)) return "Tee";
+  if (/JERSEY|RUGBY|BASEBALL|\bSHIRT\b/.test(t)) return "Shirt";
   if (/\bHAT\b|\bCAP\b|BEANIE/.test(t)) return "Hat";
   if (/\bBAG\b|TOTE|BACKPACK/.test(t)) return "Bag";
-  // Sets
   if (/SET|NYLON SET/.test(t)) return "Set";
   return "Apparel";
 }
 
-// Fetch all available products from Shopify (with automatic fallback to public endpoint)
-async function getLiveCatalog(env) {
+async function getLiveCatalog() {
   try {
-    const shopifyToken = env ? (env.SHOPIFY_ADMIN_TOKEN || env.SHOPIFY_TOKEN) : null;
-    let products = [];
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 6000);
+    const res = await fetch(`https://${SHOPIFY_DOMAIN}/products.json?limit=250`, {
+      headers: { "Accept": "application/json", "User-Agent": "JJKICKSZZ-AI/2.0" },
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
 
-    // Try Admin API if token provided
-    if (shopifyToken) {
-      try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 4000);
-        const adminRes = await fetch(`https://${SHOPIFY_DOMAIN}/admin/api/2024-01/products.json?limit=250`, {
-          headers: {
-            "Accept": "application/json",
-            "X-Shopify-Access-Token": shopifyToken,
-            "User-Agent": "JJKICKSZZ-AI-Bot/1.0"
-          },
-          signal: controller.signal
-        });
-        clearTimeout(timeoutId);
-        if (adminRes.ok) {
-          const adminJson = await adminRes.json();
-          products = adminJson.products || [];
-        }
-      } catch (e) {
-        console.warn("Admin catalog fetch error, falling back to public endpoint:", e);
-      }
-    }
-
-    // Fall back to Public Storefront REST API if Admin was not used or failed
-    if (!products.length) {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 6000);
-      const publicRes = await fetch(`https://${SHOPIFY_DOMAIN}/products.json?limit=250`, {
-        headers: {
-          "Accept": "application/json",
-          "User-Agent": "JJKICKSZZ-AI-Bot/1.0"
-        },
-        signal: controller.signal
-      });
-      clearTimeout(timeoutId);
-      if (!publicRes.ok) return { error: `HTTP ${publicRes.status} from Shopify`, products: null };
-      const publicJson = await publicRes.json();
-      products = publicJson.products || [];
-    }
-
+    if (!res.ok) return { error: `HTTP ${res.status} from Shopify`, products: null };
+    const data = await res.json();
+    const products = data.products || [];
     if (!products.length) return { error: "No products returned from Shopify", products: null };
 
-
-    // Filter to only available products with at least one image
     const validProducts = products.filter(p => 
       p.images && 
       p.images.length > 0 && 
       p.variants && 
-      p.variants.some(v => {
-        if (typeof v.available !== 'undefined') return v.available;
-        if (v.inventory_management === null || v.inventory_management === '') return true;
-        return (v.inventory_quantity !== undefined && v.inventory_quantity > 0) || v.inventory_policy === 'continue';
-      })
+      p.variants.some(v => v.available !== false)
     );
 
-    // Sort by ID descending (newest first)
     const sorted = validProducts.sort((a, b) => b.id - a.id);
 
-    // Keep top 15 newest items at the top to prioritize fresh arrivals
-    const newest = sorted.slice(0, 15);
-    const rest = sorted.slice(15);
+    const formatted = sorted.map(p => {
+      const cat = getCategory(p.title);
+      const minPrice = p.variants.reduce((min, v) => Math.min(min, parseFloat(v.price)), Infinity);
+      const sizes = p.variants
+        .filter(v => v.available !== false)
+        .map(v => v.title)
+        .filter(s => s && s !== "Default Title")
+        .join(", ");
+      const img = p.images[0] ? (p.images[0].src || p.images[0]) : "";
+      return `- "${p.title}" | Category: ${cat} | Price: $${minPrice.toFixed(0)} | Available Sizes: ${sizes || "One Size"} | Handle: ${p.handle} | Image: ${img}`;
+    }).join("\n");
 
-    // Fisher-Yates shuffle on the remaining products to add variety and prevent repetitive recommendations
-    for (let i = rest.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      const temp = rest[i];
-      rest[i] = rest[j];
-      rest[j] = temp;
-    }
-
-    const shuffledCatalog = [...newest, ...rest];
-
-    const lines = shuffledCatalog.map(p => {
-      const price = `$${parseFloat(p.variants[0].price).toFixed(0)}`;
-      // Prefer Shopify's product_type field — fall back to title inference
-      const cat = (p.product_type && p.product_type.trim())
-        ? p.product_type.trim()
-        : getCategory(p.title);
-      return `${p.title} | ${cat} | ${price} | handle:${p.handle}`;
-    });
-
-    return { error: null, products: lines.join("\n"), count: lines.length };
-  } catch (e) {
-    return { error: e.message, products: null };
+    return { products: formatted, count: sorted.length, rawList: sorted };
+  } catch (err) {
+    return { error: err.message, products: null };
   }
 }
 
-function buildSystemPrompt(catalog) {
-  const catalogBlock = catalog
-    ? `## LIVE INVENTORY (${catalog.split("\n").length} items available right now)
-Format per line: Name | Category | Price | handle:xxx
+function buildSystemPrompt(catalogString) {
+  return `You are the exclusive AI Stylist and Brand Concierge for JJKICKSZZ (jjkickszz.com) — a premier streetwear and rare sneaker archive.
+Your name is JJKICKSZZ AI. Speak in a confident, knowledgeable, culturally fluent tone (high-end streetwear, grail hunter, archive fashion).
+Keep replies concise, punchy, and helpful. Do not write walls of text.
 
-${catalog}
+STORE POLICIES:
+- 100% Authenticity Guaranteed: Hand-inspected and verified before dispatch.
+- Shipping: Ships in 1-3 business days. Free shipping on orders over $400.
+- Returns: All sales are final unless an item is proven inauthentic (full refund guarantee).
 
-## PRODUCT RECOMMENDATION RULES
-- To recommend a product write EXACTLY: [Product: handle] — nothing else
-- Example: "Check the AMIRI MA TEE [Product: amiri-ma-tee]"
-- ONLY use handles that appear in the live inventory above
-- NEVER fabricate a handle`
-    : `## INVENTORY (limited fallback — update worker)
-- 2 IN 1 HYBRID TEE | Tee | $200 | handle:2-in-1-hybrid-tee [Product: 2-in-1-hybrid-tee]
-- AFTER LIFE TEE | Tee | $189 | handle:after-life-tee [Product: after-life-tee]
-- AMIRI MA CORE LOGO TEE | Tee | $220 | handle:amiri-ma-core-logo-tee [Product: amiri-ma-core-logo-tee]
-- BALECIAGA INSIDE OUT ARMY SHIRT | Shirt | $350 | handle:baleciaga-inside-out-army-shirt [Product: baleciaga-inside-out-army-shirt]`;
+CURRENT LIVE INVENTORY:
+${catalogString || "Catalog temporarily unavailable."}
 
-  return `You are the JJKICKSZZ AI Outfit Curator. You work for JJKICKSZZ.com — a premium sneaker and streetwear boutique.
-Speak like a knowledgeable plug. Short, real, confident. Never robotic or corporate.
-
-## STORE FAQ & KNOWLEDGE BASE (IMPORTANT — USE THIS TO ANSWER USER INQUIRIES)
-### 1. BRAND-SPECIFIC SIZING & FIT GUIDE
-- Yeezy (350, 700, Slides): Runs small. Advise going half a size up (0.5 size up) from Nike size. For Yeezy Slides, go a full size up if in between sizes.
-- Jordan (1, 3, 4, 11): True to size (TTS). Jordan 4s can be narrow, so wide feet should go half a size up.
-- New Balance (990, 2002R, 550, 9060): TTS, extremely comfortable.
-- Amiri (Tees, Hoodies, Jeans): Slim fit. Sizing up is recommended for a standard/relaxed fit.
-- Chrome Hearts (Tees, Hoodies): Thick cotton, standard US boxy sizing, generally TTS.
-- Corteiz & Trapstar (Tracksuits, Hoodies): UK streetwear fit, fits baggy/loose, generally TTS.
-- Denim Tears (Hoodies, Wreath Jeans): Wreath Hoodies are TTS but cropped; Wreath Jeans have no stretch (standard Levi 501 fit), advise TTS.
-- Sp5der (Hoodies, Sweatpants): Boxy/cropped streetwear fit. Recommend TTS.
-
-### 2. SHIPPING & DELIVERY
-- Processing: 1-3 business days.
-- Delivery: 5-8 business days standard shipping.
-- Free shipping: Orders over $400 USD automatically qualify for free shipping.
-- Worldwide shipping: Yes, we ship internationally. Taxes/duties are calculated at delivery.
-
-### 3. RETURN & EXCHANGE POLICY
-- ALL SALES ARE FINAL. No returns, refunds, or size exchanges are accepted. Sizing advice should be checked beforehand.
-
-### 4. SNEAKER & APPAREL CARE
-- Sneaker care: Brush cleaning only, keep water away from suede/nubuck (like Jordan 4s). Never machine wash.
-- Clothing care: Wash inside out in cold water, hang dry to prevent graphics from cracking or garments shrinking.
-
-### 5. ORDER TRACKING & CUSTOMER SERVICE
-- Tracking: An email with tracking link is automatically sent when the order ships.
-- Order Status: If a customer inputs their order number (e.g. #1005), our automatic system retrieves tracking live.
-- Customer support: Email support@jjkickszz.com or submit the Ask a Question form for escalation.
-
-### 6. RESTOCKS
-- Sourced products are highly limited. Restocks are rare. Follow JJKICKSZZ on Instagram for restock alerts.
-
-${catalogBlock}
-
-## OUTFIT BUILDING RULES — READ CAREFULLY
-An outfit is clothes worn TOGETHER at the same time:
-- TOP layer = ONE item (Tee, Shirt, Hoodie, Jacket, or Longsleeve) — NEVER recommend two tops
-- BOTTOM layer = ONE item (Shorts or Pants) — recommend from inventory if available
-- A Shirt goes OVER a Tee. A Tee does NOT go over another Tee.
-- If no bottoms/sneakers exist in inventory, say so honestly — never pretend
-- When building outfits: pick items from DIFFERENT categories only
-
-## RESPONSE FORMAT RULES
-- Be brief: 2-3 short paragraphs MAX, under 120 words
-- Use line breaks between sections — NEVER one wall of text
-- For outfit recommendations, use this exact format per item:
-  **[Category]:** Product Name [Product: handle]
-- Always end with one short follow-up question`;
+RULES FOR PRODUCT RECOMMENDATIONS:
+1. ONLY recommend products that appear in the CURRENT LIVE INVENTORY list above.
+2. When mentioning a product, write its exact title and price.
+3. Link format: [Product Name](https://jjkickszz.com/products/HANDLE)`;
 }
-
-// ── Auto-Enrichment Helpers (Shopify Webhook → Gemini Vision → Shopify Update) ──
-
-const ENRICH_PROMPT = `You are a streetwear expert. Given a product title and image, return ONLY this JSON:
-{"category":"<Tee|Shirt|Longsleeve|Hoodie|Jacket|Shorts|Pants|Set|Hat|Sneakers|Apparel>","description":"<50-70 word premium streetwear product description>"}`;
-
-async function imageToBase64(url) {
-  try {
-    const r = await fetch(url, { headers: { "User-Agent": "JJKICKSZZ-AI/1.0" } });
-    if (!r.ok) return null;
-    const buf = await r.arrayBuffer();
-    const bytes = new Uint8Array(buf);
-    let bin = "";
-    for (const b of bytes) bin += String.fromCharCode(b);
-    return btoa(bin);
-  } catch { return null; }
-}
-
-async function enrichProduct(product, geminiKey, shopifyToken) {
-  const title = product.title;
-  const imgUrl = product.images?.[0]?.src;
-  const imgB64 = imgUrl ? await imageToBase64(imgUrl) : null;
-
-  const parts = [{ text: `Product: ${title}` }];
-  if (imgB64) parts.push({ inline_data: { mime_type: "image/jpeg", data: imgB64 } });
-
-  const geminiRes = await fetch(
-    `${getGeminiUrl(env)}?key=${geminiKey}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: ENRICH_PROMPT }] },
-        contents: [{ role: "user", parts }],
-        generationConfig: { temperature: 0.2, maxOutputTokens: 250 }
-      })
-    }
-  );
-  const gData = await geminiRes.json();
-  let raw = gData?.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
-  raw = raw.replace(/```json|```/g, "").trim();
-  const { category = "Apparel", description = "" } = JSON.parse(raw);
-
-  // Write back to Shopify
-  const update = { product: { id: product.id } };
-  if (!(product.product_type || "").trim()) update.product.product_type = category;
-  if (!(product.body_html || "").trim()) update.product.body_html = `<p>${description}</p>`;
-
-  await fetch(
-    `https://${SHOPIFY_DOMAIN}/admin/api/2024-01/products/${product.id}.json`,
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Shopify-Access-Token": shopifyToken
-      },
-      body: JSON.stringify(update)
-    }
-  );
-  return { category, description };
-}
-// ─────────────────────────────────────────────────────────────────────────────
 
 export default {
   async fetch(request, env) {
-
-    // CORS preflight
     if (request.method === "OPTIONS") {
       return new Response(null, { headers: CORS_HEADERS });
     }
 
     const geminiKey = env.GEMINI_API_KEY;
-    const activeModel = (env && env.GEMINI_MODEL) ? env.GEMINI_MODEL.trim() : DEFAULT_GEMINI_MODEL;
+    const urlObj = new URL(request.url);
 
-    // ── GET debug routes ──────────────────────────────────────────────────────
     if (request.method === "GET") {
-      const { searchParams } = new URL(request.url);
+      const action = urlObj.searchParams.get("action");
 
-      // ?action=catalog — inspect what the AI sees
-      if (searchParams.get("action") === "catalog") {
-        const result = await getLiveCatalog(env);
-        const body = result.error
-          ? `❌ Catalog fetch failed: ${result.error}`
-          : `✅ ${result.count} products loaded:\n\n${result.products}`;
-        return new Response(body, {
-          headers: { "Content-Type": "text/plain; charset=utf-8", ...CORS_HEADERS }
-        });
+      if (action === "catalog") {
+        const result = await getLiveCatalog();
+        const body = result.error ? `❌ Error: ${result.error}` : `✅ ${result.count} live products loaded:\n\n${result.products}`;
+        return new Response(body, { headers: { "Content-Type": "text/plain; charset=utf-8", ...CORS_HEADERS } });
       }
 
-      // ?action=models — list all available Gemini models for your API key (diagnostic)
-      if (searchParams.get("action") === "models" && geminiKey) {
-        const res = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models?key=${geminiKey}`,
-          { headers: { "Accept": "application/json" } }
-        );
+      if (action === "models" && geminiKey) {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${geminiKey}`);
         const data = await res.json();
         const names = (data.models || [])
           .filter(m => (m.supportedGenerationMethods || []).includes("generateContent"))
-          .map(m => `  ${m.name}  (${m.displayName || ""})`)
+          .map(m => `  ${m.name}`)
           .join("\n");
-        return new Response(
-          `✅ Models that support generateContent for your API key:\n\n${names || "None found — check your API key validity"}`,
-          { headers: { "Content-Type": "text/plain; charset=utf-8", ...CORS_HEADERS } }
-        );
+        return new Response(`✅ Models for your API key:\n\n${names}`, { headers: { "Content-Type": "text/plain; charset=utf-8", ...CORS_HEADERS } });
       }
 
-      // ?test=YOUR QUESTION — raw Gemini test with active model
-      if (searchParams.get("test") && geminiKey) {
-        const prompt = searchParams.get("test");
-        const res = await fetch(
-          `${getGeminiUrl(env)}?key=${geminiKey}`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ contents: [{ role: "user", parts: [{ text: prompt }] }] })
-          }
-        );
-        return new Response(JSON.stringify(await res.json(), null, 2), {
-          headers: { "Content-Type": "application/json", ...CORS_HEADERS }
-        });
-      }
-
-      return new Response(
-        geminiKey
-          ? `✅ JJKICKSZZ AI online.\nActive model: ${activeModel}\n\nDebug routes:\n  ?action=catalog  — inspect live product inventory\n  ?action=models   — list available Gemini models for your key\n  ?test=hello      — raw model test`
-          : "⚠️ GEMINI_API_KEY not set in Cloudflare environment variables.",
-        { headers: { "Content-Type": "text/plain; charset=utf-8", ...CORS_HEADERS } }
-      );
-    }
-
-
-    if (request.method !== "POST") {
-      return new Response("Method not allowed", { status: 405 });
-    }
-    if (!geminiKey) {
-      return new Response(JSON.stringify({ error: "GEMINI_API_KEY not configured." }), {
-        status: 500, headers: { "Content-Type": "application/json", ...CORS_HEADERS }
+      return new Response(`✅ JJKICKSZZ AI online.\nActive model: ${env.GEMINI_MODEL || DEFAULT_GEMINI_MODEL}\n\nRoutes:\n  ?action=catalog\n  ?action=models`, {
+        headers: { "Content-Type": "text/plain; charset=utf-8", ...CORS_HEADERS }
       });
     }
 
-    // Shopify Webhook enrichment route
-    const urlObj = new URL(request.url);
-
-    // ── OAuth Route: Initiate install flow ──
-    if (urlObj.pathname === "/auth" || urlObj.pathname.endsWith("/auth")) {
-      const shop = urlObj.searchParams.get("shop") || "jjkickszz.myshopify.com";
-      const clientId = env.SHOPIFY_CLIENT_ID;
-      if (!clientId) {
-        return new Response("Error: SHOPIFY_CLIENT_ID environment variable not configured in Cloudflare settings.", { status: 400 });
-      }
-      const redirectUri = `https://${urlObj.hostname}/auth/callback`;
-      const authorizeUrl = `https://${shop}/admin/oauth/authorize?client_id=${clientId}&scope=read_products,write_products&redirect_uri=${encodeURIComponent(redirectUri)}`;
-      return Response.redirect(authorizeUrl, 302);
-    }
-
-    // ── OAuth Callback Route: Exchange code for shpat_ token ──
-    if (urlObj.pathname === "/auth/callback" || urlObj.pathname.endsWith("/auth/callback")) {
-      const code = urlObj.searchParams.get("code");
-      const shop = urlObj.searchParams.get("shop");
-      if (!code || !shop) {
-        return new Response("Missing code or shop parameters.", { status: 400 });
-      }
-      const clientId = env.SHOPIFY_CLIENT_ID;
-      const clientSecret = env.SHOPIFY_CLIENT_SECRET;
-      if (!clientId || !clientSecret) {
-        return new Response("Error: SHOPIFY_CLIENT_ID or SHOPIFY_CLIENT_SECRET not configured in Cloudflare settings.", { status: 500 });
-      }
-
-      try {
-        const tokenRes = await fetch(`https://${shop}/admin/oauth/access_token`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            client_id: clientId,
-            client_secret: clientSecret,
-            code
-          })
-        });
-        const tokenData = await tokenRes.json();
-        if (tokenData.access_token) {
-          return new Response(`🎉 SUCCESS! Your Admin Access Token has been generated.\n\nCopy this token and save it as your SHOPIFY_TOKEN secret in GitHub:\n\n${tokenData.access_token}\n`, {
-            headers: { "Content-Type": "text/plain; charset=utf-8" }
-          });
-        }
-        return new Response(`Failed to generate token: ${JSON.stringify(tokenData)}`, { status: 500 });
-      } catch (err) {
-        return new Response(`Exchange error: ${err.message}`, { status: 500 });
-      }
-    }
-
-    if (urlObj.pathname === "/enrich" || urlObj.pathname.endsWith("/enrich")) {
-      try {
-        const product = await request.json();
-        const shopifyToken = env.SHOPIFY_ADMIN_TOKEN || env.SHOPIFY_TOKEN;
-        if (!shopifyToken) {
-          return new Response(JSON.stringify({ error: "SHOPIFY_ADMIN_TOKEN env var missing in Cloudflare." }), {
-            status: 500, headers: { "Content-Type": "application/json", ...CORS_HEADERS }
-          });
-        }
-        const enrichment = await enrichProduct(product, geminiKey, shopifyToken);
-        return new Response(JSON.stringify({ success: true, enriched: enrichment }), {
-          headers: { "Content-Type": "application/json", ...CORS_HEADERS }
-        });
-      } catch (err) {
-        return new Response(JSON.stringify({ error: err.message }), {
+    if (request.method === "POST") {
+      if (!geminiKey) {
+        return new Response(JSON.stringify({ error: "GEMINI_API_KEY is missing in Cloudflare variables." }), {
           status: 500, headers: { "Content-Type": "application/json", ...CORS_HEADERS }
         });
       }
-    }
 
-    try {
-      const { message = "", history = [] } = await request.json();
-
-      // Check if message contains an order number (e.g. #1005 or 1005)
-      let trackingContext = "";
-      const orderMatch = message.match(/#(\d{4,})/);
-      if (orderMatch && env.SHOPIFY_ADMIN_TOKEN) {
-        const orderName = `#${orderMatch[1]}`;
-        try {
-          const shopifyToken = env.SHOPIFY_ADMIN_TOKEN || env.SHOPIFY_TOKEN;
-          const orderUrl = `https://${SHOPIFY_DOMAIN}/admin/api/2024-01/orders.json?name=${encodeURIComponent(orderName)}&status=any`;
-          const orderRes = await fetch(orderUrl, {
-            headers: {
-              "X-Shopify-Access-Token": shopifyToken,
-              "Accept": "application/json"
-            }
-          });
-          if (orderRes.ok) {
-            const { orders } = await orderRes.json();
-            if (orders && orders.length > 0) {
-              const order = orders[0];
-              const fStatus = order.fulfillment_status || "Unfulfilled";
-              let trackingInfo = "No tracking information available yet. The order is currently processing.";
-              if (order.fulfillments && order.fulfillments.length > 0) {
-                const f = order.fulfillments[0];
-                trackingInfo = `Shipped via ${f.tracking_company || "carrier"}. Tracking Number: ${f.tracking_number || "N/A"}. Tracking Link: ${f.tracking_url || "N/A"}`;
-              }
-              trackingContext = `\n\n## CUSTOMER ORDER LOOKUP DETAILS:
-Order Status for ${orderName}:
-- Fulfillment Status: ${fStatus}
-- Financial Status: ${order.financial_status || "Paid"}
-- Shipping/Tracking Info: ${trackingInfo}
-- Order Date: ${order.created_at || "N/A"}
-Please tell the customer these exact details in a friendly, conversational plug tone.`;
-            } else {
-              trackingContext = `\n\n## CUSTOMER ORDER LOOKUP DETAILS:
-Order ${orderName} was not found in the shop database. Suggest they verify the order number.`;
-            }
-          }
-        } catch (e) {
-          console.error("Order lookup failed:", e);
-        }
+      let reqBody;
+      try {
+        reqBody = await request.json();
+      } catch (e) {
+        return new Response(JSON.stringify({ error: "Invalid JSON" }), { status: 400, headers: CORS_HEADERS });
       }
 
-      // Fetch live catalog (cached 5 min via Cloudflare CDN)
-      const catalogResult = await getLiveCatalog(env);
-      let systemPrompt = buildSystemPrompt(catalogResult ? catalogResult.products : null);
-      if (trackingContext) {
-        systemPrompt += trackingContext;
+      const { message, history = [] } = reqBody;
+      if (!message) {
+        return new Response(JSON.stringify({ error: "Missing 'message' field" }), { status: 400, headers: CORS_HEADERS });
       }
 
-      // Build conversation — Gemini requires strict user/model alternation
-      const raw = [
-        ...history.map(m => ({
-          role: m.role === "assistant" ? "model" : "user",
-          parts: [{ text: m.content }]
-        })),
-        { role: "user", parts: [{ text: message }] }
-      ];
+      const catalogResult = await getLiveCatalog();
+      const systemPrompt = buildSystemPrompt(catalogResult.products || "");
 
-      // Filter to enforce alternation starting with user
       const contents = [];
-      let expect = "user";
-      for (const item of raw) {
-        if (item.role === expect) {
-          contents.push(item);
-          expect = expect === "user" ? "model" : "user";
-        }
-      }
-      if (!contents.length || contents[contents.length - 1].role !== "user") {
-        contents.push({ role: "user", parts: [{ text: message }] });
-      }
+      contents.push({ role: "user", parts: [{ text: systemPrompt }] });
+      contents.push({ role: "model", parts: [{ text: "Understood. I am JJKICKSZZ AI, ready to curate." }] });
 
-      const geminiRes = await fetch(
-        `${getGeminiUrl(env)}?key=${geminiKey}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            systemInstruction: { parts: [{ text: systemPrompt }] },
-            contents,
-            generationConfig: {
-              temperature: 0.7,
-              maxOutputTokens: 600,
-              
+      const recentHistory = history.slice(-6);
+      for (const turn of recentHistory) {
+        contents.push({
+          role: turn.role === "user" ? "user" : "model",
+          parts: [{ text: turn.text || turn.content || "" }]
+        });
+      }
+      contents.push({ role: "user", parts: [{ text: message }] });
+
+      // List of candidate models to try in sequence
+      const modelsToTry = env.GEMINI_MODEL 
+        ? [env.GEMINI_MODEL.trim(), ...CANDIDATE_MODELS]
+        : CANDIDATE_MODELS;
+
+      let lastError = null;
+
+      for (const modelName of modelsToTry) {
+        try {
+          const geminiRes = await fetch(`${GEMINI_API_BASE}/${modelName}:generateContent?key=${geminiKey}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents,
+              generationConfig: { temperature: 0.7, maxOutputTokens: 600 }
+            })
+          });
+
+          const geminiData = await geminiRes.json();
+
+          if (geminiData.error) {
+            lastError = geminiData.error.message;
+            // If model not found or deprecated, try next model in candidate list
+            if (geminiData.error.code === 404 || geminiData.error.message.includes("not found") || geminiData.error.message.includes("no longer available")) {
+              continue;
             }
-          })
+            return new Response(JSON.stringify({ error: `Gemini Error: ${geminiData.error.message}` }), {
+              status: 502, headers: { "Content-Type": "application/json", ...CORS_HEADERS }
+            });
+          }
+
+          const reply = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || "Let me know what pieces you're looking for!";
+          return new Response(JSON.stringify({ reply }), {
+            headers: { "Content-Type": "application/json", ...CORS_HEADERS }
+          });
+        } catch (err) {
+          lastError = err.message;
         }
-      );
-
-      const data = await geminiRes.json();
-
-      let reply = "Yo! Ran into an issue — hit me again.";
-      if (data.candidates?.[0]?.content?.parts) {
-        const parts = data.candidates[0].content.parts;
-        reply = parts.filter(p => !p.thought && p.text).map(p => p.text).join("").trim()
-          || parts.map(p => p.text || "").join("").trim();
-      } else if (data.error) {
-        reply = `Gemini Error: ${data.error.message} (${data.error.status})`;
       }
 
-      return new Response(JSON.stringify({ response: reply }), {
-        headers: { "Content-Type": "application/json", ...CORS_HEADERS }
-      });
-
-    } catch (err) {
-      return new Response(JSON.stringify({ error: err.message }), {
+      return new Response(JSON.stringify({ error: `Gemini Error: ${lastError || "Could not generate content"}` }), {
         status: 500, headers: { "Content-Type": "application/json", ...CORS_HEADERS }
       });
     }
+
+    return new Response("Method not allowed", { status: 405, headers: CORS_HEADERS });
   }
 };
