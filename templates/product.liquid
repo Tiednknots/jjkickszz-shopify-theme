@@ -445,15 +445,14 @@
 
   /* Compact variant selection pills layout */
   .button-group.w-commerce-commerceaddtocartoptionpillgroup {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    gap: 8px !important;
-    margin: 10px 0 18px 0 !important;
-    max-height: 220px !important;
-    overflow-y: auto !important;
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(65px, 1fr)) !important;
+    gap: 6px !important;
+    margin: 8px 0 16px 0 !important;
+    max-height: 180px !important; /* Limit vertical height of huge variant lists */
+    overflow-y: auto !important; /* Scroll vertically if there are too many sizes! */
     padding-right: 4px !important;
     scrollbar-width: thin !important;
-    width: 100% !important;
   }
   
   .button-group.w-commerce-commerceaddtocartoptionpillgroup::-webkit-scrollbar {
@@ -465,21 +464,17 @@
   }
 
   .button-2.w-commerce-commerceaddtocartoptionpill {
-    padding: 8px 16px !important; /* Generous left & right padding */
+    padding: 6px 8px !important;
     background-color: #161616 !important;
     border: 1px solid #2e2e2e !important;
     border-radius: 6px !important;
-    display: inline-flex !important;
+    display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    min-height: 38px !important;
-    min-width: 52px !important;
-    width: auto !important; /* Auto width based on text length */
-    white-space: nowrap !important; /* Prevent text squishing */
+    min-height: 36px !important;
     cursor: pointer !important;
-    margin: 0 !important;
+    margin: 0 !important; /* Clear default margins */
     transition: all 0.2s ease !important;
-    box-sizing: border-box !important;
   }
   
   .button-2.w-commerce-commerceaddtocartoptionpill:hover {
@@ -648,7 +643,7 @@
 
     /* Padded wrapper for the gallery card */
     .more-image-container {
-      margin-top: 5rem !important;
+      margin-top: 0 !important;
       padding: 0 1rem !important;    /* exactly 1rem left/right padding */
       box-sizing: border-box !important;
       margin-bottom: 0 !important;
