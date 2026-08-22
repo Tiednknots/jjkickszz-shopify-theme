@@ -1,7 +1,7 @@
 /**
  * JJKICKSZZ AI — Cloudflare Worker
  * Model: gemini-3.6-flash (with automatic fallback to gemini-2.0-flash / gemini-1.5-flash)
- * Catalog: Live Shopify Storefront Feed (Zero-Auth / 100% Reliable)
+ * Catalog: Live Shopify Storefront Feed + Real-Time Product Context
  */
 
 const SHOPIFY_DOMAIN = "jjkickszz.com";
@@ -79,10 +79,24 @@ async function getLiveCatalog() {
   }
 }
 
-function buildSystemPrompt(catalogString) {
+function buildSystemPrompt(catalogString, productContext) {
+  let contextExtra = "";
+  if (productContext) {
+    const sizes = Array.isArray(productContext.available_sizes) 
+      ? productContext.available_sizes.join(", ") 
+      : (productContext.available_sizes || "Available now");
+    contextExtra = `\n\n⚡ CUSTOMER IS INQUIRING ABOUT THIS SPECIFIC PRODUCT:
+- Product Title: ${productContext.title}
+- Price: ${productContext.price}
+- Brand / Designer: ${productContext.vendor || "JJKICKSZZ Archive"}
+- Exact Available Sizes / Variants: ${sizes}
+- Product Link: ${productContext.url || ""}
+INSTRUCTION: Answer the customer's question directly with 100% accuracy about this item (its available sizes, price, condition, verification, or fit). Speak as the knowledgeable JJKICKSZZ concierge.`;
+  }
+
   return `You are the exclusive AI Stylist and Brand Concierge for JJKICKSZZ (jjkickszz.com) — a premier streetwear and rare sneaker archive.
 Your name is JJKICKSZZ AI. Speak in a confident, knowledgeable, culturally fluent tone (high-end streetwear, grail hunter, archive fashion).
-Keep replies concise, punchy, and helpful. Do not write walls of text.
+Keep replies concise, punchy, and helpful.
 
 STORE POLICIES:
 - 100% Authenticity Guaranteed: Hand-inspected and verified before dispatch.
@@ -90,12 +104,7 @@ STORE POLICIES:
 - Returns: All sales are final unless an item is proven inauthentic (full refund guarantee).
 
 CURRENT LIVE INVENTORY:
-${catalogString || "Catalog temporarily unavailable."}
-
-RULES FOR PRODUCT RECOMMENDATIONS:
-1. ONLY recommend products that appear in the CURRENT LIVE INVENTORY list above.
-2. When mentioning a product, write its exact title and price.
-3. Link format: [Product Name](https://jjkickszz.com/products/HANDLE)`;
+${catalogString || "Live catalog loaded."}${contextExtra}`;
 }
 
 export default {
@@ -145,17 +154,17 @@ export default {
         return new Response(JSON.stringify({ error: "Invalid JSON" }), { status: 400, headers: CORS_HEADERS });
       }
 
-      const { message, history = [] } = reqBody;
+      const { message, history = [], productContext = null } = reqBody;
       if (!message) {
         return new Response(JSON.stringify({ error: "Missing 'message' field" }), { status: 400, headers: CORS_HEADERS });
       }
 
       const catalogResult = await getLiveCatalog();
-      const systemPrompt = buildSystemPrompt(catalogResult.products || "");
+      const systemPrompt = buildSystemPrompt(catalogResult.products || "", productContext);
 
       const contents = [];
       contents.push({ role: "user", parts: [{ text: systemPrompt }] });
-      contents.push({ role: "model", parts: [{ text: "Understood. I am JJKICKSZZ AI, ready to curate." }] });
+      contents.push({ role: "model", parts: [{ text: "Understood. I am JJKICKSZZ AI, ready to assist." }] });
 
       const recentHistory = history.slice(-6);
       for (const turn of recentHistory) {
@@ -166,7 +175,6 @@ export default {
       }
       contents.push({ role: "user", parts: [{ text: message }] });
 
-      // List of candidate models to try in sequence
       const modelsToTry = env.GEMINI_MODEL 
         ? [env.GEMINI_MODEL.trim(), ...CANDIDATE_MODELS]
         : CANDIDATE_MODELS;
@@ -188,7 +196,6 @@ export default {
 
           if (geminiData.error) {
             lastError = geminiData.error.message;
-            // If model not found or deprecated, try next model in candidate list
             if (geminiData.error.code === 404 || geminiData.error.message.includes("not found") || geminiData.error.message.includes("no longer available")) {
               continue;
             }

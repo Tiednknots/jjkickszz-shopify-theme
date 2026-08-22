@@ -10,7 +10,7 @@
       grid-template-columns: 1fr 1fr !important;
       gap: 3.5rem !important;
       align-items: start !important;
-      padding: 2rem 3rem 4rem !important;
+      padding: 3.5rem 3rem 4rem !important;
       box-sizing: border-box !important;
       max-width: 100% !important;
       min-height: 0 !important;
@@ -45,7 +45,7 @@
       overflow-y: visible !important;
       width: 90% !important;
       margin: 0 auto !important;
-      padding-top: 3.5rem !important;
+      padding-top: 5.5rem !important;
       padding-left: 2rem !important;
       border-left: 1px solid #252525 !important;
       scrollbar-width: none !important;
@@ -1596,7 +1596,15 @@
             
             if (window.jjAIChat && typeof window.jjAIChat.sendMessage === 'function') {
               var fullQuery = "I have a question about " + {{ product.title | json }} + " (" + reason + "): \"" + message + "\"";
-              window.jjAIChat.sendMessage(fullQuery);
+              var prodContext = {
+                title: {{ product.title | json }},
+                price: {{ product.price | money | json }},
+                vendor: {{ product.vendor | json }},
+                available_sizes: [{% for v in product.variants %}{% if v.available %}{{ v.title | json }}{% unless forloop.last %},{% endunless %}{% endif %}{% endfor %}],
+                url: window.location.href
+              };
+              window.jjCurrentProductContext = prodContext;
+              window.jjAIChat.sendMessage(fullQuery, prodContext);
               
               setTimeout(function() {
                 var disclaimerMsg = "Customer service will also review your question and respond to your email (" + email + ") within 24 hours if needed.";
