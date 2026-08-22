@@ -292,7 +292,7 @@ export default {
           ? `❌ Catalog fetch failed: ${result.error}`
           : `✅ ${result.count} products loaded:\n\n${result.products}`;
         return new Response(body, {
-          headers: { "Content-Type": "text/plain", ...CORS_HEADERS }
+          headers: { "Content-Type": "text/plain; charset=utf-8", ...CORS_HEADERS }
         });
       }
 
@@ -309,7 +309,7 @@ export default {
           .join("\n");
         return new Response(
           `✅ Models that support generateContent for your API key:\n\n${names || "None found — check your API key validity"}`,
-          { headers: { "Content-Type": "text/plain", ...CORS_HEADERS } }
+          { headers: { "Content-Type": "text/plain; charset=utf-8", ...CORS_HEADERS } }
         );
       }
 
@@ -333,7 +333,7 @@ export default {
         geminiKey
           ? `✅ JJKICKSZZ AI online.\nActive model: ${activeModel}\n\nDebug routes:\n  ?action=catalog  — inspect live product inventory\n  ?action=models   — list available Gemini models for your key\n  ?test=hello      — raw model test`
           : "⚠️ GEMINI_API_KEY not set in Cloudflare environment variables.",
-        { headers: { "Content-Type": "text/plain", ...CORS_HEADERS } }
+        { headers: { "Content-Type": "text/plain; charset=utf-8", ...CORS_HEADERS } }
       );
     }
 
@@ -388,7 +388,7 @@ export default {
         const tokenData = await tokenRes.json();
         if (tokenData.access_token) {
           return new Response(`🎉 SUCCESS! Your Admin Access Token has been generated.\n\nCopy this token and save it as your SHOPIFY_TOKEN secret in GitHub:\n\n${tokenData.access_token}\n`, {
-            headers: { "Content-Type": "text/plain" }
+            headers: { "Content-Type": "text/plain; charset=utf-8" }
           });
         }
         return new Response(`Failed to generate token: ${JSON.stringify(tokenData)}`, { status: 500 });
