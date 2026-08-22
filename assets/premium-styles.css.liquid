@@ -1997,12 +1997,10 @@ body.template-page-shop .filter-contents .jj-filter-wrap,
 }
 
 /* ── 4. RESPONSIVE COLLECTION LIST TOP PADDING (8rem / 12rem / 10rem) ──── */
-.collection-list-2.shop.w-dyn-items,
-.collection-list-2.shop,
-.collection-list-2.w-dyn-items,
-.brand-view .collection-list-2,
-body.template-collection .collection-list-2,
-body.template-page-shop .collection-list-2 {
+body.template-collection .collection-list-2.shop,
+body.template-page-shop .collection-list-2.shop,
+.template-collection .collection-list-2.shop,
+.template-page-shop .collection-list-2.shop {
   padding-top: 8rem !important; /* Larger devices */
   box-sizing: border-box !important;
 }
@@ -2106,4 +2104,31 @@ div.div-block-631 {
   height: 0 !important;
   margin: 0 !important;
   padding: 0 !important;
+}
+
+/* ── HOMEPAGE SECTIONS CLEAN SPACING ──────────────────────────────────── */
+body.template-index .home-section,
+.template-index .home-section {
+  padding-top: 2rem !important;
+  padding-bottom: 2rem !important;
+}
+
+body.template-index .home-section .heading,
+body.template-index .brand-view .heading,
+.template-index .home-section .heading {
+  margin-top: 0 !important;
+  margin-bottom: 1.5rem !important;
+  padding-top: 0 !important;
+}
+
+body.template-index .brand-view,
+.template-index .brand-view {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+body.template-index .collection-list-2.contents-of-scroll,
+.template-index .collection-list-2.contents-of-scroll {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
 }
