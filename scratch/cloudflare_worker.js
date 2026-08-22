@@ -64,34 +64,54 @@ function getCategory(title) {
   return "Apparel";
 }
 
-// Fetch all available products from Shopify public REST API
+// Fetch all available products from Shopify (with automatic fallback to public endpoint)
 async function getLiveCatalog(env) {
   try {
     const shopifyToken = env ? (env.SHOPIFY_ADMIN_TOKEN || env.SHOPIFY_TOKEN) : null;
-    let url = `https://${SHOPIFY_DOMAIN}/collections/all/products.json?limit=250`;
-    let headers = {
-      "Accept": "application/json",
-      "User-Agent": "JJKICKSZZ-AI-Bot/1.0"
-    };
+    let products = [];
 
+    // Try Admin API if token provided
     if (shopifyToken) {
-      url = `https://${SHOPIFY_DOMAIN}/admin/api/2024-01/products.json?limit=250`;
-      headers["X-Shopify-Access-Token"] = shopifyToken;
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4000);
+        const adminRes = await fetch(`https://${SHOPIFY_DOMAIN}/admin/api/2024-01/products.json?limit=250`, {
+          headers: {
+            "Accept": "application/json",
+            "X-Shopify-Access-Token": shopifyToken,
+            "User-Agent": "JJKICKSZZ-AI-Bot/1.0"
+          },
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        if (adminRes.ok) {
+          const adminJson = await adminRes.json();
+          products = adminJson.products || [];
+        }
+      } catch (e) {
+        console.warn("Admin catalog fetch error, falling back to public endpoint:", e);
+      }
     }
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 6000);
+    // Fall back to Public Storefront REST API if Admin was not used or failed
+    if (!products.length) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 6000);
+      const publicRes = await fetch(`https://${SHOPIFY_DOMAIN}/products.json?limit=250`, {
+        headers: {
+          "Accept": "application/json",
+          "User-Agent": "JJKICKSZZ-AI-Bot/1.0"
+        },
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      if (!publicRes.ok) return { error: `HTTP ${publicRes.status} from Shopify`, products: null };
+      const publicJson = await publicRes.json();
+      products = publicJson.products || [];
+    }
 
-    const res = await fetch(url, {
-      headers,
-      signal: controller.signal
-    });
-    clearTimeout(timeoutId);
+    if (!products.length) return { error: "No products returned from Shopify", products: null };
 
-    if (!res.ok) return { error: `HTTP ${res.status} from Shopify`, products: null };
-    const json = await res.json();
-    const products = json.products || [];
-    if (!products.length) return { error: "No products returned", products: null };
 
     // Filter to only available products with at least one image
     const validProducts = products.filter(p => 

@@ -453,6 +453,7 @@
   /* Force hide the native Webflow error state */
   .w-commerce-commerceaddtocarterrorstate { display: none !important; }
 
+
   /* ── PRODUCT PAGE 2-COLUMN GRID — DESKTOP ─────────────────────── */
   @media screen and (min-width: 992px) {
     .div-block-629 {
@@ -463,6 +464,9 @@
       padding: 2rem 3rem 4rem !important;
       box-sizing: border-box !important;
       max-width: 100% !important;
+      min-height: 0 !important;
+      height: auto !important;
+      max-height: none !important;
     }
 
     /* LEFT: Sticky gallery column — sticks until right column scrolls past */
@@ -471,23 +475,31 @@
       top: 124px !important; /* 80px navbar + 40px marquee + 4px buffer */
       align-self: flex-start !important;
       width: 90% !important;
+      max-width: 100% !important;
       margin: 0 auto !important;
       overflow: visible !important;
       max-height: none !important;
+      height: auto !important;
+      box-sizing: border-box !important;
     }
 
-    /* RIGHT: Normal scroll — no sticky */
+    /* RIGHT: Normal scroll — no sticky, NO internal scrollbar */
     .product-container {
       position: relative !important;
       top: auto !important;
       max-height: none !important;
+      height: auto !important;
       overflow: visible !important;
+      overflow-y: visible !important;
       width: 90% !important;
       margin: 0 auto !important;
       padding-top: 1rem !important;
       padding-left: 2rem !important;
       border-left: 1px solid #252525 !important;
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
     }
+    .product-container::-webkit-scrollbar { display: none !important; }
 
     /* Desktop gallery: HIDE mobile swipe, SHOW desktop layout */
     .jj-gallery-mobile { display: none !important; }
@@ -495,10 +507,13 @@
 
     /* ── DESKTOP: Thumbnail strip left of focal image ── */
     .jj-gallery-desktop {
+      display: flex !important;
       flex-direction: row !important;
       align-items: flex-start !important;
-      gap: 12px !important;
+      gap: 16px !important;
       width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
     }
 
     /* Single-image: no strip needed */
@@ -514,10 +529,12 @@
       gap: 8px !important;
       width: 72px !important;
       min-width: 72px !important;
+      max-width: 72px !important;
       flex-shrink: 0 !important;
-      max-height: calc(100vh - 148px) !important;
+      max-height: calc(100vh - 160px) !important;
       overflow-y: auto !important;
       scrollbar-width: none !important;
+      box-sizing: border-box !important;
     }
     .jj-thumb-strip::-webkit-scrollbar { display: none !important; }
 
@@ -540,19 +557,33 @@
       border-color: #ffffff !important;
     }
 
-    /* Focal image: fills remaining column width */
+    /* Focal image: contained cleanly in column */
     .jj-focal-wrap {
       flex: 1 !important;
       min-width: 0 !important;
+      max-width: calc(100% - 88px) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background: #090909 !important;
+      border: 1px solid #1c1c1c !important;
+      border-radius: 12px !important;
+      overflow: hidden !important;
+      box-sizing: border-box !important;
+    }
+    .jj-gallery-single .jj-focal-wrap {
+      max-width: 100% !important;
     }
     .jj-focal-image {
       width: 100% !important;
+      max-width: 100% !important;
+      max-height: calc(100vh - 160px) !important;
       aspect-ratio: 1 / 1 !important;
-      object-fit: cover !important;
+      object-fit: contain !important;
       border-radius: 12px !important;
       cursor: zoom-in !important;
       display: block !important;
-      background: #0d0d0d !important;
+      background: transparent !important;
     }
   }
 
@@ -619,6 +650,7 @@
       position: static !important;
       max-height: none !important;
       overflow: visible !important;
+      overflow-y: visible !important;
       width: 100% !important;
       margin: 0 !important;
       padding: 0 1.25rem 2rem !important;
@@ -737,6 +769,184 @@
     transition: color 0.2s ease;
   }
   .jj-ask-question-btn:hover { color: rgba(255,255,255,0.9); }
+
+  /* ── IOS-STYLE SLIDE-UP CONTACT DRAWER ─────────────────────────── */
+  #jj-drawer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 999998;
+  }
+  #jj-drawer-overlay.open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  #jj-contact-drawer {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 100%);
+    width: 100%;
+    max-width: 480px;
+    max-height: 90vh;
+    background: #0e0e0e;
+    border: 1px solid #222222;
+    border-bottom: none;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.8);
+    z-index: 999999;
+    overflow-y: auto;
+    scrollbar-width: none;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    box-sizing: border-box;
+    padding: 16px 24px 32px;
+  }
+  #jj-contact-drawer::-webkit-scrollbar { display: none; }
+  #jj-contact-drawer.open {
+    transform: translate(-50%, 0);
+  }
+
+  .jj-drawer-handle {
+    width: 40px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 2px;
+    margin: 0 auto 16px;
+  }
+
+  .jj-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #1a1a1a;
+  }
+  .jj-drawer-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #ffffff;
+    margin: 0;
+  }
+  .jj-drawer-close {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px 8px;
+    transition: color 0.15s ease;
+  }
+  .jj-drawer-close:hover { color: #ffffff; }
+
+  .jj-drawer-product-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px;
+    background: #141414;
+    border: 1px solid #222222;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+  .jj-drawer-product-img {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 6px;
+    background: #000;
+  }
+  .jj-drawer-product-info { flex: 1; min-width: 0; }
+  .jj-drawer-product-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: #ffffff;
+    margin: 0 0 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .jj-drawer-product-price {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0;
+  }
+
+  .jj-drawer-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .jj-drawer-field input,
+  .jj-drawer-field select,
+  .jj-drawer-field textarea {
+    width: 100%;
+    background: #141414;
+    border: 1px solid #282828;
+    border-radius: 8px;
+    padding: 12px 14px;
+    color: #ffffff;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+  .jj-drawer-field input:focus,
+  .jj-drawer-field select:focus,
+  .jj-drawer-field textarea:focus {
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+  .jj-drawer-field textarea {
+    min-height: 80px;
+    resize: vertical;
+  }
+
+  .jj-drawer-submit {
+    width: 100%;
+    background: #ffffff;
+    color: #000000;
+    border: none;
+    border-radius: 8px;
+    padding: 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  .jj-drawer-submit:hover { background: #e0e0e0; }
+
+  .jj-drawer-success {
+    display: none;
+    margin-top: 12px;
+    color: #22c55e;
+    font-size: 12px;
+    text-align: center;
+    font-weight: 600;
+  }
+  .jj-drawer-error {
+    display: none;
+    margin-top: 12px;
+    color: #ef4444;
+    font-size: 12px;
+    text-align: center;
+  }
 
   /* ── LIGHTBOX ──────────────────────────────────────────────────── */
   #jj-lightbox {
@@ -866,6 +1076,7 @@
     padding: 0 0 12px 0 !important; overflow: hidden !important;
   }
 </style>
+
   <script>
   // --- 1. SCROLLBAR ENGINE ---
   function initCustomScroll() {
@@ -1259,13 +1470,31 @@
     var drawerClose = document.getElementById('jj-drawer-close');
     var drawerForm = document.getElementById('jj-drawer-form');
 
-    if (askBtn && drawer && drawerOverlay) {
+    function openContactDrawer() {
+      var dOverlay = document.getElementById('jj-drawer-overlay');
+      var dDrawer = document.getElementById('jj-contact-drawer');
+      if (dOverlay && dDrawer) {
+        dOverlay.classList.add('open');
+        dDrawer.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    document.addEventListener('click', function(e) {
+      var btn = e.target.closest('#jj-ask-btn, .jj-ask-question-btn');
+      if (btn) {
+        e.preventDefault();
+        openContactDrawer();
+      }
+    });
+
+    if (askBtn) {
       askBtn.addEventListener('click', function(e) {
         e.preventDefault();
-        drawerOverlay.classList.add('open');
-        drawer.classList.add('open');
-        document.body.style.overflow = 'hidden';
+        openContactDrawer();
       });
+    }
+
 
       function closeDrawer() {
         drawerOverlay.classList.remove('open');

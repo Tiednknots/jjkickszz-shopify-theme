@@ -1761,201 +1761,11 @@ iframe[src*="userway"] {
 
 
 
-/* ── PRODUCT GALLERY: VERTICAL STACK (DESKTOP) & HORIZONTAL SWIPE (MOBILE) ── */
-@media screen and (min-width: 992px) {
-  div.div-block-629 {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: stretch !important;
-    justify-content: space-between !important;
-    width: 100% !important;
-    min-height: 90vh !important;
-    height: 90vh !important;
-    max-height: 90vh !important;
-    box-sizing: border-box !important;
-  }
-
-  div.div-block-629 .thumbnail-section {
-    width: 50% !important;
-    max-width: 50% !important;
-    flex: 0 0 50% !important;
-    height: 100% !important;
-    position: relative !important;
-    box-sizing: border-box !important;
-  }
-
-  div.div-block-629 .product-container {
-    width: 50% !important;
-    max-width: 50% !important;
-    flex: 0 0 50% !important;
-    height: 100% !important;
-    overflow-y: auto !important;
-    box-sizing: border-box !important;
-    border-left: 1px solid #252525 !important;
-    padding-left: 3rem !important;
-    padding-right: 2rem !important;
-  }
-
-  /* Desktop Left Column Gallery: Vertically stacked full images */
-  div.more-image-container,
-  div.more-image-wrapper {
-    display: flex !important;
-    flex-direction: column !important; /* Vertically stacked images */
-    gap: 20px !important;
-    width: 100% !important;
-    height: 100% !important;
-    max-height: 85vh !important;
-    overflow-y: auto !important; /* Vertically scrollable */
-    scrollbar-width: none !important;
-    box-sizing: border-box !important;
-    border-radius: 12px !important;
-  }
-
-  div.more-image-wrapper::-webkit-scrollbar {
-    display: none !important;
-  }
-
-  .gallery-image-item,
-  div.more-image-wrapper .gallery-image-item {
-    width: 100% !important;
-    flex-shrink: 0 !important;
-    border-radius: 12px !important;
-    overflow: hidden !important;
-  }
-
-  .gallery-image-img,
-  div.more-image-wrapper img {
-    width: 100% !important;
-    height: auto !important;
-    max-height: 80vh !important;
-    object-fit: cover !important;
-    border-radius: 12px !important;
-    display: block !important;
-    transition: transform 0.15s ease-out !important;
-    cursor: zoom-in !important;
-  }
-}
-
-@media screen and (max-width: 991px) {
-  .thumbnail-section,
-  div.thumbnail-section {
-    margin-top: 2rem !important;
-    width: 100% !important;
-  }
-
-  /* Mobile Left Column Gallery: Horizontally swipable full images */
-  div.more-image-container,
-  div.more-image-wrapper {
-    display: flex !important;
-    flex-direction: row !important; /* Horizontally swipable row */
-    gap: 12px !important;
-    width: 100% !important;
-    overflow-x: auto !important; /* Horizontally scrollable */
-    overflow-y: hidden !important;
-    scroll-snap-type: x mandatory !important;
-    -webkit-overflow-scrolling: touch !important;
-    scrollbar-width: none !important;
-    box-sizing: border-box !important;
-  }
-
-  div.more-image-wrapper::-webkit-scrollbar {
-    display: none !important;
-  }
-
-  .gallery-image-item,
-  div.more-image-wrapper .gallery-image-item {
-    min-width: calc(100vw - 2rem) !important;
-    width: calc(100vw - 2rem) !important;
-    max-width: calc(100vw - 2rem) !important;
-    flex-shrink: 0 !important;
-    scroll-snap-align: center !important;
-    border-radius: 12px !important;
-    overflow: hidden !important;
-  }
-
-  .gallery-image-img,
-  div.more-image-wrapper img {
-    width: 100% !important;
-    height: auto !important;
-    aspect-ratio: 1 / 1 !important;
-    object-fit: cover !important;
-    border-radius: 12px !important;
-    display: block !important;
-  }
-
-  .jj-swipe-dots {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    gap: 8px !important;
-    margin: 12px 0 16px 0 !important;
-  }
-  .jj-swipe-dot {
-    width: 8px !important;
-    height: 8px !important;
-    border-radius: 50% !important;
-    background: rgba(255, 255, 255, 0.3) !important;
-    transition: all 0.2s ease !important;
-    cursor: pointer !important;
-  }
-  .jj-swipe-dot.active {
-    background: #ffffff !important;
-    width: 20px !important;
-    border-radius: 10px !important;
-  }
-}
-
-/* ── REMOVE EMPTY TOP GAP IN PRODUCT SECTION ── */
-.div-block-631,
-div.div-block-631 {
-  display: none !important;
-  height: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-div.div-block-629 {
-  padding-top: 0 !important;
-  margin-top: 0 !important;
-}
-
 /* ── HIDE UNPOSTED FOOTER NEWSLETTER ERRORS ── */
 .footer-subscribe .w-form-fail:not(.form-has-errors),
 .w-form-fail:not(.form-has-errors) {
   display: none !important;
 }
-
-/* ── FLUSH DESKTOP PRODUCT SECTION BELOW STICKY MARQUEE ── */
-@media screen and (min-width: 992px) {
-  .white-section.menu,
-  .section-3,
-  .barba-wrapper,
-  .page-content,
-  .product-template-container {
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-  }
-
-  div.div-block-629 {
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-    border-top: none !important;
-  }
-
-  div.div-block-629 .thumbnail-section,
-  div.div-block-629 .product-container {
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-  }
-}
-
-
-
-
-
-
 
 /* ==========================================================================
    FIXED HEADERS (MENU, MARQUEE, SHOP FILTER) & FLUSH CONTENT OFFSETS
@@ -1978,7 +1788,6 @@ div.div-block-629 {
 }
 
 /* ── 2a. MARQUEE — PRODUCT & SHOP PAGES (FIXED AT TOP=80px) ───────────── */
-/* On product/shop pages the marquee is rendered inside the template and stays fixed */
 body.template-product .white-section.menu,
 body.template-collection .white-section.menu,
 body.template-page-shop .white-section.menu {
@@ -1996,9 +1805,6 @@ body.template-page-shop .white-section.menu {
 }
 
 /* ── 2b. MARQUEE — HOMEPAGE (STICKY, SCROLLS WITH PAGE THEN LOCKS) ─────── */
-/* On homepage the marquee lives inside content_for_index (Shopify CMS section).
-   It starts in normal document flow below the hero and sticks under the navbar
-   once the user scrolls to it. */
 body.template-index .white-section.menu,
 body.template-index .white-section {
   position: -webkit-sticky !important;
@@ -2010,7 +1816,6 @@ body.template-index .white-section {
   margin: 0 !important;
   padding: 0 !important;
   box-sizing: border-box !important;
-  /* Do NOT force fixed height — let content determine height naturally */
 }
 
 /* Mobile navbar height adjustment */
@@ -2032,7 +1837,6 @@ body.template-index .white-section {
 }
 
 /* ── 3. FIXED SHOP FILTER BAR (TOP=120px, SHOP PAGES ONLY) ────────────── */
-/* Sits flush under the fixed marquee (80px navbar + 40px marquee = 120px) */
 body.template-collection .filter-contents,
 body.template-collection .jj-filter-wrap,
 body.template-page-shop .filter-contents,
@@ -2063,11 +1867,11 @@ body.template-page-shop .jj-filter-wrap,
   .template-collection .jj-filter-wrap,
   .template-page-shop .filter-contents,
   .template-page-shop .jj-filter-wrap {
-    top: 110px !important; /* 70px navbar + 40px marquee */
+    top: 110px !important;
   }
 }
 
-/* ── 4. CONTENT OFFSETS ─────────────────────────────────────────────────── */
+/* ── 4. CONTENT OFFSETS & BREATHING ROOM PADDING ───────────────────────── */
 
 /* Product Page: 120px offset (80px navbar + 40px marquee) */
 body.template-product .barba-wrapper,
@@ -2089,7 +1893,7 @@ body.template-product div.div-block-629,
   border-top: none !important;
 }
 
-/* Shop Page: 166px offset (80px navbar + 40px marquee + 46px filter) */
+/* Shop Page: 166px offset + top padding so items are clearly visible below filter */
 body.template-collection .barba-wrapper,
 body.template-collection .page-content,
 body.template-page-shop .barba-wrapper,
@@ -2097,28 +1901,38 @@ body.template-page-shop .page-content,
 .template-collection .barba-wrapper,
 .template-collection .page-content,
 .template-page-shop .barba-wrapper,
-.template-page-shop .page-content,
-.template-collection .collection-list-wrapper,
-.template-page-shop .collection-list-wrapper {
+.template-page-shop .page-content {
   margin-top: 166px !important;
-  padding-top: 0 !important;
+  padding-top: 2rem !important;
   position: relative !important;
 }
 
+body.template-collection .section-hold,
+body.template-collection .section-5.mobile.shop,
+body.template-collection .brand-view,
+body.template-collection .div-block-8,
+body.template-page-shop .section-hold,
+body.template-page-shop .section-5.mobile.shop,
+body.template-page-shop .brand-view,
+body.template-page-shop .div-block-8 {
+  padding-top: 1.5rem !important;
+  box-sizing: border-box !important;
+}
+
 @media (max-width: 767px) {
-  /* Mobile shop: 110px navbar+marquee + 46px filter = 156px */
   body.template-collection .barba-wrapper,
   body.template-collection .page-content,
   body.template-page-shop .barba-wrapper,
   body.template-page-shop .page-content {
     margin-top: 156px !important;
+    padding-top: 1.5rem !important;
   }
 }
 
 /* Homepage: no offset needed — marquee is in-flow (sticky, not fixed) */
 body.template-index .barba-wrapper,
 body.template-index .page-content {
-  margin-top: 80px !important; /* Only navbar height; marquee flows naturally below hero */
+  margin-top: 80px !important;
   padding-top: 0 !important;
 }
 
@@ -2130,4 +1944,5 @@ div.div-block-631 {
   margin: 0 !important;
   padding: 0 !important;
 }
+
 
