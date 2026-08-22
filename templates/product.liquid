@@ -1532,6 +1532,7 @@
       var dOverlay = document.getElementById('jj-drawer-overlay');
       var dDrawer = document.getElementById('jj-contact-drawer');
       if (dOverlay && dDrawer) {
+        if (window.jjAutoPopulateForms) window.jjAutoPopulateForms();
         dOverlay.classList.add('open');
         dDrawer.classList.add('open');
         document.body.style.overflow = 'hidden';
@@ -1580,6 +1581,13 @@
         if (successMsg) successMsg.style.display = 'none';
         if (errorMsg) errorMsg.style.display = 'none';
 
+        try {
+          if (name) localStorage.setItem('jj_user_name', name);
+          if (email) localStorage.setItem('jj_user_email', email);
+          var phoneEl = document.getElementById('drawer-phone');
+          if (phoneEl && phoneEl.value.trim()) localStorage.setItem('jj_user_phone', phoneEl.value.trim());
+        } catch(err) {}
+
         setTimeout(function() {
           if (submitBtn) {
             submitBtn.disabled = false;
@@ -1591,7 +1599,9 @@
           
           setTimeout(function() {
             closeContactDrawer();
-            drawerForm.reset();
+            var msgEl = document.getElementById('drawer-message');
+            if (msgEl) msgEl.value = 'Hi, I have a question about the ' + {{ product.title | json }} + ': ';
+            if (window.jjAutoPopulateForms) window.jjAutoPopulateForms();
             if (successMsg) successMsg.style.display = 'none';
             
             if (window.jjAIChat && typeof window.jjAIChat.sendMessage === 'function') {

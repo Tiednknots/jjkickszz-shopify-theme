@@ -181,5 +181,68 @@
     });
   })();
 </script>
+
+<script>
+  // ── GLOBAL USER FORM DATA PERSISTENCE (NAME, EMAIL, PHONE AUTOFILL) ──
+  (function() {
+    function getStoredUser() {
+      try {
+        return {
+          name: localStorage.getItem('jj_user_name') || '',
+          email: localStorage.getItem('jj_user_email') || '',
+          phone: localStorage.getItem('jj_user_phone') || ''
+        };
+      } catch(e) { return { name: '', email: '', phone: '' }; }
+    }
+
+    function saveUserField(key, val) {
+      try {
+        if (typeof val === 'string') {
+          localStorage.setItem(key, val.trim());
+        }
+      } catch(e) {}
+    }
+
+    function populateForms() {
+      var user = getStoredUser();
+      if (!user.name && !user.email && !user.phone) return;
+
+      var nameInputs = document.querySelectorAll('input[name="name"], #drawer-name, input[autocomplete="name"]');
+      var emailInputs = document.querySelectorAll('input[name="email"], #drawer-email, input[autocomplete="email"], input[type="email"]');
+      var phoneInputs = document.querySelectorAll('input[name="phone"], #drawer-phone, input[autocomplete="tel"], input[type="tel"]');
+
+      if (user.name) nameInputs.forEach(function(i) { if (!i.value) i.value = user.name; });
+      if (user.email) emailInputs.forEach(function(i) { if (!i.value && !i.closest('.footer-subscribe')) i.value = user.email; });
+      if (user.phone) phoneInputs.forEach(function(i) { if (!i.value) i.value = user.phone; });
+    }
+
+    window.jjAutoPopulateForms = populateForms;
+
+    document.addEventListener('input', function(e) {
+      var t = e.target;
+      if (!t || !t.tagName || t.tagName.toLowerCase() !== 'input') return;
+      var nameAttr = (t.name || '').toLowerCase();
+      var idAttr = (t.id || '').toLowerCase();
+      var autoAttr = (t.autocomplete || '').toLowerCase();
+
+      if (idAttr.includes('name') || nameAttr.includes('name') || autoAttr === 'name') {
+        saveUserField('jj_user_name', t.value);
+      } else if (idAttr.includes('email') || nameAttr.includes('email') || autoAttr === 'email' || t.type === 'email') {
+        if (!t.closest('.footer-subscribe')) {
+          saveUserField('jj_user_email', t.value);
+        }
+      } else if (idAttr.includes('phone') || nameAttr.includes('phone') || autoAttr === 'tel' || t.type === 'tel') {
+        saveUserField('jj_user_phone', t.value);
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', populateForms);
+    window.addEventListener('load', populateForms);
+    document.addEventListener('focusin', function(e) {
+      if (e.target && e.target.tagName === 'INPUT') populateForms();
+    });
+  })();
+</script>
+
 {%- render 'ai-chat-drawer' -%}
 </body></html>
