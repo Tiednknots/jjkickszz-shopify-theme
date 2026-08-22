@@ -2019,82 +2019,120 @@ body.template-page-shop .jj-filter-wrap {
   }
 }
 
+
 /* ==========================================================================
-   HOMEPAGE, PRODUCT, & SHOP CUSTOM EDITS
+   HOMEPAGE HERO MARQUEE, PRODUCT PILL PADDING & DESKTOP ALIGNMENT
    ========================================================================== */
 
-/* ── 1. HOMEPAGE MARQUEE (BELOW HERO, STICKY UNDER MENU AT TOP: 80PX) ── */
-.white-section.menu.sticky-on-scroll,
-.white-section.menu {
+/* ── 1. HOMEPAGE HERO MARQUEE (BELOW HERO, STICKY AT TOP: 80PX ON SCROLL) ── */
+body.template-index .navbar,
+.template-index .navbar {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 80px !important;
+  z-index: 99999 !important;
+  background-color: #000000 !important;
+}
+
+body.template-index .barba-wrapper,
+.template-index .barba-wrapper,
+.template-index .page-content {
+  margin-top: 80px !important; /* Offset homepage hero directly under 80px navbar */
+  padding-top: 0 !important;
+}
+
+body.template-index .white-section.menu.sticky-on-scroll,
+.template-index .white-section.menu.sticky-on-scroll {
   position: -webkit-sticky !important;
   position: sticky !important;
-  top: 80px !important;
+  top: 80px !important; /* Sticks right under navbar on scroll */
   z-index: 9990 !important;
   width: 100% !important;
   height: 40px !important;
   background-color: #000000 !important;
   border-bottom: 1px solid #222222 !important;
   margin: 0 !important;
-  padding: 0 !important;
-  box-sizing: border-box !important;
 }
 
-/* ── 2. PRODUCT PAGE EDITS ── */
+/* ── 2. PRODUCT PAGE DESKTOP ALIGNMENT & TITLE VISIBILITY ── */
 @media screen and (min-width: 992px) {
-  body.template-product div.div-block-629,
-  .template-product div.div-block-629 {
-    overflow: hidden !important;
-    padding-top: 0 !important;
-    margin-top: 0 !important;
+  body.template-product .div-block-629,
+  .template-product .div-block-629 {
+    display: grid !important;
+    grid-template-columns: 0.9fr 1.1fr !important;
+    gap: 4rem !important;
+    align-items: start !important;
+    margin-top: 120px !important;
+    padding: 2rem 4rem 4rem 4rem !important; /* 2rem top padding ensures product details top is 100% visible */
+    box-sizing: border-box !important;
+    max-width: 100% !important;
   }
 
   body.template-product .thumbnail-section,
   .template-product .thumbnail-section {
-    max-height: none !important; /* Removed max-height */
-    position: static !important;
-    padding-top: 2rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
     width: 100% !important;
+    padding-top: 0 !important;
   }
 
-  /* Consistent Main Image Sizing Across Medium & Large Screens */
   .gallery-image-img,
   #main-image {
     width: 100% !important;
-    max-width: 100% !important;
+    max-width: 520px !important;
     aspect-ratio: 1 / 1 !important;
     object-fit: cover !important;
     border-radius: 12px !important;
+    margin: 0 auto !important;
   }
-}
 
-/* ── 3. SHOP PAGE DESKTOP EDITS ── */
-@media screen and (min-width: 992px) {
-  .section-5.mobile.shop {
-    padding-top: 7rem !important;
-  }
-}
-
-/* Filter Bar Styling (Matches Hero Marquee #000000 background & #222222 border) */
-.filter-contents,
-.jj-filter-wrap {
-  background-color: #000000 !important;
-  border-bottom: 1px solid #222222 !important;
-}
-
-/* ── 4. SHOP PAGE MOBILE EDITS (NO EMPTY SPACE UNDER FILTER BAR) ── */
-@media screen and (max-width: 991px) {
-  .collection-list-2.shop.w-dyn-items,
-  .template-collection .collection-list-2.shop.w-dyn-items,
-  .template-page-shop .collection-list-2.shop.w-dyn-items {
+  body.template-product .product-container,
+  .template-product .product-container {
+    position: relative !important;
+    top: 0 !important;
     padding-top: 0 !important;
-    margin-top: 0 !important;
+    padding-bottom: 2.5rem !important;
+    padding-left: 2rem !important;
+    border-left: 1px solid #252525 !important;
+    width: 100% !important;
   }
+}
 
-  body.template-collection .page-content,
-  body.template-page-shop .page-content,
-  .template-collection .collection-list-wrapper,
-  .template-page-shop .collection-list-wrapper {
-    padding-top: 0 !important;
-    margin-top: 0 !important;
+/* ── 3. VARIANT PILL BUTTONS LEFT/RIGHT PADDING & AUTO WIDTH ── */
+.button-group.w-commerce-commerceaddtocartoptionpillgroup {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  margin: 10px 0 18px 0 !important;
+  max-height: 220px !important;
+  overflow-y: auto !important;
+  padding-right: 4px !important;
+  width: 100% !important;
+}
+
+.button-2.w-commerce-commerceaddtocartoptionpill {
+  padding: 8px 16px !important; /* Generous left and right padding */
+  background-color: #161616 !important;
+  border: 1px solid #2e2e2e !important;
+  border-radius: 6px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 38px !important;
+  min-width: 52px !important;
+  width: auto !important; /* Auto width based on text length */
+  white-space: nowrap !important;
+  cursor: pointer !important;
+  box-sizing: border-box !important;
+}
+
+/* ── 4. TABLET & MEDIUM DEVICES 5REM MARGIN ON MORE-IMAGE-CONTAINER ── */
+@media (max-width: 991px) {
+  .more-image-container {
+    margin-top: 5rem !important;
   }
 }
