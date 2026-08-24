@@ -269,23 +269,25 @@
   // overwrote the first and both sets of click listeners kept firing.)
 
   window.refreshCartDrawer = function() {
-    fetch('/cart.js', { cache: 'no-store' })
+    var rootPath = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
+    fetch(rootPath + 'cart.js', { cache: 'no-store' })
       .then(function(r) { return r.json(); })
       .then(function(cart) {
         var countEls = document.querySelectorAll('.w-commerce-commercecartopenlinkcount, .cart-quantity');
-        countEls.forEach(function(el) { el.textContent = cart.item_count; });
+        countEls.forEach(function(el) { el.textContent = cart.item_count || 0; });
 
         var flashDot = document.querySelector('.cart-flash-dot');
-        if (flashDot) flashDot.style.display = cart.item_count > 0 ? 'block' : 'none';
+        if (flashDot) flashDot.style.display = (cart.item_count > 0) ? 'block' : 'none';
 
         var totalEls = document.querySelectorAll('.w-commerce-commercecartordervalue');
+        var totalPriceStr = '$' + (((cart.total_price || 0) / 100).toFixed(2));
         totalEls.forEach(function(el) {
-          el.textContent = '$' + (cart.total_price / 100).toFixed(2);
+          el.textContent = totalPriceStr;
         });
 
         var emptyState = document.querySelector('.w-commerce-commercecartemptystate');
-        var cartForm = document.querySelector('.w-commerce-commercecartform');
-        var cartList = document.querySelector('.w-commerce-commercecartlist');
+        var cartForm = document.querySelector('.w-commerce-commercecartform, [data-node-type="commerce-cart-form"]');
+        var cartList = document.querySelector('.w-commerce-commercecartlist, [data-node-type="commerce-cart-list"]');
 
         if (!cartList || !cartForm || !emptyState) return;
 
@@ -295,20 +297,34 @@
 
           var itemsHtml = '';
           cart.items.forEach(function(item) {
-            var priceFormatted = '$' + (item.final_line_price / 100).toFixed(2);
-            var imgUrl = item.image || item.featured_image.url || '';
+            var itemLinePrice = item.final_line_price !== undefined ? item.final_line_price : (item.line_price !== undefined ? item.line_price : (item.price * item.quantity));
+            var priceFormatted = '$' + ((itemLinePrice / 100).toFixed(2));
+            
+            var imgUrl = '';
+            if (typeof item.image === 'string' && item.image) {
+              imgUrl = item.image;
+            } else if (item.featured_image) {
+              if (typeof item.featured_image === 'string') {
+                imgUrl = item.featured_image;
+              } else if (item.featured_image.url) {
+                imgUrl = item.featured_image.url;
+              }
+            }
+
+            var itemTitle = item.product_title || item.title || 'Product';
+            var variantTitle = item.variant_title || '';
 
             itemsHtml += '<div data-node-type="cart-item" class="cart-item w-commerce-commercecartitem" style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #222;">' +
-              '<img class="image-12 w-commerce-commercecartitemimage" src="' + imgUrl + '" alt="' + item.title + '" style="width:60px;height:60px;object-fit:cover;border-radius:6px;flex-shrink:0;">' +
-              '<div class="w-commerce-commercecartiteminfo" style="flex-grow:1;">' +
-                '<div class="text-block-784 w-commerce-commercecartproductname" style="font-weight:700;font-size:13px;color:#fff;">' + item.product_title + '</div>' +
-                '<div class="text-block-785" style="font-size:13px;color:#ccc;">' + priceFormatted + '</div>' +
-                (item.variant_title && item.variant_title !== 'Default Title' ? '<div style="font-size:11px;color:#888;">Size: ' + item.variant_title + '</div>' : '') +
+              (imgUrl ? '<img class="image-12 w-commerce-commercecartitemimage" src="' + imgUrl + '" alt="' + itemTitle + '" style="width:60px;height:60px;object-fit:cover;border-radius:6px;flex-shrink:0;">' : '<div style="width:60px;height:60px;background:#222;border-radius:6px;flex-shrink:0;"></div>') +
+              '<div class="w-commerce-commercecartiteminfo" style="flex-grow:1;min-width:0;">' +
+                '<div class="text-block-784 w-commerce-commercecartproductname" style="font-weight:700;font-size:13px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + itemTitle + '</div>' +
+                '<div class="text-block-785" style="font-size:13px;color:#ccc;margin-top:2px;">' + priceFormatted + '</div>' +
+                (variantTitle && variantTitle !== 'Default Title' ? '<div style="font-size:11px;color:#888;margin-top:2px;">Size: ' + variantTitle + '</div>' : '') +
                 '<a class="remove-button jj-remove-cart-item" href="#" role="button" data-key="' + item.key + '" style="margin-top:4px;display:inline-block;font-size:11px;color:#ff4444;text-decoration:underline;">' +
                   '<div class="text-block-780">Remove</div>' +
                 '</a>' +
               '</div>' +
-              '<input class="w-commerce-commercecartquantity jj-cart-qty-input" data-key="' + item.key + '" type="number" min="1" value="' + item.quantity + '" style="width:45px;background:#111;color:#fff;border:1px solid #333;text-align:center;border-radius:4px;padding:4px;">' +
+              '<input class="w-commerce-commercecartquantity jj-cart-qty-input" data-key="' + item.key + '" type="number" min="1" value="' + item.quantity + '" style="width:45px;background:#111;color:#fff;border:1px solid #333;text-align:center;border-radius:4px;padding:4px;flex-shrink:0;">' +
             '</div>';
           });
           cartList.innerHTML = itemsHtml;
@@ -317,7 +333,7 @@
             btn.addEventListener('click', function(e) {
               e.preventDefault();
               var key = btn.getAttribute('data-key');
-              fetch('/cart/change.js', {
+              fetch(rootPath + 'cart/change.js', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: key, quantity: 0 })
@@ -329,7 +345,7 @@
             input.addEventListener('change', function() {
               var key = input.getAttribute('data-key');
               var q = parseInt(input.value, 10) || 1;
-              fetch('/cart/change.js', {
+              fetch(rootPath + 'cart/change.js', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: key, quantity: q })

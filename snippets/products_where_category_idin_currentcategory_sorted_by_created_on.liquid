@@ -15,7 +15,7 @@
 
 {%- comment -%} Pass 1: Same Type and Same Vendor (Perfect Match) {%- endcomment -%}
 {%- for item in _all_sorted -%}
-  {%- if _similar_count >= 4 -%}{%- break -%}{%- endif -%}
+  {%- if _similar_count >= 8 -%}{%- break -%}{%- endif -%}
   {%- if item.id == product.id -%}{%- continue -%}{%- endif -%}
   {%- if item.type == product.type and item.vendor == product.vendor and product.type != blank -%}
     {%- assign itemIdStr = item.id | append: "" -%}
@@ -79,7 +79,7 @@
 
 {%- comment -%} Pass 2: Same Type (Good Match) {%- endcomment -%}
 {%- for item in _all_sorted -%}
-  {%- if _similar_count >= 4 -%}{%- break -%}{%- endif -%}
+  {%- if _similar_count >= 8 -%}{%- break -%}{%- endif -%}
   {%- if item.id == product.id -%}{%- continue -%}{%- endif -%}
   {%- if item.type == product.type and product.type != blank -%}
     {%- assign itemIdStr = item.id | append: "" -%}
@@ -142,7 +142,7 @@
 
 {%- comment -%} Pass 3: Same Vendor (Vendor Match) {%- endcomment -%}
 {%- for item in _all_sorted -%}
-  {%- if _similar_count >= 4 -%}{%- break -%}{%- endif -%}
+  {%- if _similar_count >= 8 -%}{%- break -%}{%- endif -%}
   {%- if item.id == product.id -%}{%- continue -%}{%- endif -%}
   {%- if item.vendor == product.vendor -%}
     {%- assign itemIdStr = item.id | append: "" -%}
@@ -205,7 +205,7 @@
 
 {%- comment -%} Pass 4: Shared Collection {%- endcomment -%}
 {%- for item in _all_sorted -%}
-  {%- if _similar_count >= 4 -%}{%- break -%}{%- endif -%}
+  {%- if _similar_count >= 8 -%}{%- break -%}{%- endif -%}
   {%- if item.id == product.id -%}{%- continue -%}{%- endif -%}
   {%- assign itemIdStr = item.id | append: "" -%}
   {%- unless matched_ids contains itemIdStr -%}
@@ -275,7 +275,7 @@
 {%- comment -%} Pass 5: Fallback (Rotated Products from Store Catalog) {%- endcomment -%}
 {%- assign _start_offset = product.id | modulo: collections.all.products.size -%}
 {%- for item in collections.all.products offset: _start_offset -%}
-  {%- if _similar_count >= 4 -%}{%- break -%}{%- endif -%}
+  {%- if _similar_count >= 8 -%}{%- break -%}{%- endif -%}
   {%- if item.id == product.id -%}{%- continue -%}{%- endif -%}
   {%- assign itemIdStr = item.id | append: "" -%}
   {%- unless matched_ids contains itemIdStr -%}
