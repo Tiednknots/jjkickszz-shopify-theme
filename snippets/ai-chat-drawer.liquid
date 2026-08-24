@@ -470,9 +470,45 @@
 
     if (!triggerBtn || !drawerEl) return;
 
-    // ── Live Product Catalog ─────────────────────────────────────────
+    // ── Live Product Catalog with Deep Metadata ───────────────────────
     var liveCatalog = null;
     var liveProductsArray = [];
+
+    function extractProductCategory(p) {
+      var t = ((p.title || '') + ' ' + (p.product_type || '') + ' ' + (p.tags ? p.tags.join(' ') : '')).toLowerCase();
+      if (/sneaker|shoe|jordan|dunk|yeezy|kicks|runner|foam|slide|boot|trainer|clog|550|990|bape sta|air force/i.test(t)) return 'Sneakers / Footwear';
+      if (/jean|denim|pant|cargo|sweatpant|trouser|trackpant|bottom/i.test(t)) return 'Jeans / Pants';
+      if (/short|mesh short|camo short/i.test(t)) return 'Shorts';
+      if (/hoodie|sweatshirt|crewneck|fleece|pullover/i.test(t)) return 'Hoodies / Sweatshirts';
+      if (/jacket|coat|bomber|parka|windbreaker|outerwear|flannel|vest/i.test(t)) return 'Jackets / Outerwear';
+      if (/tee|t-shirt|shirt|jersey|top|longsleeve|raglan|polo/i.test(t)) return 'T-Shirts / Shirts';
+      if (/hat|cap|beanie|headwear|bucket/i.test(t)) return 'Hats / Headwear';
+      if (/bag|tote|backpack|crossbody/i.test(t)) return 'Bags / Accessories';
+      return p.product_type || 'Streetwear';
+    }
+
+    function extractProductColors(p) {
+      var colorSet = [];
+      var t = ((p.title || '') + ' ' + (p.tags ? p.tags.join(' ') : '') + ' ' + (p.body_html || '')).toLowerCase();
+      
+      if (p.options) {
+        p.options.forEach(function(opt) {
+          if (opt.name && (opt.name.toLowerCase() === 'color' || opt.name.toLowerCase() === 'colour')) {
+            opt.values.forEach(function(v) { if (v && colorSet.indexOf(v.toLowerCase().trim()) === -1) colorSet.push(v.toLowerCase().trim()); });
+          }
+        });
+      }
+      
+      var colorKeywords = ['black', 'white', 'grey', 'gray', 'red', 'blue', 'green', 'yellow', 'purple', 'pink', 'orange', 'brown', 'cream', 'tan', 'beige', 'olive', 'camo', 'chrome', 'silver', 'gold', 'navy', 'sail', 'charcoal', 'washed black', 'vintage black', 'mocha', 'unc', 'chicago', 'bred', 'royal', 'pine green'];
+      colorKeywords.forEach(function(c) {
+        var re = new RegExp('\\b' + c + '\\b', 'i');
+        if (re.test(t) && colorSet.indexOf(c) === -1) {
+          colorSet.push(c);
+        }
+      });
+      
+      return colorSet.length > 0 ? colorSet.join(', ') : 'Standard Colorway';
+    }
 
     function fetchLiveCatalog(callback) {
       if (liveCatalog !== null) { callback(liveCatalog, liveProductsArray); return; }
@@ -487,6 +523,12 @@
             return p.variants.some(function(v) { return v.available !== false; });
           });
 
+          // Enrich products in memory with categories and colors
+          liveProductsArray.forEach(function(p) {
+            p._category = extractProductCategory(p);
+            p._colors = extractProductColors(p);
+          });
+
           var lines = liveProductsArray.map(function(p) {
             var firstAvail = p.variants.find(function(v) { return v.available !== false; }) || p.variants[0];
             var price = firstAvail ? ('$' + parseFloat(firstAvail.price).toFixed(0)) : '';
@@ -494,11 +536,12 @@
             var desc = p.body_html ? p.body_html.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim().slice(0, 100) : '';
             return 'Handle: ' + p.handle +
               ' | Name: ' + p.title +
-              ' | Vendor: ' + (p.vendor || 'JJKICKSZZ') +
-              ' | Type: ' + (p.product_type || 'Apparel') +
+              ' | Brand: ' + (p.vendor || 'JJKICKSZZ') +
+              ' | Category: ' + p._category +
+              ' | Color: ' + p._colors +
               ' | Price: ' + price +
-              (sizes ? ' | Sizes: ' + sizes : '') +
-              (desc ? ' | Description: ' + desc : '');
+              (sizes ? ' | Available Sizes: ' + sizes : '') +
+              (desc ? ' | Info: ' + desc : '');
           });
           liveCatalog = lines.join('\n');
           callback(liveCatalog, liveProductsArray);
@@ -818,29 +861,77 @@
         botResponse = "Orders are processed within 1-3 business days. We offer Free Shipping on orders over $400, and local in-store pickup in NYC!";
       } else if (textLower.indexOf('pickup') !== -1 || textLower.indexOf('nyc') !== -1 || textLower.indexOf('store') !== -1) {
         botResponse = "You can select NYC In-Store Pickup directly inside the cart drawer for local pickup at checkout!";
+      } else if (textLower.indexOf('authent') !== -1 || textLower.indexOf('legit') !== -1 || textLower.indexOf('real') !== -1) {
+        botResponse = "100% Guaranteed Authentic. Every item in our archive undergoes meticulous verification (stitching, materials, hardware, tags) before dispatch.";
       } else {
-        // Smart Inventory Search Engine across live products
+        // High-Precision Knowledge Matching Engine
+        var isOutfitQuery = textLower.indexOf('outfit') !== -1 || textLower.indexOf('coordinate') !== -1 || textLower.indexOf('saturday') !== -1 || textLower.indexOf('night') !== -1 || textLower.indexOf('drip') !== -1 || textLower.indexOf('look') !== -1;
+        var requestedColors = [];
+        var colorNames = ['black', 'white', 'red', 'blue', 'green', 'yellow', 'purple', 'pink', 'orange', 'brown', 'cream', 'tan', 'beige', 'olive', 'camo', 'chrome', 'silver', 'gold', 'navy', 'sail', 'charcoal', 'mocha'];
+        colorNames.forEach(function(c) {
+          if (new RegExp('\\b' + c + '\\b', 'i').test(textLower)) requestedColors.push(c);
+        });
+
+        var isShirt = /\b(shirt|shirts|tee|tees|t-shirt|tshirt|top|tops|jersey)\b/i.test(textLower);
+        var isPants = /\b(jean|jeans|denim|pant|pants|trousers|cargos|cargo|sweatpants)\b/i.test(textLower);
+        var isShoes = /\b(shoe|shoes|sneaker|sneakers|kicks|jordan|dunk|yeezy|runners|footwear)\b/i.test(textLower);
+        var isHoodie = /\b(hoodie|hoodies|sweatshirt|sweatshirts|jacket|outerwear)\b/i.test(textLower);
+
         var matched = [];
-        var words = textLower.replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter(function(w) { return w.length > 2; });
 
         if (liveProductsArray && liveProductsArray.length > 0) {
+          if (isOutfitQuery) {
+            // Curate 1 Top + 1 Bottom + 1 Sneaker
+            var outfitTop = liveProductsArray.find(function(p) { return p._category && (p._category.includes('T-Shirt') || p._category.includes('Hoodie') || p._category.includes('Jacket')); });
+            var outfitBottom = liveProductsArray.find(function(p) { return p._category && p._category.includes('Jeans'); });
+            var outfitKicks = liveProductsArray.find(function(p) { return p._category && p._category.includes('Sneakers'); });
+
+            var outfitItems = [outfitTop, outfitBottom, outfitKicks].filter(function(i) { return !!i; });
+            if (outfitItems.length > 0) {
+              var handlesStr = outfitItems.map(function(p) { return '[Product: ' + p.handle + ']'; }).join(' ');
+              botResponse = "For an elevated Saturday night streetwear fit, rock a clean coordinated aesthetic pairing this top, denim, and kicks:\n\n" + handlesStr;
+              setTimeout(function() { processBotResponse(botResponse); }, 400);
+              return;
+            }
+          }
+
           liveProductsArray.forEach(function(p) {
             var score = 0;
-            var searchable = ((p.title || '') + ' ' + (p.vendor || '') + ' ' + (p.product_type || '') + ' ' + (p.tags ? p.tags.join(' ') : '')).toLowerCase();
-            
-            words.forEach(function(w) {
-              if (searchable.indexOf(w) !== -1) score += 2;
-            });
+            var pCat = p._category || '';
+            var pCol = p._colors || '';
+            var pTitle = (p.title || '').toLowerCase();
+            var pVendor = (p.vendor || '').toLowerCase();
 
-            // Size match
-            if (p.variants) {
-              p.variants.forEach(function(v) {
-                var vTitle = (v.title || '').toLowerCase();
-                words.forEach(function(w) {
-                  if (vTitle === w || vTitle.indexOf(w) !== -1) score += 3;
-                });
+            // Color constraint
+            if (requestedColors.length > 0) {
+              var hasReqColor = requestedColors.some(function(rc) {
+                return pCol.toLowerCase().indexOf(rc) !== -1 || pTitle.indexOf(rc) !== -1;
               });
+              if (!hasReqColor) return; // Strict rejection if requested color is not present!
+              score += 25;
             }
+
+            // Category constraint
+            if (isShirt) {
+              if (pCat.includes('T-Shirts') || /tee|shirt|top/i.test(pTitle)) score += 30;
+              else score -= 50;
+            } else if (isPants) {
+              if (pCat.includes('Jeans') || /jean|pant|denim/i.test(pTitle)) score += 30;
+              else score -= 50;
+            } else if (isShoes) {
+              if (pCat.includes('Sneakers') || /shoe|sneaker|jordan|dunk/i.test(pTitle)) score += 30;
+              else score -= 50;
+            } else if (isHoodie) {
+              if (pCat.includes('Hoodie') || pCat.includes('Jacket') || /hoodie|jacket/i.test(pTitle)) score += 30;
+              else score -= 50;
+            }
+
+            // Keyword match for brands / titles
+            var words = textLower.replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter(function(w) { return w.length > 2; });
+            words.forEach(function(w) {
+              if (pTitle.indexOf(w) !== -1) score += 10;
+              if (pVendor.indexOf(w) !== -1) score += 15;
+            });
 
             if (score > 0) {
               matched.push({ product: p, score: score });
@@ -851,25 +942,18 @@
         }
 
         var topProducts = matched.slice(0, 3).map(function(m) { return m.product; });
-        if (topProducts.length === 0 && liveProductsArray && liveProductsArray.length > 0) {
-          topProducts = liveProductsArray.slice(0, 3);
-        }
-
         if (topProducts.length > 0) {
           var handlesStr = topProducts.map(function(p) { return '[Product: ' + p.handle + ']'; }).join(' ');
-          if (textLower.indexOf('outfit') !== -1 || textLower.indexOf('coordinate') !== -1) {
-            botResponse = "Here is a curated outfit selection from our live inventory:\n\n" + handlesStr;
-          } else {
-            botResponse = "Here are the top matches curated from our current in-stock inventory:\n\n" + handlesStr;
-          }
+          var descTitle = requestedColors.length > 0 ? (requestedColors.join('/') + ' ') : '';
+          botResponse = "Here are the top " + descTitle + "selections from our live inventory:\n\n" + handlesStr;
         } else {
-          botResponse = "I couldn't find an exact match in stock right now. Try checking our Shop page or searching by brand/size!";
+          botResponse = "I couldn't find exact in-stock matches for that specific request right now. Try checking our Shop page or searching by brand!";
         }
       }
 
       setTimeout(function() {
         processBotResponse(botResponse);
-      }, 500);
+      }, 400);
     }
 
     // Helper functions
