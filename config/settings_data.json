@@ -67,6 +67,7 @@
       },
       "home_shop_by_brand": {
         "type": "home-shop-by-brand",
+        "disabled": true,
         "settings": {
           "heading": "SHOP BY BRAND",
           "gradient_color_1": "#000000",
@@ -92,7 +93,7 @@
         "name": "Featured Product Accent",
         "settings": {
           "subheading": "New Piece",
-          "product": "amor-galleria-paradise",
+          "product": "",
           "button_text": "Shop Release",
           "button_bg_color": "#ffffff",
           "button_txt_color": "#000000"
@@ -105,6 +106,21 @@
           "title": "JJKICKSZZ AI",
           "subtitle": "Talk to our sneaker assistant to find your grails instantly."
         }
+      },
+      "home_collection_grid_zgn7Xh": {
+        "type": "home-collection-grid",
+        "name": "Custom Collection Grid",
+        "settings": {
+          "heading": "FEATURED PRODUCTS",
+          "collection": "all-products",
+          "limit": 12,
+          "desktop_columns": "4",
+          "mobile_layout": "grid-wrap",
+          "desktop_banner_height": 300,
+          "mobile_banner_height": 180,
+          "button_text": "Shop All",
+          "custom_button_link": ""
+        }
       }
     },
     "content_for_index": [
@@ -112,6 +128,7 @@
       "home_marquee",
       "home_new_drops",
       "home_featured_product_ECmYW8",
+      "home_collection_grid_zgn7Xh",
       "general_section",
       "home_shop_by_brand",
       "home_custom_blocks",
