@@ -65,7 +65,7 @@
     {%- else -%}
       {%- assign custom_col = collections[section.settings.custom_collection] -%}
       {%- if custom_col != blank -%}
-        {%- render "markup_for_home_collection" with section_collection: custom_col -%}
+        {%- render "markup_for_home_collection" with section_collection, section_collection: custom_col -%}
       {%- else -%}
         {%- render "products_sorted_by_created_on" -%}
       {%- endif -%}
@@ -77,3 +77,15 @@
   </div>
   {% endif %}
 </section>
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: '{%- render "markup_for_home_collection" with section_collection: custom_col
+    -%}'
+  to: '{%- render "markup_for_home_collection" with section_collection, section_collection:
+    custom_col -%}'
+  position: 1496..1595
+{% endcomment %}

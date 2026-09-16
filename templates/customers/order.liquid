@@ -58,7 +58,7 @@
                   </div>
                   <div class="w-commerce-commercecheckoutsummaryflexboxdiv">
                     
-                    {%- if order. -%}<div>{{ 't7df1' | t }}</div>{%- endif -%}
+                    {%- if order -%}<div>{{ 't7df1' | t }}</div>{%- endif -%}
                     
                   </div>
                 </div>
@@ -248,4 +248,13 @@
   }
 </script>
 
-{{ 'udesly-shopify.min.js' | asset_url | script_tag }}
+{{ 'udesly-shopify.min.js' | asset_url | script_tag }}{%- comment -%}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{%- if order. -%}"
+  to: "{%- if order -%}"
+  position: 4058..4074
+{%- endcomment -%}
